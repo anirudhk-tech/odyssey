@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
-import { Counter } from "./components/counter/Counter";
+"use client";
 
-export default function IndexPage() {
-  return <Counter />;
+import styled from "styled-components";
+
+const Container = styled.div`
+  background-color: ${(props) => props.theme.colors.background};
+  width: 100vw;
+  height: 100vh;
+`;
+
+export default function HomePage() {
+  return <Container></Container>;
 }
-
-export const metadata: Metadata = {
-  title: "Redux Toolkit",
-};
