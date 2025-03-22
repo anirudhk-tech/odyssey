@@ -5,9 +5,13 @@ export interface ScenesDrawerState {
   scenesDrawerWidth: number;
 }
 
+const initialWidth =
+  typeof window !== "undefined" ? window.innerWidth / 4 : 300;
+const maxWidth = typeof window !== "undefined" ? window.innerWidth - 100 : 1000;
+
 const initialState: ScenesDrawerState = {
   isDrawerOpen: false,
-  scenesDrawerWidth: 300,
+  scenesDrawerWidth: initialWidth,
 };
 
 export const scenesDrawerSlice = createSlice({
@@ -25,10 +29,10 @@ export const scenesDrawerSlice = createSlice({
     },
     setScenesDrawerWidth: (state, action) => {
       if (!state.isDrawerOpen) return;
-      if (action.payload > 1000) return;
-      if (action.payload < 300) {
+      if (action.payload > maxWidth) return;
+      if (action.payload < initialWidth) {
         state.isDrawerOpen = false;
-        state.scenesDrawerWidth = 300;
+        state.scenesDrawerWidth = initialWidth;
         return;
       }
       state.scenesDrawerWidth = action.payload;

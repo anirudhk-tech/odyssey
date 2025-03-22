@@ -1,14 +1,6 @@
 import { useTimelineDrawer } from "@/lib/features/timeline/hooks/useTimelineDrawer";
 import styled from "styled-components";
 
-const Container = styled.div`
-  width: 100%;
-  height: fit-content;
-  background-color: ${(props) => props.theme.colors.primary};
-  position: absolute;
-  bottom: 0;
-`;
-
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
   height: 20px;
@@ -20,16 +12,20 @@ const Button = styled.button`
   &:active {
     background-color: ${(props) => props.theme.colors.primary};
   }
-  transform: translateY(20px);
+  position: absolute;
+  top: -20px;
+  left: 0;
 `;
 
 const ResizeHandle = styled.div`
   width: 100%;
   height: 20px;
   cursor: ns-resize;
+  position: absolute;
+  top: -20px;
 `;
 
-const TabContainer = styled.div<{
+const Container = styled.div<{
   open: boolean;
   timelinedrawerheight: number;
 }>`
@@ -38,6 +34,8 @@ const TabContainer = styled.div<{
     props.open ? `${props.timelinedrawerheight}px` : "0px"};
   background-color: ${(props) => props.theme.colors.background};
   transition: height 0.3s ease;
+  position: relative;
+  border-top: 1px solid ${(props) => props.theme.colors.secondary};
 `;
 
 export const TimelineDrawer = () => {
@@ -49,13 +47,9 @@ export const TimelineDrawer = () => {
   } = useTimelineDrawer();
 
   return (
-    <Container>
-      <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
+    <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
-      <TabContainer
-        open={isDrawerOpen}
-        timelinedrawerheight={timelineDrawerHeight}
-      ></TabContainer>
+      <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
     </Container>
   );
 };

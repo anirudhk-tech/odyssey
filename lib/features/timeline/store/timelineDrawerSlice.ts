@@ -5,9 +5,14 @@ export interface TimelineState {
   timelineDrawerHeight: number;
 }
 
+const initialHeight =
+  typeof window !== "undefined" ? window.innerHeight / 3 : 200;
+const maxHeight =
+  typeof window !== "undefined" ? window.innerHeight - 300 : 400;
+
 const initialState: TimelineState = {
   isDrawerOpen: false,
-  timelineDrawerHeight: 200,
+  timelineDrawerHeight: initialHeight,
 };
 
 export const timelineDrawerSlice = createSlice({
@@ -25,11 +30,11 @@ export const timelineDrawerSlice = createSlice({
     },
     setTimelineDrawerHeight: (state, action) => {
       if (!state.isDrawerOpen) return;
-      if (action.payload > 400) return;
+      if (action.payload > maxHeight) return;
 
-      if (action.payload < 200) {
+      if (action.payload < initialHeight) {
         state.isDrawerOpen = false;
-        state.timelineDrawerHeight = 200;
+        state.timelineDrawerHeight = initialHeight;
         return;
       }
       state.timelineDrawerHeight = action.payload;

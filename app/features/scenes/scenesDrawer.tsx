@@ -1,5 +1,6 @@
 import { useScenesDrawer } from "@/lib/features/scenes/hooks/useScenesDrawer";
 import styled from "styled-components";
+import { ScenesHeader } from "./scenesHeader";
 
 const Container = styled.div`
   width: fit-content;
@@ -17,22 +18,25 @@ const Button = styled.button`
   height: 20px;
   width: 80px;
   rotate: -90deg;
+  transform-origin: top left;
   border: none;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   font-size: 0.6rem;
-  transform: translateY(30px);
-  margin-top: 50px;
-  margin-right: -20px;
   &:active {
     background-color: ${(props) => props.theme.colors.primary};
   }
+  position: absolute;
+  top: 20%;
+  left: -20px;
 `;
 
 const ResizeHandle = styled.div`
   width: 20px;
   height: 100%;
   cursor: ew-resize;
+  position: absolute;
+  left: -20px;
 `;
 
 const TabContainer = styled.div<{
@@ -43,6 +47,10 @@ const TabContainer = styled.div<{
   height: 100%;
   background-color: ${(props) => props.theme.colors.background};
   transition: width 0.3s ease;
+  position: relative;
+  border-left: 1px solid ${(props) => props.theme.colors.secondary};
+  padding-left: ${(props) => (props.open ? "10px" : "0px")};
+  padding-right: ${(props) => (props.open ? "10px" : "0px")};
 `;
 
 export const ScenesDrawer = () => {
@@ -55,12 +63,11 @@ export const ScenesDrawer = () => {
 
   return (
     <Container>
-      <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
-      <ResizeHandle onMouseDown={handleMouseResizeDown} />
-      <TabContainer
-        open={isDrawerOpen}
-        drawerwidth={scenesDrawerWidth}
-      ></TabContainer>
+      <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
+        <ResizeHandle onMouseDown={handleMouseResizeDown} />
+        <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
+        {isDrawerOpen && <ScenesHeader />}
+      </TabContainer>
     </Container>
   );
 };
