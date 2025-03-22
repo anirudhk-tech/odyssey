@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { StoreProvider } from "./StoreProvider";
 
 import "./styles/globals.css";
-import { CustomThemeProvider } from "./themeProvider";
+import { CustomThemeProvider } from "./ThemeProvider";
 import { Metadata } from "next";
 
 interface Props {
