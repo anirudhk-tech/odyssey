@@ -1,4 +1,4 @@
-import { RootState } from "@/lib/store";
+import { MainState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setTimelineDrawerHeight,
@@ -9,11 +9,11 @@ import { useRef } from "react";
 export const useTimelineDrawer = () => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(
-    (state: RootState) => state.timelineDrawer.isDrawerOpen
+    (state: MainState) => state.timelineDrawer.isDrawerOpen
   );
 
   const timelineDrawerHeight = useSelector(
-    (state: RootState) => state.timelineDrawer.timelineDrawerHeight
+    (state: MainState) => state.timelineDrawer.timelineDrawerHeight
   );
 
   const handleToggleTimelineDrawer = () => dispatch(toggleTimelineDrawer());

@@ -1,26 +1,92 @@
 "use client";
 
 import styled from "styled-components";
-import { ScenesDrawer } from "./features/scenes/scenesDrawer";
-import { Editor } from "./features/editor/editor";
-import { TimelineDrawer } from "./features/timeline/timelineDrawer";
+import { Book } from "./features/books/book";
+import { IoAdd } from "react-icons/io5";
+import { useFetchBooks } from "@/lib/features/books/hooks/useFetchBooks";
+import { AddBookDialog } from "./features/books/addBookDialog";
+import { useAddBook } from "@/lib/features/books/hooks/useAddBook";
 
 const Container = styled.div`
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: ${(props) => props.theme.colors.background};
   width: 100%;
-  height: 100vh;
+  minheight: 100vh;
+  height: fit-content;
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
+  align-items: center;
+  padding-bottom: 50px;
+  padding-top: 50px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 85%;
+`;
+
+const Title = styled.span`
+  color: ${(props) => props.theme.colors.text};
+  font-size: 2rem;
+  font-weight: 200;
+`;
+
+const BooksContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  height: fit-content;
+  margin-top: 50px;
+  padding-left: 8%;
+  padding-right: 8%;
+`;
+
+const Button = styled.button`
+  background-color: ${(props) => props.theme.colors.background};
+  align-items: center;
+  justify-content: center;
+  border: none;
+  &:active {
+    opacity: 0.5;
+  }
+  cursor: pointer;
 `;
 
 export default function HomePage() {
+  const { books, loading } = useFetchBooks();
+  const { toggleDialog } = useAddBook();
+
   return (
     <Container>
-      <Editor />
-      <ScenesDrawer />
-      <TimelineDrawer />
+      <AddBookDialog />
+      <Header>
+        {loading || !books ? (
+          <Title>Fetching your books...</Title>
+        ) : (
+          <Title>
+            {books.length === 0
+              ? "Empty shelf! Ready to write?"
+              : "What are you planning on writing today?"}
+          </Title>
+        )}
+        <Button onClick={toggleDialog}>
+          <IoAdd size={50} />
+        </Button>
+      </Header>
+      <BooksContainer>
+        {loading || !books
+          ? Array.from({ length: 1 }).map((_, index) => (
+              <Book loading key={index} />
+            ))
+          : books.map((book) => (
+              <Book key={book.uuid} title={book.title} loading={false} />
+            ))}
+      </BooksContainer>
     </Container>
   );
 }

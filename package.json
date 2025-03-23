@@ -1,7 +1,7 @@
 {
   "name": "odyssey",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "electron/main.js",
   "type": "module",
   "private": true,
   "scripts": {

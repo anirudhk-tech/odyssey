@@ -1,12 +1,19 @@
 import { app, BrowserWindow } from "electron";
+import "./ipcHandlers.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const preloadPath = join(__dirname, "preload.cjs");
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
     webPreferences: {
+      preload: preloadPath,
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: true,
     },
   });
 

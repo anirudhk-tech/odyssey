@@ -1,4 +1,4 @@
-import { RootState } from "@/lib/store";
+import { MainState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setScenesDrawerWidth,
@@ -9,10 +9,10 @@ import { useRef } from "react";
 export const useScenesDrawer = () => {
   const dispatch = useDispatch();
   const isDrawerOpen = useSelector(
-    (state: RootState) => state.scenesDrawer.isDrawerOpen
+    (state: MainState) => state.scenesDrawer.isDrawerOpen
   );
   const scenesDrawerWidth = useSelector(
-    (state: RootState) => state.scenesDrawer.scenesDrawerWidth
+    (state: MainState) => state.scenesDrawer.scenesDrawerWidth
   );
 
   const handleToggleScenesDrawer = () => dispatch(toggleScenesDrawer());
