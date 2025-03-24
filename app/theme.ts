@@ -6,4 +6,9 @@ export const theme = {
     text: "#000000",
     icon: "#000000",
   },
+  fontsize: {
+    lg: "3.5rem",
+    md: "2rem",
+    sm: "1rem",
+  },
 };

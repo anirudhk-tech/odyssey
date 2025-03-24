@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 import { createScene } from "./services/scenesServices.js";
 import { createBook, getBooks } from "./services/bookServices.js";
 
-ipcMain.handle("createBookFolder", async (event, bookName) => {
+ipcMain.handle("createBook", async (event, bookName) => {
   return createBook(bookName);
 });
 

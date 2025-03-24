@@ -15,12 +15,12 @@ const DialogOverlay = styled.div`
   z-index: 1000;
 `;
 
-const DialogContent = styled.div<{ customwidth?: string }>`
+const DialogContent = styled.div<{ customsize?: string }>`
   background: ${(props) => props.theme.colors.primary};
   padding: 2rem;
   border-radius: 8px;
-  min-width: ${(props) => props.customwidth || "300px"};
-  aspect-ratio: 1/1;
+  width: ${(props) => props.customsize || "300px"};
+  height: ${(props) => props.customsize || "300px"};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 `;
@@ -29,13 +29,13 @@ interface DialogProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  customwidth?: string;
+  customsize?: string;
 }
 
 export const Dialog: React.FC<DialogProps> = ({
   isOpen,
   onClose,
-  customwidth,
+  customsize,
   children,
 }) => {
   if (!isOpen) return null;
@@ -43,7 +43,7 @@ export const Dialog: React.FC<DialogProps> = ({
   return ReactDOM.createPortal(
     <DialogOverlay onClick={onClose}>
       <DialogContent
-        customwidth={customwidth}
+        customsize={customsize}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

@@ -1,8 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("odysseyAPI", {
-  createBookFolder: (bookName) =>
-    ipcRenderer.invoke("createBookFolder", bookName),
+  createBook: (bookName) => ipcRenderer.invoke("createBook", bookName),
   createScene: (bookName, sceneName) =>
     ipcRenderer.invoke("createScene", bookName, sceneName),
   getBooks: () => ipcRenderer.invoke("getBooks"),

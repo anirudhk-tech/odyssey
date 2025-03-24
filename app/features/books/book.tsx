@@ -1,4 +1,6 @@
 import styled, { keyframes } from "styled-components";
+import { Menu } from "../../components/menu";
+import { useMenu } from "@/lib/common/hooks/useMenu";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -23,7 +25,6 @@ const Container = styled.div`
 const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: 1rem;
-  font-weight: 200;
   text-align: center;
 `;
 
@@ -49,11 +50,14 @@ export const Book = ({
   title?: string;
   loading: boolean;
 }) => {
+  const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
+
   if (loading) {
     return <Loading></Loading>;
   } else {
     return (
-      <Container>
+      <Container onContextMenu={handleMenuOpen}>
+        <Menu menuPos={menuPos} setMenuPos={setMenuPos} />
         <Title>{title}</Title>
       </Container>
     );

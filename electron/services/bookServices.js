@@ -36,6 +36,27 @@ export const createBook = (bookName) => {
   }
 };
 
+export const deleteBook = (bookUUID) => {
+  try {
+    const documentsPath = app.getPath("documents");
+    const booksPath = path.join(documentsPath, "Odyssey");
+    const bookFolders = fs.readdirSync(booksPath);
+
+    bookFolders.map((folder) => {
+      const metaDataPath = path.join(booksPath, folder, "metadata.json");
+      const metaData = JSON.parse(fs.readFileSync(metaDataPath, "utf8"));
+
+      if (metaData.id === bookUUID) {
+        fs.rmdirSync(path.join(booksPath, folder), { recursive: true });
+      }
+    });
+
+    return { success: true, message: "Book deleted successfully" };
+  } catch (error) {
+    return { success: false, message: `Error deleting book: ${error}` };
+  }
+};
+
 export const getBooks = () => {
   try {
     const documentsPath = app.getPath("documents");

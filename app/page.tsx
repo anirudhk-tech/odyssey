@@ -6,6 +6,7 @@ import { IoAdd } from "react-icons/io5";
 import { useFetchBooks } from "@/lib/features/books/hooks/useFetchBooks";
 import { AddBookDialog } from "./features/books/addBookDialog";
 import { useAddBook } from "@/lib/features/books/hooks/useAddBook";
+import { useMounted } from "@/lib/common/hooks/useMounted";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -30,7 +31,6 @@ const Header = styled.div`
 const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: 2rem;
-  font-weight: 200;
 `;
 
 const BooksContainer = styled.div`
@@ -58,8 +58,11 @@ const Button = styled.button`
 `;
 
 export default function HomePage() {
+  const { mounted } = useMounted();
   const { books, loading } = useFetchBooks();
   const { toggleDialog } = useAddBook();
+
+  if (!mounted) return null;
 
   return (
     <Container>

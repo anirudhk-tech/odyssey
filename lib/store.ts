@@ -2,13 +2,15 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { scenesDrawerSlice } from "./features/scenes/store/scenesDrawerSlice";
 import { timelineDrawerSlice } from "./features/timeline/store/timelineDrawerSlice";
 import { booksSlice } from "./features/books/store/booksSlice";
+import { snackbarSlice } from "./common/store/snackbarSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
 const rootReducer = combineSlices(
   scenesDrawerSlice,
   timelineDrawerSlice,
-  booksSlice
+  booksSlice,
+  snackbarSlice
 );
 
 // Infer the `RootState` type from the root reducer
