@@ -1,12 +1,14 @@
 "use client";
 
 import styled from "styled-components";
-import { Book } from "./features/books/book";
+import { BookListing } from "./features/books/book";
 import { IoAdd } from "react-icons/io5";
 import { useFetchBooks } from "@/lib/features/books/hooks/useFetchBooks";
 import { AddBookDialog } from "./features/books/addBookDialog";
 import { useAddBook } from "@/lib/features/books/hooks/useAddBook";
 import { useMounted } from "@/lib/common/hooks/useMounted";
+import { DeleteBookConfirmDialog } from "./features/books/deleteBookConfirmDialog";
+import { RenameBookDialog } from "./features/books/renameBookDialog";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -66,7 +68,9 @@ export default function HomePage() {
 
   return (
     <Container>
+      <RenameBookDialog />
       <AddBookDialog />
+      <DeleteBookConfirmDialog />
       <Header>
         {loading || !books ? (
           <Title>Fetching your books...</Title>
@@ -84,10 +88,10 @@ export default function HomePage() {
       <BooksContainer>
         {loading || !books
           ? Array.from({ length: 1 }).map((_, index) => (
-              <Book loading key={index} />
+              <BookListing loading key={index} />
             ))
           : books.map((book) => (
-              <Book key={book.uuid} title={book.title} loading={false} />
+              <BookListing key={book.uuid} book={book} loading={false} />
             ))}
       </BooksContainer>
     </Container>

@@ -16,6 +16,14 @@ const Container = styled.div<{
   width: fit-content;
 `;
 
+const Item = styled.div`
+  cursor: pointer;
+  width: 100%;
+  &:hover {
+    font-weight: bold;
+  }
+`;
+
 export const Menu = ({
   menuPos,
   setMenuPos,
@@ -35,9 +43,9 @@ export const Menu = ({
   return ReactDOM.createPortal(
     <Container ref={menuRef} menupos={menuPos}>
       {options.map((option) => (
-        <div key={option.label} onClick={option.onClick}>
+        <Item key={option.label} onClick={option.onClick}>
           {option.label}
-        </div>
+        </Item>
       ))}
     </Container>,
     document.body

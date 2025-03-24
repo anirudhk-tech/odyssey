@@ -8,6 +8,8 @@ declare global {
       createBook: (bookName: string) => Promise<Response>;
       createScene: (bookName: string, sceneName: string) => Promise<Response>;
       getBooks: () => Promise<Response>;
+      deleteBook: (bookUUID: string) => Promise<Response>;
+      renameBook: (bookUUID: string, newBookName: string) => Promise<Response>;
     };
   }
 }

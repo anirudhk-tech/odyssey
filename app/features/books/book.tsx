@@ -1,6 +1,9 @@
 import styled, { keyframes } from "styled-components";
 import { Menu } from "../../components/menu";
 import { useMenu } from "@/lib/common/hooks/useMenu";
+import { Book } from "@/app/types/book";
+import { useBookMenu } from "@/lib/features/books/hooks/useBookMenu";
+import { useRouter } from "next/navigation";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -43,22 +46,27 @@ const Loading = styled(Container)`
   animation: ${shimmer} 3s infinite linear;
 `;
 
-export const Book = ({
-  title,
+export const BookListing = ({
+  book,
   loading,
 }: {
-  title?: string;
+  book?: Book;
   loading: boolean;
 }) => {
   const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
+  const { options } = useBookMenu(book);
+  const router = useRouter();
 
-  if (loading) {
+  if (loading || !book) {
     return <Loading></Loading>;
   } else {
     return (
-      <Container onContextMenu={handleMenuOpen}>
-        <Menu menuPos={menuPos} setMenuPos={setMenuPos} />
-        <Title>{title}</Title>
+      <Container
+        onClick={() => router.push(`/book/${book.uuid}`)}
+        onContextMenu={handleMenuOpen}
+      >
+        <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
+        <Title>{book.title}</Title>
       </Container>
     );
   }

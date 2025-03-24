@@ -5,6 +5,7 @@ export const theme = {
     background: "#FFFFFF",
     text: "#000000",
     icon: "#000000",
+    danger: "#DC143C",
   },
   fontsize: {
     lg: "3.5rem",
