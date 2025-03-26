@@ -3,6 +3,7 @@ import {
   createScene,
   deleteScene,
   getScenes,
+  renameScene,
 } from "./services/scenesServices.js";
 import {
   createBook,
@@ -38,3 +39,10 @@ ipcMain.handle("getScenes", async (event, bookUUID) => {
 ipcMain.handle("deleteScene", async (event, bookUUID, sceneUUID) => {
   return deleteScene(bookUUID, sceneUUID);
 });
+
+ipcMain.handle(
+  "renameScene",
+  async (event, bookUUID, sceneUUID, newSceneName) => {
+    return renameScene(bookUUID, sceneUUID, newSceneName);
+  }
+);

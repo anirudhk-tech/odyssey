@@ -6,8 +6,7 @@ export interface BooksSlice {
   addBookDialogOpen: boolean;
   deleteBookConfirmDialogOpen: boolean;
   renameBookDialogOpen: boolean;
-  bookToBeDeleted: Book | null;
-  bookToBeRenamed: Book | null;
+  bookToBeEdited: Book | null;
 }
 
 const initialState: BooksSlice = {
@@ -15,8 +14,7 @@ const initialState: BooksSlice = {
   addBookDialogOpen: false,
   deleteBookConfirmDialogOpen: false,
   renameBookDialogOpen: false,
-  bookToBeDeleted: null,
-  bookToBeRenamed: null,
+  bookToBeEdited: null,
 };
 
 export const booksSlice = createSlice({
@@ -43,17 +41,11 @@ export const booksSlice = createSlice({
       if (!state.books) return;
       state.books = state.books.filter((book) => book.id !== action.payload);
     },
-    setBookToBeDeleted: (state, action) => {
-      state.bookToBeDeleted = action.payload;
+    setBookToBeEdited: (state, action) => {
+      state.bookToBeEdited = action.payload;
     },
-    clearBookToBeDeleted: (state) => {
-      state.bookToBeDeleted = null;
-    },
-    setBookToBeRenamed: (state, action) => {
-      state.bookToBeRenamed = action.payload;
-    },
-    clearBookToBeRenamed: (state) => {
-      state.bookToBeRenamed = null;
+    clearBookToBeEdited: (state) => {
+      state.bookToBeEdited = null;
     },
     renameBook: (state, action) => {
       if (!state.books) return;
@@ -81,10 +73,8 @@ export const {
   toggleAddBookDialog,
   toggleDeleteBookConfirmDialog,
   deleteBook,
-  setBookToBeDeleted,
-  clearBookToBeDeleted,
-  setBookToBeRenamed,
-  clearBookToBeRenamed,
+  setBookToBeEdited,
+  clearBookToBeEdited,
   renameBook,
   toggleRenameBookDialog,
 } = booksSlice.actions;

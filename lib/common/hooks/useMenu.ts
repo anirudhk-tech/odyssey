@@ -11,5 +11,12 @@ export const useMenu = () => {
     setMenuPos({ x: e.pageX, y: e.pageY });
   };
 
-  return { menuPos, setMenuPos, handleMenuOpen };
+  const handleMenuOpenFromIcon = (
+    e: React.MouseEvent<SVGElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setMenuPos({ x: e.pageX, y: e.pageY });
+  };
+
+  return { menuPos, setMenuPos, handleMenuOpen, handleMenuOpenFromIcon };
 };

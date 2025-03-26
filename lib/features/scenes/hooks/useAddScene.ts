@@ -23,6 +23,12 @@ export const useAddScene = () => {
   const handleAddScene = async () => {
     if (!currentBookId) return;
 
+    if (sceneName.length <= 3) {
+      showSnackbar("Scene name must be longer than 3 characters.");
+      dispatch(toggleSceneBeingAdded());
+      return;
+    }
+
     const response = await window.odysseyAPI.createScene(
       currentBookId,
       sceneName
@@ -38,7 +44,13 @@ export const useAddScene = () => {
       );
       dispatch(toggleSceneBeingAdded());
     } else {
+      if (response.message === "Scene name already exists") {
+        showSnackbar("Scene name already exists.");
+        dispatch(toggleSceneBeingAdded());
+        return;
+      }
       showSnackbar("Something went wrong. Please try again.");
+      dispatch(toggleSceneBeingAdded());
     }
   };
 

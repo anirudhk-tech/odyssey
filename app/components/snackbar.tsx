@@ -1,6 +1,6 @@
 import { useMounted } from "@/lib/common/hooks/useMounted";
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const SnackbarContainer = styled.div`
@@ -17,6 +17,7 @@ const SnackbarContainer = styled.div`
     opacity: 1;
   }
   cursor: pointer;
+  z-index: 9999;
 `;
 
 export const Snackbar = () => {

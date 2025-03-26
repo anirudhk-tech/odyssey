@@ -62,7 +62,7 @@ export const RenameBookDialog = () => {
     handleRenameBook,
     error,
     setBookName,
-    bookToBeRenamed,
+    bookToBeEdited,
   } = useRenameBook();
 
   return (
@@ -73,8 +73,8 @@ export const RenameBookDialog = () => {
     >
       <Container>
         <Prompt>
-          {bookToBeRenamed
-            ? `What are you calling "${bookToBeRenamed.title}" now?`
+          {bookToBeEdited
+            ? `What are you calling "${bookToBeEdited.title}" now?`
             : ""}
         </Prompt>
         <InputContainer>

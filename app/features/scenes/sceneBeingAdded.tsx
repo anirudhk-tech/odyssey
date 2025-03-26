@@ -18,7 +18,8 @@ const Container = styled.div`
 `;
 
 const Input = styled.textarea`
-  flex: 1;
+  width: 100%;
+  height: 100%;
   border: none;
   background-color: transparent;
   color: ${(props) => props.theme.colors.text};
@@ -29,6 +30,7 @@ const Input = styled.textarea`
   resize: none;
   overflow: auto;
   word-wrap: break-word;
+  padding-top: 20px;
 `;
 
 export const SceneBeingAdded = () => {

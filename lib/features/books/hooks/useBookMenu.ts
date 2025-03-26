@@ -1,8 +1,7 @@
 import { Book } from "@/app/types/book";
 import { useDispatch } from "react-redux";
 import {
-  setBookToBeDeleted,
-  setBookToBeRenamed,
+  setBookToBeEdited,
   toggleDeleteBookConfirmDialog,
   toggleRenameBookDialog,
 } from "../store/booksSlice";
@@ -12,13 +11,13 @@ export const useBookMenu = (book: Book | undefined) => {
 
   const toggleDeleteDialog = () => {
     if (!book) return;
-    dispatch(setBookToBeDeleted(book));
+    dispatch(setBookToBeEdited(book));
     dispatch(toggleDeleteBookConfirmDialog());
   };
 
   const toggleRenameDialog = () => {
     if (!book) return;
-    dispatch(setBookToBeRenamed(book));
+    dispatch(setBookToBeEdited(book));
     dispatch(toggleRenameBookDialog());
   };
 

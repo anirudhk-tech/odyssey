@@ -12,8 +12,8 @@ export const useRenameBook = () => {
   const renameBookDialogOpen = useSelector(
     (state: MainState) => state.books.renameBookDialogOpen
   );
-  const bookToBeRenamed = useSelector(
-    (state: MainState) => state.books.bookToBeRenamed
+  const bookToBeEdited = useSelector(
+    (state: MainState) => state.books.bookToBeEdited
   );
 
   const invalidRegex = /[\\\/:*?"<>|]/;
@@ -25,7 +25,7 @@ export const useRenameBook = () => {
   };
 
   const handleRenameBook = async () => {
-    if (!bookToBeRenamed) return;
+    if (!bookToBeEdited) return;
 
     if (bookName.length <= 3) {
       setError("Book name must be longer than 3 characters!");
@@ -37,12 +37,12 @@ export const useRenameBook = () => {
       return;
     } else {
       const response = await window.odysseyAPI.renameBook(
-        bookToBeRenamed.id,
+        bookToBeEdited.id,
         bookName
       );
 
       if (response.success) {
-        dispatch(renameBook({ title: bookName, id: bookToBeRenamed.id }));
+        dispatch(renameBook({ title: bookName, id: bookToBeEdited.id }));
         toggleDialog();
         showSnackbar(`Book renamed to ${bookName}.`);
       } else {
@@ -64,6 +64,6 @@ export const useRenameBook = () => {
     renameBookDialogOpen,
     toggleDialog,
     handleRenameBook,
-    bookToBeRenamed,
+    bookToBeEdited,
   };
 };

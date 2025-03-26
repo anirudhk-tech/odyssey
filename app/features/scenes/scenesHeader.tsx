@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
 import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
+import { useFetchScenes } from "@/lib/features/scenes/hooks/useFetchScenes";
 
 const Container = styled.div`
   width: 100%;
@@ -25,6 +26,7 @@ const SearchContainer = styled.div`
   justify-content: center;
   align-items: center;
   box-shadow: 0px 0px 5px 0.1px rgba(0, 0, 0, 0.3);
+  padding-left: 10px;
 `;
 
 const Input = styled.input`
@@ -47,12 +49,15 @@ const Button = styled.button`
 
 export const ScenesHeader = () => {
   const { handleSceneBeingAdded } = useAddScene();
+  const { setSceneSearchQuery } = useFetchScenes();
 
   return (
     <Container>
       <SearchContainer>
-        <CiSearch style={{ width: "10%" }} />
-        <Input placeholder="Search" />
+        <Input
+          placeholder="Search"
+          onChange={(e) => setSceneSearchQuery(e.target.value)}
+        />
       </SearchContainer>
       <Button>
         <IoAdd style={{ scale: 1.5 }} onClick={handleSceneBeingAdded} />

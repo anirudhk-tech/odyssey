@@ -8,6 +8,7 @@ import { useMounted } from "@/lib/common/hooks/useMounted";
 import { useRouter } from "next/router";
 import { useSetCurrent } from "@/lib/common/hooks/useSetCurrent";
 import { useParams } from "next/navigation";
+import { DeleteSceneConfirmDialog } from "@/app/features/scenes/deleteSceneConfirmDialog";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -28,6 +29,7 @@ export default function EditingPage() {
 
   return (
     <Container>
+      <DeleteSceneConfirmDialog />
       <TextEditor />
       <ScenesDrawer />
       <TimelineDrawer />

@@ -59,6 +59,21 @@ const TabContainer = styled.div<{
   display: flex;
   flex-direction: column;
   align-items: center;
+  scrollbar-width: none;
+`;
+
+const ScenesContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  scrollbar-width: thin;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  align-content: flex-start;
+  padding-bottom: 20px;
 `;
 
 export const ScenesDrawer = () => {
@@ -69,7 +84,7 @@ export const ScenesDrawer = () => {
     handleMouseResizeDown,
   } = useScenesDrawer();
 
-  const { scenes } = useFetchScenes();
+  const { scenes, searchedScenes } = useFetchScenes();
   const { sceneBeingAdded } = useAddScene();
 
   return (
@@ -80,10 +95,16 @@ export const ScenesDrawer = () => {
         {isDrawerOpen && (
           <>
             <ScenesHeader />
-            {sceneBeingAdded && <SceneBeingAdded />}
-            {scenes?.map((scene: Scene) => (
-              <SceneListing key={scene.id} scene={scene} />
-            ))}
+            <ScenesContainer>
+              {sceneBeingAdded && <SceneBeingAdded />}
+              {searchedScenes
+                ? searchedScenes.map((scene: Scene) => (
+                    <SceneListing key={scene.id} scene={scene} />
+                  ))
+                : scenes?.map((scene: Scene) => (
+                    <SceneListing key={scene.id} scene={scene} />
+                  ))}
+            </ScenesContainer>
           </>
         )}
       </TabContainer>

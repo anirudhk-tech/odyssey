@@ -13,6 +13,11 @@ declare global {
       getScenes: (bookUUID: string) => Promise<Response>;
       createScene: (bookUUID: string, sceneName: string) => Promise<Response>;
       deleteScene: (bookUUID: string, sceneUUID: string) => Promise<Response>;
+      renameScene: (
+        bookUUID: string,
+        sceneUUID: string,
+        newSceneName: string
+      ) => Promise<Response>;
     };
   }
 }

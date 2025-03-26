@@ -1,12 +1,13 @@
-import { Book } from "@/app/types/book";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface currentSlice {
   currentBookId: string | null;
+  currentSceneId: string | null;
 }
 
 const initialState: currentSlice = {
   currentBookId: null,
+  currentSceneId: null,
 };
 
 export const currentSlice = createSlice({
@@ -19,8 +20,19 @@ export const currentSlice = createSlice({
     resetCurrentBookId: (state) => {
       state.currentBookId = null;
     },
+    setCurrentSceneId: (state, action) => {
+      state.currentSceneId = action.payload;
+    },
+    resetCurrentSceneId: (state) => {
+      state.currentSceneId = null;
+    },
   },
 });
 
-export const { setCurrentBookId, resetCurrentBookId } = currentSlice.actions;
+export const {
+  setCurrentBookId,
+  resetCurrentBookId,
+  setCurrentSceneId,
+  resetCurrentSceneId,
+} = currentSlice.actions;
 export default currentSlice.reducer;
