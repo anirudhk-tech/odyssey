@@ -1,32 +1,46 @@
 import { app } from "electron";
 import fs from "fs";
 import path from "path";
+import { readGlobalMetaData, writeGlobalMetaData } from "./utilServices.js";
 
 export const createBook = (bookName) => {
   try {
     const documentsPath = app.getPath("documents");
-    const bookFolder = path.join(documentsPath, "Odyssey", bookName);
+    const odysseyPath = path.join(documentsPath, "Odyssey");
+
+    if (!fs.existsSync(odysseyPath)) {
+      fs.mkdirSync(odysseyPath, { recursive: true });
+    }
+
+    const bookFolder = path.join(odysseyPath, bookName);
     const bookUUID = crypto.randomUUID();
 
     if (!fs.existsSync(bookFolder)) {
       fs.mkdirSync(bookFolder, { recursive: true });
     }
 
-    const metaDataPath = path.join(bookFolder, "metadata.json");
-
-    if (!fs.existsSync(metaDataPath)) {
-      const initialData = { id: bookUUID, scenes: [] };
+    const scenesDataPath = path.join(bookFolder, "scenes.json");
+    if (!fs.existsSync(scenesDataPath)) {
+      const initialData = { scenes: [] };
       fs.writeFileSync(
-        metaDataPath,
+        scenesDataPath,
         JSON.stringify(initialData, null, 2),
         "utf8"
       );
     }
 
+    const metaData = readGlobalMetaData();
+    metaData.books.push({
+      title: bookName,
+      id: bookUUID,
+      folder_path: bookFolder,
+    });
+    writeGlobalMetaData(metaData);
+
     return {
       success: true,
       message: "Book folder created successfully",
-      data: { uuid: bookUUID },
+      data: { id: bookUUID },
     };
   } catch (error) {
     return {
@@ -38,19 +52,17 @@ export const createBook = (bookName) => {
 
 export const deleteBook = (bookUUID) => {
   try {
-    const documentsPath = app.getPath("documents");
-    const booksPath = path.join(documentsPath, "Odyssey");
-    const bookFolders = fs.readdirSync(booksPath);
-
-    for (let folder of bookFolders) {
-      const metaDataPath = path.join(booksPath, folder, "metadata.json");
-      const metaData = JSON.parse(fs.readFileSync(metaDataPath, "utf8"));
-
-      if (metaData.id === bookUUID) {
-        fs.rmSync(path.join(booksPath, folder), { recursive: true });
-        break;
-      }
+    const metaData = readGlobalMetaData();
+    const bookIndex = metaData.books.findIndex((book) => book.id === bookUUID);
+    if (bookIndex === -1) {
+      return { success: false, message: "Book not found" };
     }
+    const bookFolder = metaData.books[bookIndex].folder_path;
+
+    fs.rmSync(bookFolder, { recursive: true, force: true });
+
+    metaData.books.splice(bookIndex, 1);
+    writeGlobalMetaData(metaData);
 
     return { success: true, message: "Book deleted successfully" };
   } catch (error) {
@@ -60,34 +72,29 @@ export const deleteBook = (bookUUID) => {
 
 export const renameBook = (bookUUID, newBookName) => {
   try {
-    const documentsPath = app.getPath("documents");
-    const booksPath = path.join(documentsPath, "Odyssey");
-    const bookFolders = fs.readdirSync(booksPath);
-    let bookExists = false;
-    let oldPath = "";
-    let newPath = "";
+    const metaData = readGlobalMetaData();
 
-    bookFolders.forEach((folder) => {
-      const metaDataPath = path.join(booksPath, folder, "metadata.json");
-      const metaData = JSON.parse(fs.readFileSync(metaDataPath, "utf8"));
-
-      if (metaData.id === bookUUID) {
-        oldPath = path.join(booksPath, folder);
-        newPath = path.join(booksPath, newBookName);
-      }
-
-      if (folder === newBookName) bookExists = true;
-    });
-
-    if (bookExists) {
+    if (metaData.books.some((book) => book.title === newBookName)) {
       return { success: false, message: "Book name already exists" };
     }
 
-    if (!fs.existsSync(oldPath) || newPath.length === 0) {
+    const book = metaData.books.find((book) => book.id === bookUUID);
+    if (!book) {
       return { success: false, message: "Book not found" };
     }
 
-    fs.renameSync(oldPath, newPath);
+    const oldFolderPath = book.folder_path;
+    const newFolderPath = path.join(path.dirname(oldFolderPath), newBookName);
+
+    if (!fs.existsSync(oldFolderPath)) {
+      return { success: false, message: "Original book folder not found" };
+    }
+
+    fs.renameSync(oldFolderPath, newFolderPath);
+
+    book.title = newBookName;
+    book.folder_path = newFolderPath;
+    writeGlobalMetaData(metaData);
 
     return { success: true, message: "Book renamed successfully" };
   } catch (error) {
@@ -97,22 +104,8 @@ export const renameBook = (bookUUID, newBookName) => {
 
 export const getBooks = () => {
   try {
-    const documentsPath = app.getPath("documents");
-    const booksPath = path.join(documentsPath, "Odyssey");
-
-    if (!fs.existsSync(booksPath)) {
-      fs.mkdirSync(booksPath, { recursive: true });
-    }
-
-    const bookFolders = fs.readdirSync(booksPath);
-
-    const books = bookFolders.map((folder) => {
-      const metaDataPath = path.join(booksPath, folder, "metadata.json");
-      const metaData = JSON.parse(fs.readFileSync(metaDataPath, "utf8"));
-      return { title: folder, uuid: metaData.id };
-    });
-
-    return { success: true, data: { books: books } };
+    const metaData = readGlobalMetaData();
+    return { success: true, data: { books: metaData.books } };
   } catch (error) {
     return { success: false, message: `Error getting books: ${error}` };
   }

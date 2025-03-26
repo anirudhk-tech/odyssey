@@ -3,6 +3,9 @@ import { scenesDrawerSlice } from "./features/scenes/store/scenesDrawerSlice";
 import { timelineDrawerSlice } from "./features/timeline/store/timelineDrawerSlice";
 import { booksSlice } from "./features/books/store/booksSlice";
 import { snackbarSlice } from "./common/store/snackbarSlice";
+import { editorSlice } from "./features/editor/store/editorSlice";
+import { scenesSlice } from "./features/scenes/store/scenesSlice";
+import { currentSlice } from "./common/store/currentSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -10,7 +13,10 @@ const rootReducer = combineSlices(
   scenesDrawerSlice,
   timelineDrawerSlice,
   booksSlice,
-  snackbarSlice
+  snackbarSlice,
+  editorSlice,
+  scenesSlice,
+  currentSlice
 );
 
 // Infer the `RootState` type from the root reducer

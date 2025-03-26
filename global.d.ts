@@ -10,6 +10,7 @@ declare global {
       getBooks: () => Promise<Response>;
       deleteBook: (bookUUID: string) => Promise<Response>;
       renameBook: (bookUUID: string, newBookName: string) => Promise<Response>;
+      getScenes: (bookUUID: string) => Promise<Response>;
     };
   }
 }

@@ -3,18 +3,18 @@ import styled from "styled-components";
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
-  height: 20px;
-  width: 80px;
+  height: 30px;
+  width: 100px;
   border: none;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  font-size: 0.6rem;
+  font-size: ${(props) => props.theme.fontsize.sm};
   &:active {
     background-color: ${(props) => props.theme.colors.primary};
   }
   position: absolute;
-  top: -20px;
-  left: 0;
+  top: -30px;
+  left: 10px;
 `;
 
 const ResizeHandle = styled.div`

@@ -33,7 +33,10 @@ export const Menu = ({
   setMenuPos: React.Dispatch<
     React.SetStateAction<{ x: number | null; y: number | null }>
   >;
-  options: { label: string; onClick: () => void }[];
+  options: {
+    label: string;
+    onClick: () => void;
+  }[];
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   useMenuClickOut(menuRef, setMenuPos);
@@ -43,7 +46,13 @@ export const Menu = ({
   return ReactDOM.createPortal(
     <Container ref={menuRef} menupos={menuPos}>
       {options.map((option) => (
-        <Item key={option.label} onClick={option.onClick}>
+        <Item
+          key={option.label}
+          onClick={(e: React.MouseEvent) => {
+            e.stopPropagation();
+            option.onClick();
+          }}
+        >
           {option.label}
         </Item>
       ))}

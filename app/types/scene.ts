@@ -1,4 +1,5 @@
 export interface Scene {
   title: string;
-  uuid: string;
+  id: string;
+  textFilePath: string;
 }

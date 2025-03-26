@@ -7,6 +7,6 @@ const Container = styled.div`
   height: 100%;
 `;
 
-export const Editor = () => {
+export const TextEditor = () => {
   return <Container></Container>;
 };

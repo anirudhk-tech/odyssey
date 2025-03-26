@@ -62,7 +62,7 @@ export const BookListing = ({
   } else {
     return (
       <Container
-        onClick={() => router.push(`/book/${book.uuid}`)}
+        onClick={() => router.push(`/book/${book.id}`)}
         onContextMenu={handleMenuOpen}
       >
         <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />

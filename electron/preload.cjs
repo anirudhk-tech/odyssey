@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
   deleteBook: (bookUUID) => ipcRenderer.invoke("deleteBook", bookUUID),
   renameBook: (bookUUID, newBookName) =>
     ipcRenderer.invoke("renameBook", bookUUID, newBookName),
+  getScenes: (bookUUID) => ipcRenderer.invoke("getScenes", bookUUID),
 });

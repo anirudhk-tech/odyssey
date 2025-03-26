@@ -7,9 +7,10 @@ const Container = styled.div`
   height: 30px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
+  gap: 10px;
 `;
 
 const SearchContainer = styled.div`
@@ -40,6 +41,7 @@ const Button = styled.button`
   &:active {
     opacity: 0.5;
   }
+  cursor: pointer;
 `;
 
 export const ScenesHeader = () => {

@@ -20,10 +20,10 @@ export const useDeleteBook = () => {
 
   const handleDeleteBook = async () => {
     if (!bookToBeDeleted) return;
-    const response = await window.odysseyAPI.deleteBook(bookToBeDeleted.uuid);
+    const response = await window.odysseyAPI.deleteBook(bookToBeDeleted.id);
 
     if (response.success) {
-      dispatch(deleteBook(bookToBeDeleted.uuid));
+      dispatch(deleteBook(bookToBeDeleted.id));
       showSnackbar("Book deleted!");
       dispatch(toggleDeleteBookConfirmDialog());
     } else {

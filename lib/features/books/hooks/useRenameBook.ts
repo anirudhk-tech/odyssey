@@ -37,12 +37,12 @@ export const useRenameBook = () => {
       return;
     } else {
       const response = await window.odysseyAPI.renameBook(
-        bookToBeRenamed.uuid,
+        bookToBeRenamed.id,
         bookName
       );
 
       if (response.success) {
-        dispatch(renameBook({ title: bookName, uuid: bookToBeRenamed.uuid }));
+        dispatch(renameBook({ title: bookName, id: bookToBeRenamed.id }));
         toggleDialog();
         showSnackbar(`Book renamed to ${bookName}.`);
       } else {

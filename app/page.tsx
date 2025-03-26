@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { BookListing } from "./features/books/book";
+import { BookListing } from "./features/books/bookListing";
 import { IoAdd } from "react-icons/io5";
 import { useFetchBooks } from "@/lib/features/books/hooks/useFetchBooks";
 import { AddBookDialog } from "./features/books/addBookDialog";
@@ -91,7 +91,7 @@ export default function HomePage() {
               <BookListing loading key={index} />
             ))
           : books.map((book) => (
-              <BookListing key={book.uuid} book={book} loading={false} />
+              <BookListing key={book.id} book={book} loading={false} />
             ))}
       </BooksContainer>
     </Container>

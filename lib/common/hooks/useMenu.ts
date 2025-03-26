@@ -7,6 +7,7 @@ export const useMenu = () => {
   }>({ x: null, y: null });
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setMenuPos({ x: e.pageX, y: e.pageY });
   };
 

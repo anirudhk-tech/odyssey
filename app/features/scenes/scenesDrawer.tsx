@@ -1,6 +1,9 @@
 import { useScenesDrawer } from "@/lib/features/scenes/hooks/useScenesDrawer";
 import styled from "styled-components";
 import { ScenesHeader } from "./scenesHeader";
+import { useFetchScenes } from "@/lib/features/scenes/hooks/useFetchScenes";
+import { SceneListing } from "./sceneListing";
+import { Scene } from "@/app/types/scene";
 
 const Container = styled.div`
   width: fit-content;
@@ -15,20 +18,20 @@ const Container = styled.div`
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
-  height: 20px;
-  width: 80px;
+  height: 30px;
+  width: 100px;
   rotate: -90deg;
   transform-origin: top left;
   border: none;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  font-size: 0.6rem;
+  font-size: ${(props) => props.theme.fontsize.sm};
   &:active {
     background-color: ${(props) => props.theme.colors.primary};
   }
   position: absolute;
   top: 20%;
-  left: -20px;
+  left: -30px;
 `;
 
 const ResizeHandle = styled.div`
@@ -61,12 +64,17 @@ export const ScenesDrawer = () => {
     handleMouseResizeDown,
   } = useScenesDrawer();
 
+  const { scenes } = useFetchScenes();
+
   return (
     <Container>
       <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
         <ResizeHandle onMouseDown={handleMouseResizeDown} />
         <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
         {isDrawerOpen && <ScenesHeader />}
+        {scenes?.map((scene: Scene) => (
+          <SceneListing key={scene.id} scene={scene} />
+        ))}
       </TabContainer>
     </Container>
   );

@@ -41,7 +41,7 @@ export const booksSlice = createSlice({
     },
     deleteBook: (state, action) => {
       if (!state.books) return;
-      state.books = state.books.filter((book) => book.uuid !== action.payload);
+      state.books = state.books.filter((book) => book.id !== action.payload);
     },
     setBookToBeDeleted: (state, action) => {
       state.bookToBeDeleted = action.payload;
@@ -58,8 +58,8 @@ export const booksSlice = createSlice({
     renameBook: (state, action) => {
       if (!state.books) return;
       state.books = state.books.map((book) => {
-        if (book.uuid === action.payload.uuid) {
-          return { title: action.payload.title, uuid: book.uuid };
+        if (book.id === action.payload.id) {
+          return { title: action.payload.title, id: book.id };
         }
         return book;
       });

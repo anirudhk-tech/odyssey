@@ -1,4 +1,5 @@
 export interface Book {
   title: string;
-  uuid: string;
+  id: string;
+  bookFilePath: string;
 }
