@@ -18,6 +18,15 @@ declare global {
         sceneUUID: string,
         newSceneName: string
       ) => Promise<Response>;
+      getTextFromScene: (
+        bookUUID: string,
+        sceneUUID: string
+      ) => Promise<Response>;
+      writeTextIntoScene: (
+        bookUUID: string,
+        sceneUUID: string,
+        rawJsonText: string
+      ) => Promise<Response>;
     };
   }
 }

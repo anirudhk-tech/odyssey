@@ -3,7 +3,9 @@ import {
   createScene,
   deleteScene,
   getScenes,
+  getTextFromScene,
   renameScene,
+  writeTextIntoScene,
 } from "./services/scenesServices.js";
 import {
   createBook,
@@ -46,3 +48,14 @@ ipcMain.handle(
     return renameScene(bookUUID, sceneUUID, newSceneName);
   }
 );
+
+ipcMain.handle(
+  "writeTextIntoScene",
+  async (event, bookUUID, sceneUUID, raw_json_text) => {
+    return writeTextIntoScene(bookUUID, sceneUUID, raw_json_text);
+  }
+);
+
+ipcMain.handle("getTextFromScene", async (event, bookUUID, sceneUUID) => {
+  return getTextFromScene(bookUUID, sceneUUID);
+});

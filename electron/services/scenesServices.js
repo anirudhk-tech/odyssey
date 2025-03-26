@@ -30,11 +30,11 @@ export const createScene = (bookUUID, sceneName) => {
     if (untitledKey > 0) {
       textFilePath = path.join(
         bookPath,
-        sluggifyText(sceneName) + "(" + untitledKey + ")" + ".txt"
+        sluggifyText(sceneName) + "(" + untitledKey + ")" + ".json"
       );
       adjustedSceneName = sceneName + "(" + untitledKey + ")";
     } else {
-      textFilePath = path.join(bookPath, sluggifyText(sceneName) + ".txt");
+      textFilePath = path.join(bookPath, sluggifyText(sceneName) + ".json");
     }
 
     if (
@@ -55,6 +55,14 @@ export const createScene = (bookUUID, sceneName) => {
     });
 
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(
+      textFilePath,
+      JSON.stringify({
+        blocks: [],
+        entityMap: {},
+      }),
+      "utf8"
+    );
 
     return {
       success: true,
@@ -124,11 +132,17 @@ export const renameScene = (bookUUID, sceneUUID, newSceneName) => {
       return { success: false, message: "Scene not found" };
     }
 
+    fs.renameSync(
+      data.scenes[sceneIndex].text_file_path,
+      path.join(bookPath, sluggifyText(newSceneName) + ".json")
+    );
+
     data.scenes[sceneIndex].title = newSceneName;
     data.scenes[sceneIndex].text_file_path = path.join(
       bookPath,
-      sluggifyText(newSceneName) + ".txt"
+      sluggifyText(newSceneName) + ".json"
     );
+
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
 
     return { success: true, message: "Scene renamed successfully" };
@@ -159,5 +173,59 @@ export const getScenes = (bookUUID) => {
     return { success: true, data: { scenes: data.scenes } };
   } catch (error) {
     return { success: false, message: `Error getting scenes: ${error}` };
+  }
+};
+
+export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).book_folder_path;
+    const scenesPath = path.join(bookPath, "scenes.json");
+
+    const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
+
+    if (sceneIndex === -1) {
+      return { success: false, message: "Scene not found" };
+    }
+
+    const textFilePath = data.scenes[sceneIndex].text_file_path;
+
+    fs.writeFileSync(textFilePath, raw_json_text, "utf8");
+
+    return { success: true, message: "Scene updated successfully" };
+  } catch (error) {
+    return { success: false, message: `Error updating scene: ${error}` };
+  }
+};
+
+export const getTextFromScene = (bookUUID, sceneUUID) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).book_folder_path;
+    const scenesPath = path.join(bookPath, "scenes.json");
+
+    const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
+
+    if (sceneIndex === -1) {
+      return { success: false, message: "Scene not found" };
+    }
+
+    const textFilePath = data.scenes[sceneIndex].text_file_path;
+
+    if (!fs.existsSync(textFilePath)) {
+      return { success: false, message: "Scene not found" };
+    }
+
+    const raw_json_text = fs.readFileSync(textFilePath, "utf8");
+
+    return { success: true, data: { raw_json_text } };
+  } catch (error) {
+    return { success: false, message: `Error getting scene: ${error}` };
   }
 };

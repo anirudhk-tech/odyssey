@@ -1,23 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { EditorState } from "draft-js";
 
-export interface EditorSlice {
-  editorState: EditorState | null;
-}
+export interface EditorSlice {}
 
-const initialState: EditorSlice = {
-  editorState: null,
-};
+const initialState: EditorSlice = {};
 
 export const editorSlice = createSlice({
   name: "editor",
   initialState,
-  reducers: {
-    setEditorState: (state, action) => {
-      state.editorState = action.payload;
-    },
-  },
+  reducers: {},
 });
 
-export const { setEditorState } = editorSlice.actions;
+export const {} = editorSlice.actions;
 export default editorSlice.reducer;

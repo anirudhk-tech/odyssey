@@ -7,7 +7,7 @@ export interface ScenesDrawerState {
 
 const initialWidth =
   typeof window !== "undefined" ? window.innerWidth / 4 : 300;
-const maxWidth = typeof window !== "undefined" ? window.innerWidth - 100 : 1000;
+const maxWidth = typeof window !== "undefined" ? window.innerWidth / 2 : 1000;
 
 const initialState: ScenesDrawerState = {
   isDrawerOpen: false,
