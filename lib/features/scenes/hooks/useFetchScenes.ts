@@ -13,7 +13,7 @@ export const useFetchScenes = () => {
   const fetchScenes = async () => {
     if (!scenes && currentBookId) {
       const response = await window.odysseyAPI.getScenes(currentBookId);
-      if (response.success) dispatch(setScenes(scenes));
+      if (response.success) dispatch(setScenes(response.data.scenes));
     }
   };
 

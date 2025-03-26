@@ -4,6 +4,8 @@ import { ScenesHeader } from "./scenesHeader";
 import { useFetchScenes } from "@/lib/features/scenes/hooks/useFetchScenes";
 import { SceneListing } from "./sceneListing";
 import { Scene } from "@/app/types/scene";
+import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
+import { SceneBeingAdded } from "./sceneBeingAdded";
 
 const Container = styled.div`
   width: fit-content;
@@ -54,6 +56,9 @@ const TabContainer = styled.div<{
   border-left: 1px solid ${(props) => props.theme.colors.secondary};
   padding-left: ${(props) => (props.open ? "10px" : "0px")};
   padding-right: ${(props) => (props.open ? "10px" : "0px")};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const ScenesDrawer = () => {
@@ -65,16 +70,22 @@ export const ScenesDrawer = () => {
   } = useScenesDrawer();
 
   const { scenes } = useFetchScenes();
+  const { sceneBeingAdded } = useAddScene();
 
   return (
     <Container>
       <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
         <ResizeHandle onMouseDown={handleMouseResizeDown} />
         <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
-        {isDrawerOpen && <ScenesHeader />}
-        {scenes?.map((scene: Scene) => (
-          <SceneListing key={scene.id} scene={scene} />
-        ))}
+        {isDrawerOpen && (
+          <>
+            <ScenesHeader />
+            {sceneBeingAdded && <SceneBeingAdded />}
+            {scenes?.map((scene: Scene) => (
+              <SceneListing key={scene.id} scene={scene} />
+            ))}
+          </>
+        )}
       </TabContainer>
     </Container>
   );

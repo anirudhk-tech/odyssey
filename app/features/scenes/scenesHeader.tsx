@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
+import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
 
 const Container = styled.div`
   width: 100%;
@@ -45,6 +46,8 @@ const Button = styled.button`
 `;
 
 export const ScenesHeader = () => {
+  const { handleSceneBeingAdded } = useAddScene();
+
   return (
     <Container>
       <SearchContainer>
@@ -52,7 +55,7 @@ export const ScenesHeader = () => {
         <Input placeholder="Search" />
       </SearchContainer>
       <Button>
-        <IoAdd style={{ scale: 1.5 }} />
+        <IoAdd style={{ scale: 1.5 }} onClick={handleSceneBeingAdded} />
       </Button>
     </Container>
   );

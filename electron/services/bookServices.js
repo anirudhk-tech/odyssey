@@ -33,14 +33,14 @@ export const createBook = (bookName) => {
     metaData.books.push({
       title: bookName,
       id: bookUUID,
-      folder_path: bookFolder,
+      book_folder_path: bookFolder,
     });
     writeGlobalMetaData(metaData);
 
     return {
       success: true,
       message: "Book folder created successfully",
-      data: { id: bookUUID },
+      data: { id: bookUUID, book_folder_path: bookFolder },
     };
   } catch (error) {
     return {
@@ -57,7 +57,7 @@ export const deleteBook = (bookUUID) => {
     if (bookIndex === -1) {
       return { success: false, message: "Book not found" };
     }
-    const bookFolder = metaData.books[bookIndex].folder_path;
+    const bookFolder = metaData.books[bookIndex].book_folder_path;
 
     fs.rmSync(bookFolder, { recursive: true, force: true });
 
@@ -83,7 +83,7 @@ export const renameBook = (bookUUID, newBookName) => {
       return { success: false, message: "Book not found" };
     }
 
-    const oldFolderPath = book.folder_path;
+    const oldFolderPath = book.book_folder_path;
     const newFolderPath = path.join(path.dirname(oldFolderPath), newBookName);
 
     if (!fs.existsSync(oldFolderPath)) {
@@ -93,7 +93,7 @@ export const renameBook = (bookUUID, newBookName) => {
     fs.renameSync(oldFolderPath, newFolderPath);
 
     book.title = newBookName;
-    book.folder_path = newFolderPath;
+    book.book_folder_path = newFolderPath;
     writeGlobalMetaData(metaData);
 
     return { success: true, message: "Book renamed successfully" };

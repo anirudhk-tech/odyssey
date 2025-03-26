@@ -3,10 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface ScenesSlice {
   scenes: Scene[] | null;
+  sceneBeingAdded: boolean;
 }
 
 const initialState: ScenesSlice = {
   scenes: null,
+  sceneBeingAdded: false,
 };
 
 export const scenesSlice = createSlice({
@@ -26,8 +28,12 @@ export const scenesSlice = createSlice({
         (scene) => scene.id !== action.payload
       );
     },
+    toggleSceneBeingAdded: (state) => {
+      state.sceneBeingAdded = !state.sceneBeingAdded;
+    },
   },
 });
 
-export const { addScene, setScenes, deleteScene } = scenesSlice.actions;
+export const { addScene, setScenes, deleteScene, toggleSceneBeingAdded } =
+  scenesSlice.actions;
 export default scenesSlice.reducer;

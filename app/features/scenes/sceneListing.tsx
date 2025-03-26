@@ -2,7 +2,7 @@ import { Scene } from "@/app/types/scene";
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 200px;
+  width: 150px;
   aspect-ratio: 1/1;
   background-color: ${(props) => props.theme.colors.primary};
   display: flex;
@@ -18,11 +18,12 @@ const Container = styled.div`
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
   }
   cursor: pointer;
+  margin-top: 20px;
 `;
 
 const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
-  font-size: ${(props) => props.theme.fontsize.md};
+  font-size: ${(props) => props.theme.fontsize.sm};
 `;
 
 export const SceneListing = ({ scene }: { scene: Scene }) => {

@@ -1,5 +1,9 @@
 import { ipcMain } from "electron";
-import { createScene, getScenes } from "./services/scenesServices.js";
+import {
+  createScene,
+  deleteScene,
+  getScenes,
+} from "./services/scenesServices.js";
 import {
   createBook,
   deleteBook,
@@ -29,4 +33,8 @@ ipcMain.handle("renameBook", async (event, bookUUID, newBookName) => {
 
 ipcMain.handle("getScenes", async (event, bookUUID) => {
   return getScenes(bookUUID);
+});
+
+ipcMain.handle("deleteScene", async (event, bookUUID, sceneUUID) => {
+  return deleteScene(bookUUID, sceneUUID);
 });

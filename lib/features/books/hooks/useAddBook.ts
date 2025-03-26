@@ -34,7 +34,13 @@ export const useAddBook = () => {
       const response = await window.odysseyAPI.createBook(bookName);
 
       if (response.success) {
-        dispatch(addBook({ title: bookName, id: response.data.id }));
+        dispatch(
+          addBook({
+            title: bookName,
+            id: response.data.id,
+            bookFolderPath: response.data.book_folder_path,
+          })
+        );
         toggleDialog();
         showSnackbar("Book created!");
       } else {
