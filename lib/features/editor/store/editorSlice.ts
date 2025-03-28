@@ -1,14 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface EditorSlice {}
+export interface EditorSlice {
+  editorWidth: number;
+  editorSaving: boolean;
+}
 
-const initialState: EditorSlice = {};
+const initialState: EditorSlice = {
+  editorWidth: window ? window.innerWidth : 2000,
+  editorSaving: false,
+};
 
 export const editorSlice = createSlice({
   name: "editor",
   initialState,
-  reducers: {},
+  reducers: {
+    setEditorWidth: (state, action) => {
+      state.editorWidth = action.payload;
+    },
+    toggleEditorSaving: (state, action) => {
+      state.editorSaving = action.payload;
+    },
+  },
 });
 
-export const {} = editorSlice.actions;
+export const { setEditorWidth, toggleEditorSaving } = editorSlice.actions;
 export default editorSlice.reducer;

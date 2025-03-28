@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.0",
+    "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
     "electron": "^35.0.3",
     "fuse.js": "^7.1.0",
@@ -23,6 +24,7 @@
     "styled-components": "^6.1.16"
   },
   "devDependencies": {
+    "@types/draft-convert": "^2.1.8",
     "@types/draft-js": "^0.11.18",
     "@types/node": "20.2.5",
     "@types/react": "18.2.37",

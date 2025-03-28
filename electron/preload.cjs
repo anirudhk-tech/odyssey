@@ -22,4 +22,5 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
       sceneUUID,
       raw_json_text
     ),
+  closeWindow: () => ipcRenderer.invoke("closeWindow"),
 });

@@ -2,14 +2,18 @@ import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 import { MainState } from "@/lib/store";
 import { EditorState, convertToRaw } from "draft-js";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleEditorSaving } from "../store/editorSlice";
 
 export const useSaveEditor = ({
   editorState,
 }: {
   editorState: EditorState;
 }) => {
-  const [saving, setSaving] = useState(false);
+  const dispatch = useDispatch();
+  const editorSaving = useSelector(
+    (state: MainState) => state.editor.editorSaving
+  );
   const { showSnackbar } = useSnackbar();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
@@ -32,28 +36,38 @@ export const useSaveEditor = ({
     );
 
     if (response.success) {
-      setSaving(false);
+      dispatch(toggleEditorSaving(false));
     } else {
       showSnackbar("Something went wrong while saving your file.");
-      setSaving(false);
+      dispatch(toggleEditorSaving(false));
     }
   };
 
   useEffect(() => {
+    dispatch(toggleEditorSaving(true));
     const debouncedSave = setTimeout(() => {
-      setSaving(true);
       handleSaveEditor(currentSceneId);
     }, 2000);
 
     return () => clearTimeout(debouncedSave);
-  }, [editorState]);
+  }, [editorState]); // Saves every 2 seconds of inactivity
 
   useEffect(() => {
     if (previousSceneId.current && previousSceneId.current !== currentSceneId) {
       handleSaveEditor(previousSceneId.current);
     }
     previousSceneId.current = currentSceneId;
-  }, [currentSceneId]);
+  }, [currentSceneId]); // Saves upon scene changes
 
-  return { saving };
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === "s" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        handleSaveEditor(currentSceneId);
+      }
+    };
+
+    if (window) window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentSceneId]); // Saves on ctrl + s
 };

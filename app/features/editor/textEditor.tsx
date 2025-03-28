@@ -4,10 +4,12 @@ import { useLoadEditor } from "@/lib/features/editor/hooks/useLoadEditor";
 import { useSaveEditor } from "@/lib/features/editor/hooks/useSaveEditor";
 import { useRenameSceneFromText } from "@/lib/features/scenes/hooks/useRenameSceneFromText";
 import { Editor } from "draft-js";
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 import styled from "styled-components";
+import { ToolBar } from "./toolBar";
+import { useResizeEditor } from "@/lib/features/editor/hooks/useResizeEditor";
 
-const Container = styled.div`
+const Container = styled.div<{ width: number }>`
   background-color: ${(props) => props.theme.colors.primary};
   display: flex;
   flex: 1;
@@ -15,8 +17,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 50px;
   padding-top: 20px;
+  gap: 20px;
+  width: ${(props) => props.width}px;
 `;
 
 const Title = styled.textarea`
@@ -32,12 +36,13 @@ const Title = styled.textarea`
 `;
 
 const EditorContainer = styled.div`
+  whitespace: pre-wrap;
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  margin-top: 20px;
   padding-left: 2px;
+  padding-bottom: 50px;
 `;
 
 export const TextEditor = () => {
@@ -48,34 +53,46 @@ export const TextEditor = () => {
     editorRef,
     handleKeyCommand,
     handleTab,
+    handlePastedText,
   } = useEditor();
   const { currentScene } = useLoadEditor({ editorState, setEditorState });
-
   const { handleRenameSceneFromText, sceneName, setSceneName } =
     useRenameSceneFromText({ currentScene });
   const inputRef = useRef<HTMLTextAreaElement>(null);
   useInputClickOut({ inputRef, onClickOut: handleRenameSceneFromText });
-  useSaveEditor({ editorState });
+  useSaveEditor({
+    editorState,
+  });
+  const { editorWidth } = useResizeEditor();
 
   return (
-    <Container>
+    <Container width={editorWidth}>
       <Title
         ref={inputRef}
-        value={sceneName}
+        value={currentScene ? sceneName : "Add or select a scene..."}
         onChange={(e) => setSceneName(e.target.value)}
         rows={1}
+        disabled={currentScene ? false : true}
       />
       {currentScene && (
-        <EditorContainer onClick={handleFocusEditor}>
-          <Editor
-            ref={editorRef}
+        <>
+          <ToolBar
+            editorRef={editorRef}
             editorState={editorState}
-            onChange={setEditorState}
-            placeholder="Write your scene here..."
-            handleKeyCommand={handleKeyCommand}
-            onTab={handleTab}
+            setEditorState={setEditorState}
           />
-        </EditorContainer>
+          <EditorContainer onClick={handleFocusEditor}>
+            <Editor
+              ref={editorRef}
+              editorState={editorState}
+              onChange={setEditorState}
+              placeholder="Write your scene here..."
+              handleKeyCommand={handleKeyCommand}
+              onTab={handleTab}
+              handlePastedText={handlePastedText}
+            />
+          </EditorContainer>
+        </>
       )}
     </Container>
   );
