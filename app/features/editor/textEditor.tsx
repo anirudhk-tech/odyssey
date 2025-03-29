@@ -41,8 +41,9 @@ const EditorContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding-left: 2px;
+  padding-left: 10px;
   padding-bottom: 50px;
+  padding-right: 10px;
 `;
 
 export const TextEditor = () => {

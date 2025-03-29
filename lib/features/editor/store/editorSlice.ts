@@ -6,7 +6,7 @@ export interface EditorSlice {
 }
 
 const initialState: EditorSlice = {
-  editorWidth: window ? window.innerWidth : 2000,
+  editorWidth: typeof window !== "undefined" ? window.innerWidth : 2000,
   editorSaving: false,
 };
 

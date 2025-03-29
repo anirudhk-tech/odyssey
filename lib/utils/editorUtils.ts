@@ -22,6 +22,8 @@ export const convertPasted = (html: string) => {
 
   const preProcessHTML = (html: string): string => {
     let processedHTML = html
+      // Remove <head> tags
+      .replace(/<head[\s\S]*?<\/head>/gi, "")
       // Remove StartFragment/EndFragment comments
       .replace(/<!--StartFragment-->/gi, "")
       .replace(/<!--EndFragment-->/gi, "")
@@ -31,12 +33,12 @@ export const convertPasted = (html: string) => {
       .replace(/<body[^>]*>/gi, "")
       .replace(/<\/body>/gi, "");
 
+    // Remove any <b> tags with font-weight:normal anywhere in the string, commonly from exteneral sources
     processedHTML = processedHTML.replace(
-      /^(<meta[^>]*>\s*)?<b[^>]*docs-internal-guid[^>]*>([\s\S]*?)<\/b>(<br[^>]*>\s*)?/i,
-      (match, meta, innerContent, trailing) => {
-        return (meta || "") + innerContent;
-      }
+      /<b[^>]*style=["']?font-weight:\s*normal;?["']?[^>]*>/gi,
+      ""
     );
+    processedHTML = processedHTML.replace(/<\/b>/gi, "");
 
     // Replace groups of &nbsp; with a tab placeholder
     processedHTML = processedHTML.replace(
@@ -56,6 +58,12 @@ export const convertPasted = (html: string) => {
       (match, preAttrs, styleContent, postAttrs) => {
         return `<p${preAttrs}style="${styleContent}"${postAttrs}><span class="tab-placeholder">[TAB]</span>`;
       }
+    );
+
+    // For tab counts
+    processedHTML = processedHTML.replace(
+      /<span[^>]*mso-tab-count[^>]*>[ \t\r\n\u00A0]+<\/span>/gi,
+      '<span class="tab-placeholder">[TAB]</span>'
     );
 
     return processedHTML;

@@ -2,10 +2,14 @@ import { useScenesDrawer } from "@/lib/features/scenes/hooks/useScenesDrawer";
 import styled from "styled-components";
 import { ScenesHeader } from "./scenesHeader";
 import { useFetchScenes } from "@/lib/features/scenes/hooks/useFetchScenes";
-import { SceneListing } from "./sceneListing";
 import { Scene } from "@/app/types/scene";
 import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
 import { SceneBeingAdded } from "./sceneBeingAdded";
+import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
+import { closestCenter, DndContext } from "@dnd-kit/core";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { DndSceneListing } from "./dndSceneListing";
+import { SceneListing } from "./sceneListing";
 
 const Container = styled.div`
   width: fit-content;
@@ -83,9 +87,9 @@ export const ScenesDrawer = () => {
     scenesDrawerWidth,
     handleMouseResizeDown,
   } = useScenesDrawer();
-
   const { scenes, searchedScenes } = useFetchScenes();
   const { sceneBeingAdded } = useAddScene();
+  const { sensors, handleDragEnd, scenesOrder } = useDndScenes({ scenes });
 
   return (
     <Container>
@@ -95,16 +99,28 @@ export const ScenesDrawer = () => {
         {isDrawerOpen && (
           <>
             <ScenesHeader />
-            <ScenesContainer>
-              {sceneBeingAdded && <SceneBeingAdded />}
-              {searchedScenes
-                ? searchedScenes.map((scene: Scene) => (
-                    <SceneListing key={scene.id} scene={scene} />
-                  ))
-                : scenes?.map((scene: Scene) => (
-                    <SceneListing key={scene.id} scene={scene} />
-                  ))}
-            </ScenesContainer>
+            <DndContext
+              sensors={sensors}
+              onDragStart={(e) => console.log("drag start", e)}
+              onDragEnd={handleDragEnd}
+              collisionDetection={closestCenter}
+            >
+              <SortableContext
+                items={(scenesOrder || []).map((scene) => scene.id)}
+                strategy={rectSortingStrategy}
+              >
+                <ScenesContainer>
+                  {sceneBeingAdded && <SceneBeingAdded />}
+                  {searchedScenes
+                    ? searchedScenes.map((scene: Scene) => (
+                        <SceneListing key={scene.id} scene={scene} />
+                      ))
+                    : scenesOrder?.map((scene: Scene) => (
+                        <DndSceneListing key={scene.id} scene={scene} />
+                      ))}
+                </ScenesContainer>
+              </SortableContext>
+            </DndContext>
           </>
         )}
       </TabContainer>
