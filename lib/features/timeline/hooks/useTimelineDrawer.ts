@@ -5,6 +5,7 @@ import {
   toggleTimelineDrawer,
 } from "../store/timelineDrawerSlice";
 import { useRef } from "react";
+import { toggleTimelineBeingAdded } from "../store/timelineSlice";
 
 export const useTimelineDrawer = () => {
   const dispatch = useDispatch();
@@ -17,9 +18,14 @@ export const useTimelineDrawer = () => {
   );
 
   const handleToggleTimelineDrawer = () => dispatch(toggleTimelineDrawer());
+  const handleToggleTimelineBeingAdded = () =>
+    dispatch(toggleTimelineBeingAdded());
 
   const startYRef = useRef<number>(0);
   const initialHeightRef = useRef<number>(timelineDrawerHeight);
+  const timelineBeingAdded = useSelector(
+    (state: MainState) => state.timeline.timelineBeingAdded
+  );
 
   const handleMouseResizeDown = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -47,5 +53,7 @@ export const useTimelineDrawer = () => {
     handleToggleTimelineDrawer,
     timelineDrawerHeight,
     handleMouseResizeDown,
+    timelineBeingAdded,
+    handleToggleTimelineBeingAdded,
   };
 };

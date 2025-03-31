@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { ipcMain } from "electron";
 import {
   createScene,
   deleteScene,
@@ -13,6 +13,7 @@ import {
   getBooks,
   renameBook,
 } from "./services/bookServices.js";
+import { createTimeline, getTimelines } from "./services/timelineServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
   return createBook(bookName);
@@ -58,4 +59,12 @@ ipcMain.handle(
 
 ipcMain.handle("getTextFromScene", async (event, bookUUID, sceneUUID) => {
   return getTextFromScene(bookUUID, sceneUUID);
+});
+
+ipcMain.handle("getTimelines", async (event, bookUUID) => {
+  return getTimelines(bookUUID);
+});
+
+ipcMain.handle("createTimeline", async (event, bookUUID, timelineName) => {
+  return createTimeline(bookUUID, timelineName);
 });

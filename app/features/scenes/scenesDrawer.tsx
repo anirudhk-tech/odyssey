@@ -10,6 +10,7 @@ import { closestCenter, DndContext } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { DndSceneListing } from "./dndSceneListing";
 import { SceneListing } from "./sceneListing";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 
 const Container = styled.div`
   width: fit-content;
@@ -101,9 +102,9 @@ export const ScenesDrawer = () => {
             <ScenesHeader />
             <DndContext
               sensors={sensors}
-              onDragStart={(e) => console.log("drag start", e)}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCenter}
+              modifiers={[restrictToParentElement]}
             >
               <SortableContext
                 items={(scenesOrder || []).map((scene) => scene.id)}

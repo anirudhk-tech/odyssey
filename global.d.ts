@@ -27,6 +27,11 @@ declare global {
         sceneUUID: string,
         rawJsonText: string
       ) => Promise<Response>;
+      getTimelines: (bookUUID: string) => Promise<Response>;
+      createTimeline: (
+        bookUUID: string,
+        timelineName: string
+      ) => Promise<Response>;
     };
   }
 }

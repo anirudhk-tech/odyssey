@@ -20,10 +20,21 @@ export const createBook = (bookName) => {
     }
 
     const scenesDataPath = path.join(bookFolder, "scenes.json");
+    const timelineDataPath = path.join(bookFolder, "timeline.json");
+
     if (!fs.existsSync(scenesDataPath)) {
       const initialData = { scenes: [] };
       fs.writeFileSync(
         scenesDataPath,
+        JSON.stringify(initialData, null, 2),
+        "utf8"
+      );
+    }
+
+    if (!fs.existsSync(timelineDataPath)) {
+      const initialData = { timelines: [] };
+      fs.writeFileSync(
+        timelineDataPath,
         JSON.stringify(initialData, null, 2),
         "utf8"
       );

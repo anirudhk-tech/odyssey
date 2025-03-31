@@ -22,5 +22,8 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
       sceneUUID,
       raw_json_text
     ),
+  getTimelines: (bookUUID) => ipcRenderer.invoke("getTimelines", bookUUID),
+  createTimeline: (bookUUID, timelineName) =>
+    ipcRenderer.invoke("createTimeline", bookUUID, timelineName),
   closeWindow: () => ipcRenderer.invoke("closeWindow"),
 });

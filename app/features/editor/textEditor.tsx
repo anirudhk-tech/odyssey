@@ -42,7 +42,7 @@ const EditorContainer = styled.div`
   flex-direction: column;
   overflow-y: auto;
   padding-left: 10px;
-  padding-bottom: 50px;
+  padding-bottom: 350px;
   padding-right: 10px;
 `;
 
