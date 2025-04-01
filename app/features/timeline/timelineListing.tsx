@@ -10,12 +10,15 @@ import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
+  flex-shrink: 0;
   flex-direction: row;
   height: 80px;
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
   border-bottom: 1px solid ${(props) => props.theme.colors.secondary};
+  position: relative;
+  overflow-x: auto;
 `;
 
 const ScenesContainer = styled.div`
@@ -30,6 +33,8 @@ const TitleContainer = styled.div`
   width: 150px;
   justify-content: center;
   align-items: flex-end;
+  position: sticky;
+  left: 10px;
 `;
 const Title = styled.span`
   width: 100%;

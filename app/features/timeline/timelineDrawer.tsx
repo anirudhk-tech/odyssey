@@ -1,6 +1,6 @@
 import { useTimelineDrawer } from "@/lib/features/timeline/hooks/useTimelineDrawer";
 import styled from "styled-components";
-import { TimelineListing } from "./timeline";
+import { TimelineListing } from "./timelineListing";
 import { IoAdd } from "react-icons/io5";
 import { useFetchTimelines } from "@/lib/features/timeline/hooks/useFetchTimelines";
 import { TimelineBeingAdded } from "./timelineBeingAdded";
@@ -49,7 +49,6 @@ const Container = styled.div<{
   border-top: 1px solid ${(props) => props.theme.colors.secondary};
   padding-left: 10px;
   padding-right: 10px;
-  overflow-y: auto;
 `;
 
 const TimelinesContainer = styled.div`
@@ -61,6 +60,21 @@ const TimelinesContainer = styled.div`
   padding-bottom: 50px;
   scrollbar-width: none;
   gap: 10px;
+`;
+
+const TimelineScrollContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  position: relative;
+`;
+
+const AddIcon = styled(IoAdd)`
+  scale: 1.5;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 `;
 
 export const TimelineDrawer = () => {
@@ -79,19 +93,18 @@ export const TimelineDrawer = () => {
     <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
-      <IoAdd
-        onClick={handleMenuOpenFromIcon}
-        style={{ scale: 1.5, position: "absolute", top: "20px", left: "20px" }}
-      />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineSections />
-      <TimelinesContainer>
-        {isDrawerOpen &&
-          timelines.map((timeline) => (
-            <TimelineListing key={timeline.id} timeline={timeline} />
-          ))}
-        {timelineBeingAdded && <TimelineBeingAdded />}
-      </TimelinesContainer>
+      <TimelineScrollContainer>
+        <AddIcon onClick={handleMenuOpenFromIcon} />
+        <TimelineSections />
+        <TimelinesContainer>
+          {isDrawerOpen &&
+            timelines.map((timeline) => (
+              <TimelineListing key={timeline.id} timeline={timeline} />
+            ))}
+          {timelineBeingAdded && <TimelineBeingAdded />}
+        </TimelinesContainer>
+      </TimelineScrollContainer>
     </Container>
   );
 };

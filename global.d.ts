@@ -66,6 +66,11 @@ declare global {
         bookUUID: string,
         sectionUUID: string
       ) => Promise<Response>;
+      swapTimelineSections: (
+        bookUUID: string,
+        sectionUUID1: string,
+        sectionUUID2: string
+      ) => Promise<Response>;
     };
   }
 }

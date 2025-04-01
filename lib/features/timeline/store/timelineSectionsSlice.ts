@@ -91,6 +91,27 @@ export const timelineSectionsSlice = createSlice({
         (section) => section.id !== action.payload
       );
     },
+    swapTimelineSections: (state, action) => {
+      const sectionA = state.sections.find(
+        (section) => section.id === action.payload.sectionAId
+      );
+      const sectionB = state.sections.find(
+        (section) => section.id === action.payload.sectionBId
+      );
+
+      if (sectionA && sectionB) {
+        const tempXStart = sectionA.xStart;
+        const tempXEnd = sectionA.xEnd;
+
+        sectionA.xStart = sectionB.xStart;
+        sectionA.xEnd = sectionB.xEnd;
+
+        sectionB.xStart = tempXStart;
+        sectionB.xEnd = tempXEnd;
+      }
+
+      state.sections = state.sections.sort((a, b) => a.xStart - b.xStart);
+    },
   },
 });
 
@@ -105,5 +126,6 @@ export const {
   toggleEditTimelineSectionDialog,
   editTimelineSection,
   deleteTimelineSection,
+  swapTimelineSections,
 } = timelineSectionsSlice.actions;
 export default timelineSectionsSlice.reducer;

@@ -39,7 +39,7 @@ export const useTimelineSectionResize = () => {
       );
     };
 
-    const onMouseUp = async () => {
+    const onMouseUp = async (e: MouseEvent) => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
 

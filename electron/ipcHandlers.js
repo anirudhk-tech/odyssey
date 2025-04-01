@@ -25,6 +25,7 @@ import {
   editTimelineSection,
   getTimelineSections,
   resizeTimelineSection,
+  swapTimelineSections,
 } from "./services/timelineSectionsServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
@@ -123,5 +124,12 @@ ipcMain.handle(
   "deleteTimelineSection",
   async (event, bookUUID, sectionUUID) => {
     return deleteTimelineSection(bookUUID, sectionUUID);
+  }
+);
+
+ipcMain.handle(
+  "swapTimelineSections",
+  async (event, bookUUID, sectionUUID1, sectionUUID2) => {
+    return swapTimelineSections(bookUUID, sectionUUID1, sectionUUID2);
   }
 );

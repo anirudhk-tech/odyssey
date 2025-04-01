@@ -1,12 +1,11 @@
 import { Scene } from "@/app/types/scene";
 import {
   DragEndEvent,
-  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 
 export const useDndScenes = ({ scenes }: { scenes: Scene[] | null }) => {

@@ -182,3 +182,41 @@ export const deleteTimelineSection = (bookUUID, sectionUUID) => {
     return { success: false, message: `Error deleting section: ${error}` };
   }
 };
+
+export const swapTimelineSections = (bookUUID, sectionUUID1, sectionUUID2) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+
+    const sectionIndex1 = data.sections.findIndex(
+      (section) => section.id === sectionUUID1
+    );
+    const sectionIndex2 = data.sections.findIndex(
+      (section) => section.id === sectionUUID2
+    );
+
+    if (sectionIndex1 === -1 || sectionIndex2 === -1) {
+      return { success: false, message: "Section not found" };
+    }
+
+    const tempXStart = data.sections[sectionIndex1].xStart;
+    const tempXEnd = data.sections[sectionIndex1].xEnd;
+
+    data.sections[sectionIndex1].xStart = data.sections[sectionIndex2].xStart;
+    data.sections[sectionIndex1].xEnd = data.sections[sectionIndex2].xEnd;
+
+    data.sections[sectionIndex2].xStart = tempXStart;
+    data.sections[sectionIndex2].xEnd = tempXEnd;
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Sections swapped successfully" };
+  } catch (error) {
+    return { success: false, message: `Error swapping sections: ${error}` };
+  }
+};

@@ -60,4 +60,12 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
 
   deleteTimelineSection: (bookUUID, sectionUUID) =>
     ipcRenderer.invoke("deleteTimelineSection", bookUUID, sectionUUID),
+
+  swapTimelineSections: (bookUUID, sectionUUID1, sectionUUID2) =>
+    ipcRenderer.invoke(
+      "swapTimelineSections",
+      bookUUID,
+      sectionUUID1,
+      sectionUUID2
+    ),
 });
