@@ -2,7 +2,7 @@ import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 import { MainState } from "@/lib/store";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleTimelineBeingAdded } from "../store/timelineSlice";
+import { addTimeline, toggleTimelineBeingAdded } from "../store/timelineSlice";
 
 export const useAddTimeline = () => {
   const dispatch = useDispatch();
@@ -25,10 +25,11 @@ export const useAddTimeline = () => {
       currentBookId,
       timelineName
     );
-    if (!response.success) {
+    if (response.success) {
+      dispatch(addTimeline(response.data));
+    } else {
       if (response.message === "Timeline already exists") {
         showSnackbar("Timeline already exists.");
-        return;
       } else {
         showSnackbar("Something went wrong. Please try again.");
         console.log(response.message);

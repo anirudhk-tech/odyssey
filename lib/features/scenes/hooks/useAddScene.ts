@@ -39,7 +39,7 @@ export const useAddScene = () => {
         addScene({
           id: response.data.id,
           title: response.data.title,
-          textFilePath: response.data.text_file_path,
+          textFilePath: response.data.textFilePath,
         })
       );
       dispatch(toggleSceneBeingAdded());

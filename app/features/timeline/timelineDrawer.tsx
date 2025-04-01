@@ -1,9 +1,13 @@
 import { useTimelineDrawer } from "@/lib/features/timeline/hooks/useTimelineDrawer";
 import styled from "styled-components";
-import { Timeline } from "./timeline";
+import { TimelineListing } from "./timeline";
 import { IoAdd } from "react-icons/io5";
 import { useFetchTimelines } from "@/lib/features/timeline/hooks/useFetchTimelines";
 import { TimelineBeingAdded } from "./timelineBeingAdded";
+import { TimelineSections } from "./timelineSections";
+import { useMenu } from "@/lib/common/hooks/useMenu";
+import { Menu } from "@/app/components/menu";
+import { useTimelineAddMenu } from "@/lib/features/timeline/hooks/useTimelineAddMenu";
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
@@ -62,17 +66,13 @@ const Container = styled.div<{
 
 const TimelinesContainer = styled.div`
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
+  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
-`;
-
-const TimelineSectionsContainer = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  flex-direction: row;
+  overflow: auto;
+  padding-bottom: 50px;
+  scrollbar-width: none;
+  gap: 10px;
 `;
 
 export const TimelineDrawer = () => {
@@ -82,21 +82,26 @@ export const TimelineDrawer = () => {
     timelineDrawerHeight,
     handleMouseResizeDown,
     timelineBeingAdded,
-    handleToggleTimelineBeingAdded,
   } = useTimelineDrawer();
   const { timelines } = useFetchTimelines();
+  const { menuPos, setMenuPos, handleMenuOpenFromIcon } = useMenu();
+  const { options } = useTimelineAddMenu();
 
   return (
     <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
+      <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
-      <AddButton onClick={handleToggleTimelineBeingAdded}>
-        <IoAdd style={{ scale: 1.5 }} />
-      </AddButton>
+      <IoAdd
+        onClick={handleMenuOpenFromIcon}
+        style={{ scale: 1.5, position: "absolute", top: "10px", left: "10px" }}
+      />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineSectionsContainer></TimelineSectionsContainer>
+      <TimelineSections></TimelineSections>
       <TimelinesContainer>
         {isDrawerOpen &&
-          timelines.map((timeline) => <Timeline key={timeline.id} />)}
+          timelines.map((timeline) => (
+            <TimelineListing key={timeline.id} timeline={timeline} />
+          ))}
         {timelineBeingAdded && <TimelineBeingAdded />}
       </TimelinesContainer>
     </Container>

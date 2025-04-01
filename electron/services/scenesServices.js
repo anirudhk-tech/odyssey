@@ -9,7 +9,7 @@ export const createScene = (bookUUID, sceneName) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
@@ -51,7 +51,7 @@ export const createScene = (bookUUID, sceneName) => {
     data.scenes.push({
       title: adjustedSceneName,
       id: sceneUUID,
-      text_file_path: textFilePath,
+      textFilePath: textFilePath,
     });
 
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
@@ -69,7 +69,7 @@ export const createScene = (bookUUID, sceneName) => {
       message: "Scene created successfully",
       data: {
         id: sceneUUID,
-        text_file_path: textFilePath,
+        textFilePath: textFilePath,
         title: adjustedSceneName,
       },
     };
@@ -86,7 +86,7 @@ export const deleteScene = (bookUUID, sceneUUID) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
@@ -96,7 +96,7 @@ export const deleteScene = (bookUUID, sceneUUID) => {
       return { success: false, message: "Scene not found" };
     }
 
-    const textFilePath = data.scenes[sceneIndex].text_file_path;
+    const textFilePath = data.scenes[sceneIndex].textFilePath;
 
     fs.rmSync(textFilePath, { force: true });
 
@@ -114,7 +114,7 @@ export const renameScene = (bookUUID, sceneUUID, newSceneName) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
@@ -133,12 +133,12 @@ export const renameScene = (bookUUID, sceneUUID, newSceneName) => {
     }
 
     fs.renameSync(
-      data.scenes[sceneIndex].text_file_path,
+      data.scenes[sceneIndex].textFilePath,
       path.join(bookPath, sluggifyText(newSceneName) + ".json")
     );
 
     data.scenes[sceneIndex].title = newSceneName;
-    data.scenes[sceneIndex].text_file_path = path.join(
+    data.scenes[sceneIndex].textFilePath = path.join(
       bookPath,
       sluggifyText(newSceneName) + ".json"
     );
@@ -156,7 +156,7 @@ export const getScenes = (bookUUID) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     if (!fs.existsSync(scenesPath)) {
@@ -181,7 +181,7 @@ export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
@@ -191,7 +191,7 @@ export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
       return { success: false, message: "Scene not found" };
     }
 
-    const textFilePath = data.scenes[sceneIndex].text_file_path;
+    const textFilePath = data.scenes[sceneIndex].textFilePath;
 
     fs.writeFileSync(textFilePath, raw_json_text, "utf8");
 
@@ -206,7 +206,7 @@ export const getTextFromScene = (bookUUID, sceneUUID) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
@@ -216,7 +216,7 @@ export const getTextFromScene = (bookUUID, sceneUUID) => {
       return { success: false, message: "Scene not found" };
     }
 
-    const textFilePath = data.scenes[sceneIndex].text_file_path;
+    const textFilePath = data.scenes[sceneIndex].textFilePath;
 
     if (!fs.existsSync(textFilePath)) {
       return { success: false, message: "Scene not found" };

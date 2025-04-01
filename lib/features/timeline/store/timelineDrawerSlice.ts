@@ -7,8 +7,7 @@ export interface TimelineState {
 
 const initialHeight =
   typeof window !== "undefined" ? window.innerHeight / 3 : 200;
-const maxHeight =
-  typeof window !== "undefined" ? window.innerHeight - 300 : 400;
+const maxHeight = typeof window !== "undefined" ? window.innerHeight - 30 : 700;
 
 const initialState: TimelineState = {
   isDrawerOpen: false,

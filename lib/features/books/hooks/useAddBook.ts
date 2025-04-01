@@ -38,7 +38,7 @@ export const useAddBook = () => {
           addBook({
             title: bookName,
             id: response.data.id,
-            bookFolderPath: response.data.book_folder_path,
+            bookFolderPath: response.data.bookFolderPath,
           })
         );
         toggleDialog();

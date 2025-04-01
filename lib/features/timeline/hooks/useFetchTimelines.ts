@@ -7,8 +7,8 @@ import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 export const useFetchTimelines = () => {
   const dispatch = useDispatch();
   const timelines = useSelector((state: MainState) => state.timeline.timelines);
-  const currentSceneId = useSelector(
-    (state: MainState) => state.current.currentSceneId
+  const currentBookId = useSelector(
+    (state: MainState) => state.current.currentBookId
   );
   const { showSnackbar } = useSnackbar();
 
@@ -21,10 +21,10 @@ export const useFetchTimelines = () => {
     }
   };
   useEffect(() => {
-    if (currentSceneId) {
-      handleFetchTimelines(currentSceneId);
+    if (currentBookId) {
+      handleFetchTimelines(currentBookId);
     }
-  }, [currentSceneId]);
+  }, [currentBookId]);
 
   return { timelines };
 };

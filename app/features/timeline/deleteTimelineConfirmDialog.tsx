@@ -1,5 +1,5 @@
 import { Dialog } from "@/app/components/dialog";
-import { useDeleteScene } from "@/lib/features/scenes/hooks/useDeleteScene";
+import { useDeleteTimeline } from "@/lib/features/timeline/hooks/useDeleteTimeline";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -39,27 +39,28 @@ const DangerButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.danger};
 `;
 
-export const DeleteSceneConfirmDialog = () => {
+export const DeleteTimelineConfirmDialog = () => {
   const {
-    toggleDialog,
-    deleteSceneConfirmDialogOpen,
+    deleteTimelineConfirmDialogOpen,
     handleCancel,
-    handleDeleteScene,
-  } = useDeleteScene();
+    handleDelete,
+    toggleDialog,
+  } = useDeleteTimeline();
 
   return (
     <Dialog
-      isOpen={deleteSceneConfirmDialogOpen}
+      isOpen={deleteTimelineConfirmDialogOpen}
       onClose={toggleDialog}
       customsize="400px"
     >
       <Container>
         <Prompt>
-          Deleting a scene is permanent and will erase all text within.
+          Deleting a timeline is permanent and the sequence of scenes will be
+          lost. The scenes themselves will remain.
         </Prompt>
         <ButtonContainer>
           <Button onClick={handleCancel}>CANCEL</Button>
-          <DangerButton onClick={handleDeleteScene}>DELETE</DangerButton>
+          <DangerButton onClick={handleDelete}>DELETE</DangerButton>
         </ButtonContainer>
       </Container>
     </Dialog>

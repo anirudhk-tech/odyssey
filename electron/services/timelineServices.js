@@ -1,4 +1,4 @@
-import { readGlobalMetaData } from "./utilServices.js";
+import { readGlobalMetaData, sluggifyText } from "./utilServices.js";
 import fs from "fs";
 import path from "path";
 
@@ -8,7 +8,7 @@ export const createTimeline = (bookUUID, timelineName) => {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
       (book) => book.id === bookUUID
-    ).book_folder_path;
+    ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
@@ -25,6 +25,7 @@ export const createTimeline = (bookUUID, timelineName) => {
       };
     }
 
+    data["sections"] = [];
     data.timelines.push({
       title: timelineName,
       id: timelineUUID,
@@ -36,6 +37,7 @@ export const createTimeline = (bookUUID, timelineName) => {
     return {
       success: true,
       message: "Timeline created successfully",
+      data: { id: timelineUUID, title: timelineName, scenes: [] },
     };
   } catch (error) {
     return {
@@ -49,8 +51,8 @@ export const getTimelines = (bookUUID) => {
   try {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
-      (book) => book.uuid === bookUUID
-    ).book_folder_path;
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
 
     if (!fs.existsSync(timelinePath)) {
@@ -66,6 +68,73 @@ export const getTimelines = (bookUUID) => {
 
     return { success: true, data: { timelines: data.timelines } };
   } catch (error) {
-    return { success: false, message: `Error getting timelines: ${error}` };
+    return {
+      success: false,
+      message: `Error getting timelines: ${error}. Book Path: ${book}`,
+    };
+  }
+};
+
+export const deleteTimeline = (bookUUID, timelineUUID) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const timelineIndex = data.timelines.findIndex(
+      (timeline) => timeline.id === timelineUUID
+    );
+
+    if (timelineIndex === -1) {
+      return { success: false, message: "Timeline not found" };
+    }
+
+    data.timelines.splice(timelineIndex, 1);
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Timeline deleted successfully" };
+  } catch (error) {
+    return { success: false, message: `Error deleting timeline: ${error}` };
+  }
+};
+
+export const renameTimeline = (bookUUID, timelineUUID, newTitle) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+
+    if (
+      data.timelines.some(
+        (timeline) => sluggifyText(timeline.title) === sluggifyText(newTitle)
+      )
+    ) {
+      return {
+        success: false,
+        message: "Timeline already exists",
+      };
+    }
+
+    const timelineIndex = data.timelines.findIndex(
+      (timeline) => timeline.id === timelineUUID
+    );
+
+    if (timelineIndex === -1) {
+      return { success: false, message: "Timeline not found" };
+    }
+
+    data.timelines[timelineIndex].title = newTitle;
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Timeline renamed successfully" };
+  } catch (error) {
+    return { success: false, message: `Error renaming timeline: ${error}` };
   }
 };

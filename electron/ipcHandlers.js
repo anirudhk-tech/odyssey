@@ -13,7 +13,16 @@ import {
   getBooks,
   renameBook,
 } from "./services/bookServices.js";
-import { createTimeline, getTimelines } from "./services/timelineServices.js";
+import {
+  createTimeline,
+  deleteTimeline,
+  getTimelines,
+  renameTimeline,
+} from "./services/timelineServices.js";
+import {
+  createTimelineSection,
+  getTimelineSections,
+} from "./services/timelineSectionsServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
   return createBook(bookName);
@@ -68,3 +77,22 @@ ipcMain.handle("getTimelines", async (event, bookUUID) => {
 ipcMain.handle("createTimeline", async (event, bookUUID, timelineName) => {
   return createTimeline(bookUUID, timelineName);
 });
+
+ipcMain.handle("deleteTimeline", async (event, bookUUID, timelineUUID) => {
+  return deleteTimeline(bookUUID, timelineUUID);
+});
+
+ipcMain.handle("renameTimeline", (event, bookUUID, timelineUUID, newTitle) => {
+  return renameTimeline(bookUUID, timelineUUID, newTitle);
+});
+
+ipcMain.handle("getTimelineSections", async (event, bookUUID) => {
+  return getTimelineSections(bookUUID);
+});
+
+ipcMain.handle(
+  "createTimelineSection",
+  async (event, bookUUID, sectionName, sectionColor, xStart) => {
+    return createTimelineSection(bookUUID, sectionName, sectionColor, xStart);
+  }
+);

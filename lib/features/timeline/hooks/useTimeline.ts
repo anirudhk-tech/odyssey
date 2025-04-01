@@ -1,10 +1,15 @@
+import { Timeline } from "@/app/types/timeline";
 import { MainState } from "@/lib/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setTimelineToBeEdited } from "../store/timelineSlice";
 
-export const useTimeline = () => {
-  const timelineBeingAdded = useSelector(
-    (state: MainState) => state.timeline.timelineBeingAdded
-  );
+export const useTimeline = ({ timeline }: { timeline: Timeline }) => {
+  const dispatch = useDispatch();
 
-  return { timelineBeingAdded };
+  const handleSetTimelineToBeEdited = () => {
+    if (!timeline) return;
+    dispatch(setTimelineToBeEdited(timeline));
+  };
+
+  return { handleSetTimelineToBeEdited };
 };

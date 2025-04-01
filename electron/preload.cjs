@@ -25,5 +25,18 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
   getTimelines: (bookUUID) => ipcRenderer.invoke("getTimelines", bookUUID),
   createTimeline: (bookUUID, timelineName) =>
     ipcRenderer.invoke("createTimeline", bookUUID, timelineName),
-  closeWindow: () => ipcRenderer.invoke("closeWindow"),
+  deleteTimeline: (bookUUID, timelineUUID) =>
+    ipcRenderer.invoke("deleteTimeline", bookUUID, timelineUUID),
+  renameTimeline: (bookUUID, timelineUUID, newTitle) =>
+    ipcRenderer.invoke("renameTimeline", bookUUID, timelineUUID, newTitle),
+  getTimelineSections: (bookUUID) =>
+    ipcRenderer.invoke("getTimelineSections", bookUUID),
+  createTimelineSection: (bookUUID, sectionName, sectionColor, xStart) =>
+    ipcRenderer.invoke(
+      "createTimelineSection",
+      bookUUID,
+      sectionName,
+      sectionColor,
+      xStart
+    ),
 });

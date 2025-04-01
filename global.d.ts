@@ -32,6 +32,23 @@ declare global {
         bookUUID: string,
         timelineName: string
       ) => Promise<Response>;
+      deleteTimeline: (
+        bookUUID: string,
+        timelineUUID: string
+      ) => Promise<Response>;
+      renameTimeline: (
+        bookUUID: string,
+        timelineUUID: string,
+        newTitle: string
+      ) => Promise<Response>;
+      getTimelineSections: (bookUUID: string) => Promise<Response>;
+      createTimelineSection: (
+        bookUUID: string,
+        sectionName: string,
+        sectionColor: string,
+        xStart: number
+      ) => Promise<Response>;
+      getTimelineSections: (bookUUID: string) => Promise<Response>;
     };
   }
 }
