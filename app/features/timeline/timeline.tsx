@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 const ScenesContainer = styled.div`
-  width: 90%;
+  width: calc(100% - 150px);
   height: 100%;
 `;
 
@@ -27,13 +27,13 @@ const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 10%;
+  width: 150px;
   justify-content: center;
   align-items: flex-end;
 `;
 const Title = styled.span`
   width: 100%;
-  height: 100%;
+  height: fit-content;
   text-align: right;
   padding-right: 10px;
   text-overflow: ellipsis;

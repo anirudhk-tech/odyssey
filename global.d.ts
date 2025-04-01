@@ -49,6 +49,23 @@ declare global {
         xStart: number
       ) => Promise<Response>;
       getTimelineSections: (bookUUID: string) => Promise<Response>;
+      resizeTimelineSection: (
+        bookUUID: string,
+        sectionUUID: string,
+        xStart: number,
+        xEnd: number,
+        width: number
+      ) => Promise<Response>;
+      editTimelineSection: (
+        bookUUID: string,
+        sectionUUID: string,
+        sectionName: string,
+        sectionColor: string
+      ) => Promise<Response>;
+      deleteTimelineSection: (
+        bookUUID: string,
+        sectionUUID: string
+      ) => Promise<Response>;
     };
   }
 }

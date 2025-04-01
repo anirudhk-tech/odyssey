@@ -21,7 +21,10 @@ import {
 } from "./services/timelineServices.js";
 import {
   createTimelineSection,
+  deleteTimelineSection,
+  editTimelineSection,
   getTimelineSections,
+  resizeTimelineSection,
 } from "./services/timelineSectionsServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
@@ -94,5 +97,31 @@ ipcMain.handle(
   "createTimelineSection",
   async (event, bookUUID, sectionName, sectionColor, xStart) => {
     return createTimelineSection(bookUUID, sectionName, sectionColor, xStart);
+  }
+);
+
+ipcMain.handle(
+  "resizeTimelineSection",
+  async (event, bookUUID, sectionUUID, xStart, xEnd, width) => {
+    return resizeTimelineSection(bookUUID, sectionUUID, xStart, xEnd, width);
+  }
+);
+
+ipcMain.handle(
+  "editTimelineSection",
+  async (event, bookUUID, sectionUUID, sectionName, sectionColor) => {
+    return editTimelineSection(
+      bookUUID,
+      sectionUUID,
+      sectionName,
+      sectionColor
+    );
+  }
+);
+
+ipcMain.handle(
+  "deleteTimelineSection",
+  async (event, bookUUID, sectionUUID) => {
+    return deleteTimelineSection(bookUUID, sectionUUID);
   }
 );

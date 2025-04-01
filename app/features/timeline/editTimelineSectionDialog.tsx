@@ -1,8 +1,8 @@
 import { Dialog } from "@/app/components/dialog";
-import { useAddTimelineSection } from "@/lib/features/timeline/hooks/useAddTimelineSection";
 import styled from "styled-components";
-import { HexColorInput, HexColorPicker } from "react-colorful";
+import { HexColorPicker } from "react-colorful";
 import { useOutsideClick } from "@/lib/common/hooks/useClickOut";
+import { useEditTimelineSection } from "@/lib/features/timeline/hooks/useEditTimelineSection";
 
 const Container = styled.div`
   display: flex;
@@ -17,6 +17,8 @@ const Container = styled.div`
 const Prompt = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.md};
+  text-align: left;
+  width: 100%;
 `;
 
 const Input = styled.input`
@@ -86,24 +88,24 @@ const HexColorPickerWrapper = styled.div`
   left: 120%;
 `;
 
-export const AddTimelineSectionDialog = () => {
+export const EditTimelineSectionDialog = () => {
   const {
     error,
     setSectionName,
-    addTimelineSectionDialogOpen,
+    handleEditTimelineSection,
     toggleDialog,
-    handleAddTimelineSection,
+    editTimelineSectionDialogOpen,
     colorPickerOpen,
     toggleColorPicker,
     colorPickerRef,
     setColor,
     color,
-  } = useAddTimelineSection();
+  } = useEditTimelineSection();
   useOutsideClick(colorPickerRef, toggleColorPicker);
 
   return (
     <Dialog
-      isOpen={addTimelineSectionDialogOpen}
+      isOpen={editTimelineSectionDialogOpen}
       onClose={toggleDialog}
       customsize="400px"
     >
@@ -117,12 +119,12 @@ export const AddTimelineSectionDialog = () => {
             </HexColorPickerWrapper>
           )}
         </ColorPickerContainer>
-        <Prompt>What do you want to call this section?</Prompt>
+        <Prompt>What's the new name?</Prompt>
         <InputContainer>
           <Input onChange={(e) => setSectionName(e.target.value)} />
           <Error>{error}</Error>
         </InputContainer>
-        <Button onClick={handleAddTimelineSection}>CREATE</Button>
+        <Button onClick={handleEditTimelineSection}>EDIT</Button>
       </Container>
     </Dialog>
   );

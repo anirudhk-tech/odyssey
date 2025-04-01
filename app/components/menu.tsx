@@ -12,7 +12,7 @@ const Container = styled.div<{
   background-color: ${(props) => props.theme.colors.secondary};
   padding: 0.5rem;
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
-  z-index: 100;
+  z-index: 1000;
   width: fit-content;
 `;
 

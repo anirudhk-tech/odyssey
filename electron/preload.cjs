@@ -39,4 +39,25 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
       sectionColor,
       xStart
     ),
+  resizeTimelineSection: (bookUUID, sectionUUID, xStart, xEnd, width) =>
+    ipcRenderer.invoke(
+      "resizeTimelineSection",
+      bookUUID,
+      sectionUUID,
+      xStart,
+      xEnd,
+      width
+    ),
+
+  editTimelineSection: (bookUUID, sectionUUID, sectionName, sectionColor) =>
+    ipcRenderer.invoke(
+      "editTimelineSection",
+      bookUUID,
+      sectionUUID,
+      sectionName,
+      sectionColor
+    ),
+
+  deleteTimelineSection: (bookUUID, sectionUUID) =>
+    ipcRenderer.invoke("deleteTimelineSection", bookUUID, sectionUUID),
 });

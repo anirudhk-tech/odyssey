@@ -42,19 +42,31 @@ export const createTimelineSection = (
     const timelinePath = path.join(bookPath, "timeline.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
-
-    data.sections.push({
+    const section = {
       id: sectionUUID,
       title: sectionName,
       color: sectionColor,
       xStart: xStart,
       xEnd: xStart + 100,
       width: 100,
-    });
+    };
+
+    if (data.sections.some((section) => section.title === sectionName)) {
+      return {
+        success: false,
+        message: "Section already exists",
+      };
+    }
+
+    data.sections.push(section);
 
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
 
-    return { success: true, message: "Section added to timeline successfully" };
+    return {
+      success: true,
+      message: "Section added to timeline successfully",
+      data: { section: section },
+    };
   } catch (error) {
     return {
       success: false,
@@ -63,7 +75,13 @@ export const createTimelineSection = (
   }
 };
 
-export const resizeSection = (bookUUID, sectionId, xStart, xEnd) => {
+export const resizeTimelineSection = (
+  bookUUID,
+  sectionUUID,
+  xStart,
+  xEnd,
+  width
+) => {
   try {
     const metaData = readGlobalMetaData();
     const bookPath = metaData.books.find(
@@ -74,7 +92,7 @@ export const resizeSection = (bookUUID, sectionId, xStart, xEnd) => {
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
 
     const sectionIndex = data.sections.findIndex(
-      (section) => section.id === sectionId
+      (section) => section.id === sectionUUID
     );
 
     if (sectionIndex === -1) {
@@ -83,11 +101,84 @@ export const resizeSection = (bookUUID, sectionId, xStart, xEnd) => {
 
     data.sections[sectionIndex].xStart = xStart;
     data.sections[sectionIndex].xEnd = xEnd;
+    data.sections[sectionIndex].width = width;
 
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
 
     return { success: true, message: "Section resized successfully" };
   } catch (error) {
     return { success: false, message: `Error resizing section: ${error}` };
+  }
+};
+
+export const editTimelineSection = (
+  bookUUID,
+  sectionUUID,
+  sectionName,
+  sectionColor
+) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+
+    const sectionIndex = data.sections.findIndex(
+      (section) => section.id === sectionUUID
+    );
+
+    if (sectionIndex === -1) {
+      return { success: false, message: "Section not found" };
+    }
+
+    data.sections[sectionIndex].title = sectionName;
+    data.sections[sectionIndex].color = sectionColor;
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Section edited successfully" };
+  } catch (error) {
+    return { success: false, message: `Error editing section: ${error}` };
+  }
+};
+
+export const deleteTimelineSection = (bookUUID, sectionUUID) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const sectionIndex = data.sections.findIndex(
+      (section) => section.id === sectionUUID
+    );
+
+    if (sectionIndex === -1) {
+      return { success: false, message: "Section not found" };
+    }
+
+    const widthReduce = data.sections[sectionIndex].width;
+
+    data.sections.forEach((section, idx) => {
+      if (idx > sectionIndex) {
+        section.xStart -= widthReduce;
+        section.xEnd -= widthReduce;
+      }
+    });
+
+    data.sections = data.sections.filter(
+      (section) => section.id !== sectionUUID
+    );
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Section deleted successfully" };
+  } catch (error) {
+    return { success: false, message: `Error deleting section: ${error}` };
   }
 };

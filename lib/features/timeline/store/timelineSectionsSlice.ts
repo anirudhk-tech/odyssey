@@ -4,11 +4,17 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface TimelineSectionsSlice {
   sections: TimelineSection[];
   addTimelineSectionDialogOpen: boolean;
+  timelineSectionToBeEdited: TimelineSection | null;
+  deleteTimelineSectionConfirmDialogOpen: boolean;
+  editTimelineSectionDialogOpen: boolean;
 }
 
 const initialState: TimelineSectionsSlice = {
   sections: [],
   addTimelineSectionDialogOpen: false,
+  timelineSectionToBeEdited: null,
+  deleteTimelineSectionConfirmDialogOpen: false,
+  editTimelineSectionDialogOpen: false,
 };
 
 export const timelineSectionsSlice = createSlice({
@@ -39,6 +45,52 @@ export const timelineSectionsSlice = createSlice({
     toggleAddTimelineSectionDialog: (state) => {
       state.addTimelineSectionDialogOpen = !state.addTimelineSectionDialogOpen;
     },
+    setTimelineSectionToBeEdited: (state, action) => {
+      state.timelineSectionToBeEdited = action.payload;
+    },
+    cleartimelineSectionToBeEdited: (state) => {
+      state.timelineSectionToBeEdited = null;
+    },
+    toggleDeleteTimelineSectionConfirmDialog: (state) => {
+      state.deleteTimelineSectionConfirmDialogOpen =
+        !state.deleteTimelineSectionConfirmDialogOpen;
+    },
+    toggleEditTimelineSectionDialog: (state) => {
+      state.editTimelineSectionDialogOpen =
+        !state.editTimelineSectionDialogOpen;
+    },
+    editTimelineSection: (state, action) => {
+      state.sections = state.sections.map((section) => {
+        if (section.id === action.payload.id) {
+          return {
+            ...section,
+            title: action.payload.title,
+            color: action.payload.color,
+          };
+        }
+        return section;
+      });
+    },
+    deleteTimelineSection: (state, action) => {
+      const deletedIndex = state.sections.findIndex(
+        (section) => section.id === action.payload
+      );
+
+      if (deletedIndex === -1) return;
+
+      const widthReduce = state.sections[deletedIndex].width;
+
+      state.sections.forEach((section, idx) => {
+        if (idx > deletedIndex) {
+          section.xStart -= widthReduce;
+          section.xEnd -= widthReduce;
+        }
+      });
+
+      state.sections = state.sections.filter(
+        (section) => section.id !== action.payload
+      );
+    },
   },
 });
 
@@ -47,5 +99,11 @@ export const {
   addTimelineSection,
   resizeTimelineSection,
   toggleAddTimelineSectionDialog,
+  setTimelineSectionToBeEdited,
+  cleartimelineSectionToBeEdited,
+  toggleDeleteTimelineSectionConfirmDialog,
+  toggleEditTimelineSectionDialog,
+  editTimelineSection,
+  deleteTimelineSection,
 } = timelineSectionsSlice.actions;
 export default timelineSectionsSlice.reducer;

@@ -33,19 +33,6 @@ const ResizeHandle = styled.div`
   top: -20px;
 `;
 
-const AddButton = styled.button`
-  background-color: ${(props) => props.theme.colors.background};
-  height: 30px;
-  aspect-ratio: 1/1;
-  border: none;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  &:active {
-    opacity: 0.5;
-  }
-`;
-
 const Container = styled.div<{
   open: boolean;
   timelinedrawerheight: number;
@@ -62,6 +49,7 @@ const Container = styled.div<{
   border-top: 1px solid ${(props) => props.theme.colors.secondary};
   padding-left: 10px;
   padding-right: 10px;
+  overflow-y: auto;
 `;
 
 const TimelinesContainer = styled.div`
@@ -93,10 +81,10 @@ export const TimelineDrawer = () => {
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
       <IoAdd
         onClick={handleMenuOpenFromIcon}
-        style={{ scale: 1.5, position: "absolute", top: "10px", left: "10px" }}
+        style={{ scale: 1.5, position: "absolute", top: "20px", left: "20px" }}
       />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineSections></TimelineSections>
+      <TimelineSections />
       <TimelinesContainer>
         {isDrawerOpen &&
           timelines.map((timeline) => (

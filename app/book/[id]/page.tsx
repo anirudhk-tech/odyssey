@@ -11,6 +11,8 @@ import { useParams } from "next/navigation";
 import { DeleteSceneConfirmDialog } from "@/app/features/scenes/deleteSceneConfirmDialog";
 import { DeleteTimelineConfirmDialog } from "@/app/features/timeline/deleteTimelineConfirmDialog";
 import { AddTimelineSectionDialog } from "@/app/features/timeline/addTimelineSectionDialog";
+import { EditTimelineSectionDialog } from "@/app/features/timeline/editTimelineSectionDialog";
+import { DeleteTimelineSectionConfirmDialog } from "@/app/features/timeline/deleteTimelineSectionConfirmDialog";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -31,6 +33,8 @@ export default function EditingPage() {
 
   return (
     <Container>
+      <DeleteTimelineSectionConfirmDialog />
+      <EditTimelineSectionDialog />
       <AddTimelineSectionDialog />
       <DeleteTimelineConfirmDialog />
       <DeleteSceneConfirmDialog />
