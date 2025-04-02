@@ -47,13 +47,13 @@ const Container = styled.div<{
   height: ${(props) =>
     props.open ? `${props.timelinedrawerheight}px` : "0px"};
   background-color: ${(props) => props.theme.colors.background};
-  transition: height 0.3s ease;
+  transition: height 0.3s ease, padding 0.3s ease;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   border-top: 1px solid ${(props) => props.theme.colors.secondary};
-  padding: 10px;
+  padding: ${(props) => (props.open ? "10px" : "0px")};
 `;
 
 const TimelinesContainer = styled.div`

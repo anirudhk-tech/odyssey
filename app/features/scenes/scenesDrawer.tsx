@@ -6,11 +6,12 @@ import { Scene } from "@/app/types/scene";
 import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
 import { SceneBeingAdded } from "./sceneBeingAdded";
 import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import { closestCenter, DndContext, DragOverlay } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { DndSceneListing } from "./dndSceneListing";
 import { SceneListing } from "./sceneListing";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { SceneListingGhost } from "./sceneListingGhost";
 
 const Container = styled.div`
   width: fit-content;
@@ -90,11 +91,24 @@ export const ScenesDrawer = () => {
   } = useScenesDrawer();
   const { scenes, searchedScenes } = useFetchScenes();
   const { sceneBeingAdded } = useAddScene();
-  const { sensors, handleDragEnd, scenesOrder } = useDndScenes({ scenes });
+  const {
+    sensors,
+    handleDragEnd,
+    scenesOrder,
+    handleDragMove,
+    handleDragStart,
+    isDraggingOut,
+    activeDragScene,
+    sideBarDndRef,
+  } = useDndScenes({ scenes });
 
   return (
     <Container>
-      <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
+      <TabContainer
+        ref={sideBarDndRef}
+        open={isDrawerOpen}
+        drawerwidth={scenesDrawerWidth}
+      >
         <ResizeHandle onMouseDown={handleMouseResizeDown} />
         <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
         {isDrawerOpen && (
@@ -102,9 +116,10 @@ export const ScenesDrawer = () => {
             <ScenesHeader />
             <DndContext
               sensors={sensors}
+              onDragStart={handleDragStart}
+              onDragMove={handleDragMove}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCenter}
-              modifiers={[restrictToParentElement]}
             >
               <SortableContext
                 items={(scenesOrder || []).map((scene) => scene.id)}
@@ -121,6 +136,11 @@ export const ScenesDrawer = () => {
                       ))}
                 </ScenesContainer>
               </SortableContext>
+              <DragOverlay>
+                {isDraggingOut && activeDragScene && (
+                  <SceneListingGhost scene={activeDragScene} />
+                )}
+              </DragOverlay>
             </DndContext>
           </>
         )}
