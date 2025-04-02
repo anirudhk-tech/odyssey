@@ -26,16 +26,20 @@ const ScenesContainer = styled.div`
   height: 100%;
 `;
 
-const TitleContainer = styled.div`
+const TitleContainer = styled.div<{ scrollleft: number }>`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 150px;
   justify-content: center;
   align-items: flex-end;
-  position: sticky;
+  position: absolute;
   left: 10px;
+  transform: translateX(${(props) => props.scrollleft}px);
+  transition: transform 0.3s ease;
+  background-color: ${(props) => props.theme.colors.background};
 `;
+
 const Title = styled.span`
   width: 100%;
   height: fit-content;
@@ -60,7 +64,13 @@ const Input = styled.textarea`
   resize: none;
 `;
 
-export const TimelineListing = ({ timeline }: { timeline: Timeline }) => {
+export const TimelineListing = ({
+  timeline,
+  scrollLeft,
+}: {
+  timeline: Timeline;
+  scrollLeft: number;
+}) => {
   const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
   const { options } = useTimelineMenu({ setMenuPos });
   const { handleSetTimelineToBeEdited } = useTimeline({ timeline });
@@ -82,7 +92,7 @@ export const TimelineListing = ({ timeline }: { timeline: Timeline }) => {
       }}
     >
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
-      <TitleContainer>
+      <TitleContainer scrollleft={scrollLeft}>
         {timelineBeingRenamed &&
         timelineToBeEdited &&
         timelineToBeEdited.id === timeline.id ? (

@@ -8,6 +8,12 @@ import { TimelineSections } from "./timelineSections";
 import { useMenu } from "@/lib/common/hooks/useMenu";
 import { Menu } from "@/app/components/menu";
 import { useTimelineAddMenu } from "@/lib/features/timeline/hooks/useTimelineAddMenu";
+import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
+import { DndContext, rectIntersection } from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { DndTimelineListing } from "./dndTimelineListing";
+import { NarrativeTimelineListing } from "./narrativeTimelineListing";
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
@@ -47,8 +53,7 @@ const Container = styled.div<{
   left: 0;
   right: 0;
   border-top: 1px solid ${(props) => props.theme.colors.secondary};
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px;
 `;
 
 const TimelinesContainer = styled.div`
@@ -84,24 +89,46 @@ export const TimelineDrawer = () => {
     timelineDrawerHeight,
     handleMouseResizeDown,
     timelineBeingAdded,
+    handleScroll,
+    scrollLeft,
   } = useTimelineDrawer();
   const { timelines } = useFetchTimelines();
   const { menuPos, setMenuPos, handleMenuOpenFromIcon } = useMenu();
   const { options } = useTimelineAddMenu();
+  const { sensors, handleDragEnd, timelinesOrder } = useDndTimelines({
+    timelines,
+  });
 
   return (
     <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineScrollContainer>
+      <TimelineScrollContainer onScroll={handleScroll}>
         <AddIcon onClick={handleMenuOpenFromIcon} />
         <TimelineSections />
         <TimelinesContainer>
-          {isDrawerOpen &&
-            timelines.map((timeline) => (
-              <TimelineListing key={timeline.id} timeline={timeline} />
-            ))}
+          <DndContext
+            sensors={sensors}
+            onDragEnd={handleDragEnd}
+            collisionDetection={rectIntersection}
+            modifiers={[restrictToParentElement]}
+          >
+            <SortableContext
+              items={(timelinesOrder || []).map((timeline) => timeline.id)}
+              strategy={rectSortingStrategy}
+            >
+              {isDrawerOpen &&
+                timelinesOrder.map((timeline) => (
+                  <DndTimelineListing
+                    key={timeline.id}
+                    scrollLeft={scrollLeft}
+                    timeline={timeline}
+                  />
+                ))}
+              <NarrativeTimelineListing scrollLeft={scrollLeft} />
+            </SortableContext>
+          </DndContext>
           {timelineBeingAdded && <TimelineBeingAdded />}
         </TimelinesContainer>
       </TimelineScrollContainer>

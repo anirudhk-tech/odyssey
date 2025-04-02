@@ -4,11 +4,12 @@ import {
   setTimelineDrawerHeight,
   toggleTimelineDrawer,
 } from "../store/timelineDrawerSlice";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toggleTimelineBeingAdded } from "../store/timelineSlice";
 
 export const useTimelineDrawer = () => {
   const dispatch = useDispatch();
+  const [scrollLeft, setScrollLeft] = useState(0);
   const isDrawerOpen = useSelector(
     (state: MainState) => state.timelineDrawer.isDrawerOpen
   );
@@ -47,6 +48,9 @@ export const useTimelineDrawer = () => {
     document.removeEventListener("mouseup", handleMouseResizeUp);
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) =>
+    setScrollLeft(e.currentTarget.scrollLeft);
+
   return {
     isDrawerOpen,
     toggleTimelineDrawer,
@@ -55,5 +59,7 @@ export const useTimelineDrawer = () => {
     handleMouseResizeDown,
     timelineBeingAdded,
     handleToggleTimelineBeingAdded,
+    scrollLeft,
+    handleScroll,
   };
 };
