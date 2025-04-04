@@ -11,7 +11,7 @@ export const DndTimelineListing = ({
   scrollLeft: number;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: timeline.id });
+    useSortable({ id: timeline.id, data: { type: "timeline" } });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

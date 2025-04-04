@@ -14,7 +14,6 @@ export const useDndScenes = ({ scenes }: { scenes: Scene[] | null }) => {
   const [scenesOrder, setScenesOrder] = useState<Scene[]>([]);
   const [activeDragScene, setActiveDragScene] = useState<Scene | null>(null);
   const [isDraggingOut, setIsDraggingOut] = useState(false);
-  const [initialClientX, setInitialClientX] = useState(0);
   const sideBarDndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +33,6 @@ export const useDndScenes = ({ scenes }: { scenes: Scene[] | null }) => {
       scenesOrder.find((scene) => scene.id === e.active.id) || null;
 
     setActiveDragScene(draggedScene);
-    setInitialClientX((e.activatorEvent as PointerEvent).clientX);
   };
 
   const handleDragMove = (e: DragMoveEvent) => {

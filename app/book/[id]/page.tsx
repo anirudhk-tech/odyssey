@@ -13,6 +13,8 @@ import { DeleteTimelineConfirmDialog } from "@/app/features/timeline/deleteTimel
 import { AddTimelineSectionDialog } from "@/app/features/timeline/addTimelineSectionDialog";
 import { EditTimelineSectionDialog } from "@/app/features/timeline/editTimelineSectionDialog";
 import { DeleteTimelineSectionConfirmDialog } from "@/app/features/timeline/deleteTimelineSectionConfirmDialog";
+import { DndContext } from "@dnd-kit/core";
+import { useDndBookScenesAndTimelines } from "@/lib/features/books/hooks/useDndBookScenesAndTimelines";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -28,6 +30,7 @@ export default function EditingPage() {
   const { mounted } = useMounted();
   const params = useParams();
   useSetCurrent({ bookId: params.id as string });
+  const { handleDragEnd } = useDndBookScenesAndTimelines();
 
   if (!mounted) return null;
 

@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 const Container = styled.div`
   flex: 0 0 150px;
-  width: 90px;
-  height: 90px;
+  width: 150px;
+  height: 150px;
   background-color: ${(props) => props.theme.colors.secondary};
   display: flex;
   flex-direction: column;
