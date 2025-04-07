@@ -64,6 +64,7 @@ export const scenesSlice = createSlice({
             title: action.payload.title,
             id: scene.id,
             textFilePath: scene.textFilePath,
+            color: scene.color,
           };
         }
         return scene;
@@ -71,6 +72,19 @@ export const scenesSlice = createSlice({
     },
     toggleSceneBeingRenamed: (state) => {
       state.sceneBeingRenamed = !state.sceneBeingRenamed;
+    },
+    changeSceneColor: (state, action) => {
+      if (!state.scenes) return;
+      console.log("COLOR: ", action.payload.color);
+      state.scenes = state.scenes.map((scene) => {
+        if (scene.id === action.payload.id) {
+          return {
+            ...scene,
+            color: action.payload.color,
+          };
+        }
+        return scene;
+      });
     },
   },
 });
@@ -87,5 +101,6 @@ export const {
   toggleSceneBeingRenamed,
   setSearchedScenes,
   setSceneQuery,
+  changeSceneColor,
 } = scenesSlice.actions;
 export default scenesSlice.reducer;

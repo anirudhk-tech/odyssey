@@ -18,6 +18,7 @@ import {
   deleteTimeline,
   getTimelines,
   renameTimeline,
+  addSceneToTimeline,
 } from "./services/timelineServices.js";
 import {
   createTimelineSection,
@@ -135,7 +136,7 @@ ipcMain.handle(
 );
 
 ipcMain.handle(
-  "writeSceneToTimeline",
+  "addSceneToTimeline",
   async (event, bookUUID, timelineUUID, sceneUUID, x) => {
     return addSceneToTimeline(bookUUID, timelineUUID, sceneUUID, x);
   }

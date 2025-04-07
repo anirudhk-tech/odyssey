@@ -68,7 +68,7 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
       sectionUUID1,
       sectionUUID2
     ),
-  addSceneToTImeline: (bookUUID, sceneUUID, timelineUUID, x) =>
+  addSceneToTimeline: (bookUUID, sceneUUID, timelineUUID, x) =>
     ipcRenderer.invoke(
       "addSceneToTimeline",
       bookUUID,

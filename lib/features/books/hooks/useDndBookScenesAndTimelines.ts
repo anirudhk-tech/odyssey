@@ -1,3 +1,4 @@
+import { MainState } from "@/lib/store";
 import {
   DragEndEvent,
   DragMoveEvent,
@@ -6,6 +7,12 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addSceneToTimeline,
+  changeScenePositionOnTimeline,
+} from "../store/dndBooksSlice";
+import { changeSceneColor } from "../../scenes/store/scenesSlice";
 
 export const useDndBookScenesAndTimelines = ({
   handleSceneDragStart,
@@ -18,6 +25,14 @@ export const useDndBookScenesAndTimelines = ({
   handleTimelineDragEnd: (e: DragEndEvent) => void;
   handleSceneDragEnd: (e: DragEndEvent) => void;
 }) => {
+  const dispatch = useDispatch();
+  const currentBookId = useSelector(
+    (state: MainState) => state.current.currentBookId
+  );
+  const timelineSections = useSelector(
+    (state: MainState) => state.timelineSections.sections
+  );
+
   const scenesSensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -45,18 +60,63 @@ export const useDndBookScenesAndTimelines = ({
     }
   };
 
-  const handleDragEnd = (e: DragEndEvent) => {
-    "1.0";
+  const handleDragEnd = async (e: DragEndEvent) => {
     const { active, over } = e;
 
-    if (!over) return;
+    if (!over || !currentBookId) return;
 
     if (
       active.data.current?.type === "scene" &&
       over.data.current?.type === "timeline"
     ) {
-    }
-    if (active.data.current?.type === "scene") {
+      const x = (active.rect.current.translated?.left ?? 0) + 170;
+
+      const response = await window.odysseyAPI.addSceneToTimeline(
+        currentBookId,
+        over.id.toString(),
+        active.id.toString(),
+        x
+      );
+
+      if (response.success) {
+        if (response.data.exists) {
+          dispatch(
+            changeScenePositionOnTimeline({
+              sceneId: active.id,
+              timelineId: over.id,
+              newPosition: x,
+            })
+          );
+        } else {
+          dispatch(
+            addSceneToTimeline({
+              scene: {
+                id: active.id,
+                x,
+              },
+              timelineId: over.id,
+            })
+          );
+        }
+        console.log(timelineSections);
+        console.log(x);
+        console.log(
+          timelineSections.find(
+            (section) => section.xStart <= x && section.xEnd >= x
+          )?.color ?? "No color found"
+        );
+
+        dispatch(
+          changeSceneColor({
+            color:
+              timelineSections.find(
+                (section) => section.xStart <= x && section.xEnd >= x
+              )?.color ?? null,
+            id: active.id.toString(),
+          })
+        );
+      }
+    } else if (active.data.current?.type === "scene") {
       handleSceneDragEnd(e);
     } else if (active.data.current?.type === "timeline") {
       handleTimelineDragEnd(e);

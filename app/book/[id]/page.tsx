@@ -26,7 +26,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow-y: hidden;
+  scrollbar-width: none;
 `;
 
 export default function EditingPage() {

@@ -18,12 +18,18 @@ const Container = styled.div`
   padding-right: 10px;
   border-bottom: 1px solid ${(props) => props.theme.colors.secondary};
   position: relative;
-  overflow-x: auto;
+  overflow-x: visible;
+  scrollbar-width: none;
 `;
 
 const ScenesContainer = styled.div`
-  width: calc(100% - 150px);
+  width: max-content;
+  min-width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow-x: visible;
 `;
 
 const TitleContainer = styled.div<{ scrollleft: number }>`
@@ -48,7 +54,6 @@ const Title = styled.span`
   text-overflow: ellipsis;
   word-break: normal;
   overflow-wrap: normal;
-  overflow: hidden;
 `;
 
 const Input = styled.textarea`
@@ -73,7 +78,9 @@ export const TimelineListing = ({
 }) => {
   const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
   const { options } = useTimelineMenu({ setMenuPos });
-  const { handleSetTimelineToBeEdited } = useTimeline({ timeline });
+  const { handleSetTimelineToBeEdited, timelinePositionScenes } = useTimeline({
+    timeline,
+  });
   const {
     timelineToBeEdited,
     handleRenameTimeline,
@@ -107,7 +114,23 @@ export const TimelineListing = ({
           <Title>{timeline.title}</Title>
         )}
       </TitleContainer>
-      <ScenesContainer></ScenesContainer>
+      <ScenesContainer>
+        {timelinePositionScenes.map((positionScene) => {
+          return (
+            <div
+              key={positionScene.id}
+              style={{
+                width: "150px",
+                height: "60px",
+                position: "absolute",
+                left: 170 + positionScene.x,
+                border: "1px solid red",
+                zIndex: 1000,
+              }}
+            ></div>
+          );
+        })}
+      </ScenesContainer>
     </Container>
   );
 };

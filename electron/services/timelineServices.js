@@ -153,16 +153,37 @@ export const addSceneToTimeline = (bookUUID, timelineUUID, sceneUUID, x) => {
     );
 
     if (timelineIndex === -1) {
-      return { success: false, message: "Timeline not found" };
+      return {
+        success: false,
+        message: "Timeline not found",
+      };
     }
 
-    data.timelines[timelineIndex].scenes.push({
-      id: sceneUUID,
-      x: x,
-    });
-    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    const sceneIndex = data.timelines[timelineIndex].scenes.findIndex(
+      (scene) => scene.id === sceneUUID
+    );
 
-    return { success: true, message: "Scene added to timeline successfully" };
+    if (sceneIndex === -1) {
+      data.timelines[timelineIndex].scenes.push({
+        id: sceneUUID,
+        x: x,
+      });
+
+      fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+      return {
+        success: true,
+        message: "Scene added to timeline successfully",
+        data: { exists: false },
+      };
+    } else {
+      data.timelines[timelineIndex].scenes[sceneIndex].x = x;
+      fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+      return {
+        success: true,
+        message: "Scene added to timeline successfully",
+        data: { exists: true },
+      };
+    }
   } catch (error) {
     return {
       success: false,

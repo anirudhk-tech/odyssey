@@ -72,6 +72,16 @@ const Input = styled.textarea`
   padding-top: 20px;
 `;
 
+const SceneColor = styled.div<{ color: string | null }>`
+  width: 100%;
+  height: 10px;
+  background-color: ${(props) => (props.color ? props.color : "transparent")};
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position: absolute;
+  top: 0;
+`;
+
 export const SceneListing = ({ scene }: { scene: Scene }) => {
   const {
     currentSceneId,
@@ -114,6 +124,7 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
           }}
         />
       )}
+      <SceneColor color={scene.color} />
       {sceneBeingRenamed &&
       sceneToBeEdited &&
       sceneToBeEdited.id === scene.id ? (
