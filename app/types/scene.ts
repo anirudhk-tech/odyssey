@@ -6,5 +6,5 @@ export interface Scene {
 
 export interface PositionScene {
   id: string;
-  position: { x: string };
+  x: string;
 }

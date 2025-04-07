@@ -138,3 +138,35 @@ export const renameTimeline = (bookUUID, timelineUUID, newTitle) => {
     return { success: false, message: `Error renaming timeline: ${error}` };
   }
 };
+
+export const addSceneToTimeline = (bookUUID, timelineUUID, sceneUUID, x) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const timelinePath = path.join(bookPath, "timeline.json");
+
+    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const timelineIndex = data.timelines.findIndex(
+      (timeline) => timeline.id === timelineUUID
+    );
+
+    if (timelineIndex === -1) {
+      return { success: false, message: "Timeline not found" };
+    }
+
+    data.timelines[timelineIndex].scenes.push({
+      id: sceneUUID,
+      x: x,
+    });
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
+    return { success: true, message: "Scene added to timeline successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Error adding scene to timeline: ${error}`,
+    };
+  }
+};

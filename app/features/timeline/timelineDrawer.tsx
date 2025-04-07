@@ -92,12 +92,10 @@ export const TimelineDrawer = () => {
     handleScroll,
     scrollLeft,
   } = useTimelineDrawer();
-  const { timelines } = useFetchTimelines();
+  useFetchTimelines();
   const { menuPos, setMenuPos, handleMenuOpenFromIcon } = useMenu();
   const { options } = useTimelineAddMenu();
-  const { sensors, handleDragEnd, timelinesOrder } = useDndTimelines({
-    timelines,
-  });
+  const { timelinesOrder } = useDndTimelines();
 
   return (
     <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
@@ -108,27 +106,20 @@ export const TimelineDrawer = () => {
         <AddIcon onClick={handleMenuOpenFromIcon} />
         <TimelineSections />
         <TimelinesContainer>
-          <DndContext
-            sensors={sensors}
-            onDragEnd={handleDragEnd}
-            collisionDetection={rectIntersection}
-            modifiers={[restrictToParentElement]}
+          <SortableContext
+            items={(timelinesOrder || []).map((timeline) => timeline.id)}
+            strategy={rectSortingStrategy}
           >
-            <SortableContext
-              items={(timelinesOrder || []).map((timeline) => timeline.id)}
-              strategy={rectSortingStrategy}
-            >
-              {isDrawerOpen &&
-                timelinesOrder.map((timeline) => (
-                  <DndTimelineListing
-                    key={timeline.id}
-                    scrollLeft={scrollLeft}
-                    timeline={timeline}
-                  />
-                ))}
-              <NarrativeTimelineListing scrollLeft={scrollLeft} />
-            </SortableContext>
-          </DndContext>
+            {isDrawerOpen &&
+              timelinesOrder.map((timeline) => (
+                <DndTimelineListing
+                  key={timeline.id}
+                  scrollLeft={scrollLeft}
+                  timeline={timeline}
+                />
+              ))}
+            <NarrativeTimelineListing scrollLeft={scrollLeft} />
+          </SortableContext>
           {timelineBeingAdded && <TimelineBeingAdded />}
         </TimelinesContainer>
       </TimelineScrollContainer>

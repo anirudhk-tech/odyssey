@@ -71,6 +71,12 @@ declare global {
         sectionUUID1: string,
         sectionUUID2: string
       ) => Promise<Response>;
+      addSceneToTimeline: (
+        bookUUID: string,
+        sceneUUID: string,
+        timelineUUID: string,
+        x: number
+      ) => Promise<Response>;
     };
   }
 }

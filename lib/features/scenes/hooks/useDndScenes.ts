@@ -1,4 +1,3 @@
-import { Scene } from "@/app/types/scene";
 import {
   DragEndEvent,
   DragMoveEvent,
@@ -7,46 +6,55 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
+import { useDispatch, useSelector } from "react-redux";
+import { MainState } from "@/lib/store";
+import {
+  setActiveDragScene,
+  setIsSceneDraggingOut,
+  setScenesOrder,
+} from "../../books/store/dndBooksSlice";
 
-export const useDndScenes = ({ scenes }: { scenes: Scene[] | null }) => {
-  const [scenesOrder, setScenesOrder] = useState<Scene[]>([]);
-  const [activeDragScene, setActiveDragScene] = useState<Scene | null>(null);
-  const [isDraggingOut, setIsDraggingOut] = useState(false);
-  const sideBarDndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setScenesOrder(scenes ? scenes : []);
-  }, [scenes]);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
+export const useDndScenes = ({
+  sceneSideBarDndRef,
+}: {
+  sceneSideBarDndRef: RefObject<HTMLDivElement>;
+}) => {
+  const dispatch = useDispatch();
+  const scenes = useSelector((state: MainState) => state.scenes.scenes);
+  const isSceneDraggingOut = useSelector(
+    (state: MainState) => state.dndBooks.isSceneDraggingOut
+  );
+  const scenesOrder = useSelector(
+    (state: MainState) => state.dndBooks.scenesOrder
+  );
+  const activeDragScene = useSelector(
+    (state: MainState) => state.dndBooks.activeDragScene
   );
 
-  const handleDragStart = (e: DragStartEvent) => {
+  useEffect(() => {
+    dispatch(setScenesOrder(scenes ? scenes : []));
+  }, [scenes]);
+
+  const handleSceneDragStart = (e: DragStartEvent) => {
     const draggedScene =
       scenesOrder.find((scene) => scene.id === e.active.id) || null;
 
-    setActiveDragScene(draggedScene);
+    dispatch(setActiveDragScene(draggedScene));
   };
 
-  const handleDragMove = (e: DragMoveEvent) => {
-    if (!sideBarDndRef.current || !activeDragScene) return;
-
+  const handleSceneDragMove = (e: DragMoveEvent) => {
+    if (!sceneSideBarDndRef?.current || !activeDragScene) return;
     const currentClientX = (e.activatorEvent as PointerEvent).clientX;
     const currentDelta = e.delta.x;
-    const rect = sideBarDndRef.current.getBoundingClientRect();
+    const rect = sceneSideBarDndRef.current.getBoundingClientRect();
     const isOutsideSidebar = currentClientX + currentDelta < rect.left;
 
-    setIsDraggingOut(isOutsideSidebar);
+    dispatch(setIsSceneDraggingOut(isOutsideSidebar));
   };
 
-  const handleDragEnd = (e: DragEndEvent) => {
+  const handleSceneDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
 
     if (!over) return;
@@ -55,18 +63,17 @@ export const useDndScenes = ({ scenes }: { scenes: Scene[] | null }) => {
       const oldIndex = scenesOrder.findIndex((scene) => scene.id === active.id);
       const newIndex = scenesOrder.findIndex((scene) => scene.id === over?.id);
 
-      setScenesOrder((items) => arrayMove(items, oldIndex, newIndex));
+      const newOrder = arrayMove(scenesOrder, oldIndex, newIndex);
+      dispatch(setScenesOrder(newOrder));
     }
   };
 
   return {
+    handleSceneDragEnd,
+    handleSceneDragStart,
+    handleSceneDragMove,
     scenesOrder,
-    sensors,
-    handleDragEnd,
-    handleDragStart,
-    handleDragMove,
-    sideBarDndRef,
-    isDraggingOut,
+    isSceneDraggingOut,
     activeDragScene,
   };
 };

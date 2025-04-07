@@ -133,3 +133,10 @@ ipcMain.handle(
     return swapTimelineSections(bookUUID, sectionUUID1, sectionUUID2);
   }
 );
+
+ipcMain.handle(
+  "writeSceneToTimeline",
+  async (event, bookUUID, timelineUUID, sceneUUID, x) => {
+    return addSceneToTimeline(bookUUID, timelineUUID, sceneUUID, x);
+  }
+);

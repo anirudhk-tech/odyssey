@@ -46,7 +46,6 @@ export const useEditor = () => {
     editorState: EditorState
   ) => {
     if (html) {
-      console.log(html);
       const contentState = convertPasted(html);
       const newState = EditorState.push(
         editorState,

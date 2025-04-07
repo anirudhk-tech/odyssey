@@ -6,12 +6,12 @@ import { Scene } from "@/app/types/scene";
 import { useAddScene } from "@/lib/features/scenes/hooks/useAddScene";
 import { SceneBeingAdded } from "./sceneBeingAdded";
 import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
-import { closestCenter, DndContext, DragOverlay } from "@dnd-kit/core";
+import { DragOverlay } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { DndSceneListing } from "./dndSceneListing";
 import { SceneListing } from "./sceneListing";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { SceneListingGhost } from "./sceneListingGhost";
+import { RefObject } from "react";
 
 const Container = styled.div`
   width: fit-content;
@@ -82,66 +82,51 @@ const ScenesContainer = styled.div`
   padding-bottom: 20px;
 `;
 
-export const ScenesDrawer = () => {
+export const ScenesDrawer = ({
+  sceneSideBarDndRef,
+}: {
+  sceneSideBarDndRef: RefObject<HTMLDivElement>;
+}) => {
   const {
     isDrawerOpen,
     handleToggleScenesDrawer,
     scenesDrawerWidth,
     handleMouseResizeDown,
   } = useScenesDrawer();
-  const { scenes, searchedScenes } = useFetchScenes();
+  const { searchedScenes } = useFetchScenes();
   const { sceneBeingAdded } = useAddScene();
-  const {
-    sensors,
-    handleDragEnd,
-    scenesOrder,
-    handleDragMove,
-    handleDragStart,
-    isDraggingOut,
-    activeDragScene,
-    sideBarDndRef,
-  } = useDndScenes({ scenes });
+  const { scenesOrder, activeDragScene, isSceneDraggingOut } = useDndScenes({
+    sceneSideBarDndRef,
+  });
 
   return (
     <Container>
-      <TabContainer
-        ref={sideBarDndRef}
-        open={isDrawerOpen}
-        drawerwidth={scenesDrawerWidth}
-      >
+      <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
         <ResizeHandle onMouseDown={handleMouseResizeDown} />
         <Button onClick={handleToggleScenesDrawer}>Scenes</Button>
         {isDrawerOpen && (
           <>
             <ScenesHeader />
-            <DndContext
-              sensors={sensors}
-              onDragStart={handleDragStart}
-              onDragMove={handleDragMove}
-              onDragEnd={handleDragEnd}
-              collisionDetection={closestCenter}
+            <SortableContext
+              items={(scenesOrder || []).map((scene) => scene.id)}
+              strategy={rectSortingStrategy}
             >
-              <SortableContext
-                items={(scenesOrder || []).map((scene) => scene.id)}
-                strategy={rectSortingStrategy}
-              >
-                <ScenesContainer>
-                  {sceneBeingAdded && <SceneBeingAdded />}
-                  {searchedScenes
-                    ? searchedScenes.map((scene: Scene) => (
-                        <SceneListing key={scene.id} scene={scene} />
-                      ))
-                    : scenesOrder?.map((scene: Scene) => (
-                        <DndSceneListing key={scene.id} scene={scene} />
-                      ))}
-                </ScenesContainer>
-              </SortableContext>
-              <DragOverlay>
-                {isDraggingOut && activeDragScene && (
-                  <SceneListingGhost scene={activeDragScene} />
-                )}
-              </DragOverlay>
-            </DndContext>
+              <ScenesContainer ref={sceneSideBarDndRef}>
+                {sceneBeingAdded && <SceneBeingAdded />}
+                {searchedScenes
+                  ? searchedScenes.map((scene: Scene) => (
+                      <SceneListing key={scene.id} scene={scene} />
+                    ))
+                  : scenesOrder?.map((scene: Scene) => (
+                      <DndSceneListing key={scene.id} scene={scene} />
+                    ))}
+              </ScenesContainer>
+            </SortableContext>
+            <DragOverlay>
+              {isSceneDraggingOut && activeDragScene && (
+                <SceneListingGhost scene={activeDragScene} />
+              )}
+            </DragOverlay>
           </>
         )}
       </TabContainer>

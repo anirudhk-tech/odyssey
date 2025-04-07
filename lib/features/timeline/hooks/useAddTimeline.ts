@@ -32,7 +32,6 @@ export const useAddTimeline = () => {
         showSnackbar("Timeline already exists.");
       } else {
         showSnackbar("Something went wrong. Please try again.");
-        console.log(response.message);
       }
     }
 

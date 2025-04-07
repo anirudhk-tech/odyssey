@@ -8,6 +8,7 @@ import { scenesSlice } from "./features/scenes/store/scenesSlice";
 import { currentSlice } from "./common/store/currentSlice";
 import { timelineSlice } from "./features/timeline/store/timelineSlice";
 import { timelineSectionsSlice } from "./features/timeline/store/timelineSectionsSlice";
+import { dndBooksSlice } from "./features/books/store/dndBooksSlice";
 
 const rootReducer = combineSlices(
   scenesDrawerSlice,
@@ -18,7 +19,8 @@ const rootReducer = combineSlices(
   scenesSlice,
   currentSlice,
   timelineSlice,
-  timelineSectionsSlice
+  timelineSectionsSlice,
+  dndBooksSlice
 );
 
 export type MainState = ReturnType<typeof rootReducer>;

@@ -1,33 +1,22 @@
-import { Timeline } from "@/app/types/timeline";
-import {
-  DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { MainState } from "@/lib/store";
+import { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTimelinesOrder } from "../../books/store/dndBooksSlice";
 
-export const useDndTimelines = ({
-  timelines,
-}: {
-  timelines: Timeline[] | null;
-}) => {
-  const [timelinesOrder, setTimelinesOrder] = useState<Timeline[]>([]);
+export const useDndTimelines = () => {
+  const timelinesOrder = useSelector(
+    (state: MainState) => state.dndBooks.timelinesOrder
+  );
+  const timelines = useSelector((state: MainState) => state.timeline.timelines);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setTimelinesOrder(timelines ? timelines : []);
+    dispatch(setTimelinesOrder(timelines ? timelines : []));
   }, [timelines]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
-
-  const handleDragEnd = (e: DragEndEvent) => {
+  const handleTimelineDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
 
     if (!over) return;
@@ -40,9 +29,10 @@ export const useDndTimelines = ({
         (timeline) => timeline.id === over.id
       );
 
-      setTimelinesOrder((items) => arrayMove(items, oldIndex, newIndex));
+      const newOrder = arrayMove(timelinesOrder, oldIndex, newIndex);
+      dispatch(setTimelinesOrder(newOrder));
     }
   };
 
-  return { timelinesOrder, sensors, handleDragEnd };
+  return { handleTimelineDragEnd, timelinesOrder };
 };

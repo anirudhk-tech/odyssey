@@ -13,8 +13,11 @@ import { DeleteTimelineConfirmDialog } from "@/app/features/timeline/deleteTimel
 import { AddTimelineSectionDialog } from "@/app/features/timeline/addTimelineSectionDialog";
 import { EditTimelineSectionDialog } from "@/app/features/timeline/editTimelineSectionDialog";
 import { DeleteTimelineSectionConfirmDialog } from "@/app/features/timeline/deleteTimelineSectionConfirmDialog";
-import { DndContext } from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import { useDndBookScenesAndTimelines } from "@/lib/features/books/hooks/useDndBookScenesAndTimelines";
+import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
+import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
+import { useRef } from "react";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -30,7 +33,17 @@ export default function EditingPage() {
   const { mounted } = useMounted();
   const params = useParams();
   useSetCurrent({ bookId: params.id as string });
-  const { handleDragEnd } = useDndBookScenesAndTimelines();
+  const sceneSideBarDndRef = useRef<HTMLDivElement>(null);
+  const { handleSceneDragEnd, handleSceneDragStart, handleSceneDragMove } =
+    useDndScenes({ sceneSideBarDndRef });
+  const { handleTimelineDragEnd } = useDndTimelines();
+  const { handleDragEnd, handleDragMove, handleDragStart, sensors } =
+    useDndBookScenesAndTimelines({
+      handleSceneDragStart,
+      handleSceneDragMove,
+      handleTimelineDragEnd,
+      handleSceneDragEnd,
+    });
 
   if (!mounted) return null;
 
@@ -42,8 +55,16 @@ export default function EditingPage() {
       <DeleteTimelineConfirmDialog />
       <DeleteSceneConfirmDialog />
       <TextEditor />
-      <ScenesDrawer />
-      <TimelineDrawer />
+      <DndContext
+        onDragStart={handleDragStart}
+        onDragMove={handleDragMove}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+      >
+        <ScenesDrawer sceneSideBarDndRef={sceneSideBarDndRef} />
+        <TimelineDrawer />
+      </DndContext>
     </Container>
   );
 }
