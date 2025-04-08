@@ -7,6 +7,7 @@ import { useRenameTimeline } from "@/lib/features/timeline/hooks/useRenameTimeli
 import { useTimeline } from "@/lib/features/timeline/hooks/useTimeline";
 import { useTimelineMenu } from "@/lib/features/timeline/hooks/useTimelineMenu";
 import styled from "styled-components";
+import { TimelineSceneListing } from "./timelineSceneListing";
 
 const Container = styled.div`
   display: flex;
@@ -78,7 +79,7 @@ export const TimelineListing = ({
 }) => {
   const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
   const { options } = useTimelineMenu({ setMenuPos });
-  const { handleSetTimelineToBeEdited, timelinePositionScenes } = useTimeline({
+  const { handleSetTimelineToBeEdited, timelineScenes } = useTimeline({
     timeline,
   });
   const {
@@ -115,20 +116,8 @@ export const TimelineListing = ({
         )}
       </TitleContainer>
       <ScenesContainer>
-        {timelinePositionScenes.map((positionScene) => {
-          return (
-            <div
-              key={positionScene.id}
-              style={{
-                width: "150px",
-                height: "60px",
-                position: "absolute",
-                left: 170 + positionScene.x,
-                border: "1px solid red",
-                zIndex: 1000,
-              }}
-            ></div>
-          );
+        {timelineScenes.map((scene) => {
+          return <TimelineSceneListing key={scene.id} scene={scene} />;
         })}
       </ScenesContainer>
     </Container>

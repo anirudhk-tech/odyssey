@@ -8,11 +8,14 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useDispatch, useSelector } from "react-redux";
+import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 import {
+  addSceneToNarrativeTimeline,
   addSceneToTimeline,
+  changeMultipleSceneColorsOnTimelines,
+  changeScenePositionOnNarrativeTimeline,
   changeScenePositionOnTimeline,
-} from "../store/dndBooksSlice";
-import { changeSceneColor } from "../../scenes/store/scenesSlice";
+} from "../../timeline/store/timelineSlice";
 
 export const useDndBookScenesAndTimelines = ({
   handleSceneDragStart,
@@ -28,9 +31,6 @@ export const useDndBookScenesAndTimelines = ({
   const dispatch = useDispatch();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
-  );
-  const timelineSections = useSelector(
-    (state: MainState) => state.timelineSections.sections
   );
 
   const scenesSensors = useSensors(
@@ -65,11 +65,59 @@ export const useDndBookScenesAndTimelines = ({
 
     if (!over || !currentBookId) return;
 
+    if (over.id === "narrative_timeline") {
+      const x = active.rect.current.translated?.left ?? 0;
+
+      const response = await window.odysseyAPI.addSceneToNarrativeTimeline(
+        currentBookId,
+        active.id.toString(),
+        x
+      );
+
+      if (response.success) {
+        if (response.data.exists) {
+          dispatch(
+            changeScenePositionOnNarrativeTimeline({
+              sceneId: active.id,
+              newPosition: x,
+              newColor: response.data.scene.color,
+            })
+          );
+        } else {
+          dispatch(
+            addSceneToNarrativeTimeline({
+              scene: response.data.scene,
+              timelineId: over.id,
+            })
+          );
+        }
+      }
+
+      dispatch(
+        changeMultipleScenesColor([
+          {
+            color: response.data.scene.color,
+            id: active.id.toString(),
+          },
+        ])
+      );
+
+      dispatch(
+        changeMultipleSceneColorsOnTimelines([
+          {
+            color: response.data.scene.color,
+            sceneId: active.id.toString(),
+          },
+        ])
+      );
+      return;
+    }
+
     if (
       active.data.current?.type === "scene" &&
       over.data.current?.type === "timeline"
     ) {
-      const x = (active.rect.current.translated?.left ?? 0) + 170;
+      const x = active.rect.current.translated?.left ?? 0;
 
       const response = await window.odysseyAPI.addSceneToTimeline(
         currentBookId,
@@ -90,31 +138,11 @@ export const useDndBookScenesAndTimelines = ({
         } else {
           dispatch(
             addSceneToTimeline({
-              scene: {
-                id: active.id,
-                x,
-              },
+              scene: response.data.scene,
               timelineId: over.id,
             })
           );
         }
-        console.log(timelineSections);
-        console.log(x);
-        console.log(
-          timelineSections.find(
-            (section) => section.xStart <= x && section.xEnd >= x
-          )?.color ?? "No color found"
-        );
-
-        dispatch(
-          changeSceneColor({
-            color:
-              timelineSections.find(
-                (section) => section.xStart <= x && section.xEnd >= x
-              )?.color ?? null,
-            id: active.id.toString(),
-          })
-        );
       }
     } else if (active.data.current?.type === "scene") {
       handleSceneDragEnd(e);

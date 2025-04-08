@@ -1,21 +1,23 @@
 import { MainState } from "@/lib/store";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTimelines } from "../store/timelineSlice";
+import { setNarrativeTimeline, setTimelines } from "../store/timelineSlice";
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 
-export const useFetchTimelines = () => {
+export const useFetchNarrativeTimeline = () => {
   const dispatch = useDispatch();
-  const timelines = useSelector((state: MainState) => state.timeline.timelines);
+  const narrativeTimeline = useSelector(
+    (state: MainState) => state.timeline.narrativeTimeline
+  );
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
   const { showSnackbar } = useSnackbar();
 
-  const handleFetchTimelines = async (bookId: string) => {
-    const response = await window.odysseyAPI.getTimelines(bookId);
+  const handleFetchNarrativeTimeline = async (bookId: string) => {
+    const response = await window.odysseyAPI.getNarrativeTimeline(bookId);
     if (response.success) {
-      dispatch(setTimelines(response.data.timelines));
+      dispatch(setNarrativeTimeline(response.data.narrativeTimeline));
     } else {
       showSnackbar("Something went wrong while fetching timelines.");
     }
@@ -23,9 +25,9 @@ export const useFetchTimelines = () => {
 
   useEffect(() => {
     if (currentBookId) {
-      handleFetchTimelines(currentBookId);
+      handleFetchNarrativeTimeline(currentBookId);
     }
   }, [currentBookId]);
 
-  return { timelines };
+  return { narrativeTimeline };
 };

@@ -18,8 +18,10 @@ import {
 
 export const useDndScenes = ({
   sceneSideBarDndRef,
+  timelineSideBarDndRef,
 }: {
   sceneSideBarDndRef: RefObject<HTMLDivElement>;
+  timelineSideBarDndRef: RefObject<HTMLDivElement>;
 }) => {
   const dispatch = useDispatch();
   const scenes = useSelector((state: MainState) => state.scenes.scenes);
@@ -45,11 +47,23 @@ export const useDndScenes = ({
   };
 
   const handleSceneDragMove = (e: DragMoveEvent) => {
-    if (!sceneSideBarDndRef?.current || !activeDragScene) return;
+    if (
+      !sceneSideBarDndRef?.current ||
+      !timelineSideBarDndRef?.current ||
+      !activeDragScene
+    )
+      return;
     const currentClientX = (e.activatorEvent as PointerEvent).clientX;
-    const currentDelta = e.delta.x;
-    const rect = sceneSideBarDndRef.current.getBoundingClientRect();
-    const isOutsideSidebar = currentClientX + currentDelta < rect.left;
+    const currentClientY = (e.activatorEvent as PointerEvent).clientY;
+    const currentDeltaX = e.delta.x;
+    const currentDeltaY = e.delta.y;
+
+    const sceneRect = sceneSideBarDndRef.current.getBoundingClientRect();
+    const timelineRect = timelineSideBarDndRef.current.getBoundingClientRect();
+
+    const isOutsideSidebar =
+      currentClientX + currentDeltaX < sceneRect.left ||
+      currentClientY + currentDeltaY > timelineRect.top;
 
     dispatch(setIsSceneDraggingOut(isOutsideSidebar));
   };

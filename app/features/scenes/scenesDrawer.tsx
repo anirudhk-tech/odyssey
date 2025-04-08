@@ -84,8 +84,10 @@ const ScenesContainer = styled.div`
 
 export const ScenesDrawer = ({
   sceneSideBarDndRef,
+  timelineSideBarDndRef,
 }: {
   sceneSideBarDndRef: RefObject<HTMLDivElement>;
+  timelineSideBarDndRef: RefObject<HTMLDivElement>;
 }) => {
   const {
     isDrawerOpen,
@@ -97,6 +99,7 @@ export const ScenesDrawer = ({
   const { sceneBeingAdded } = useAddScene();
   const { scenesOrder, activeDragScene, isSceneDraggingOut } = useDndScenes({
     sceneSideBarDndRef,
+    timelineSideBarDndRef,
   });
 
   return (

@@ -88,8 +88,10 @@ export const resizeTimelineSection = (
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
+    const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
 
     const sectionIndex = data.sections.findIndex(
       (section) => section.id === sectionUUID
@@ -99,13 +101,53 @@ export const resizeTimelineSection = (
       return { success: false, message: "Section not found" };
     }
 
+    const initialXStart = data.sections[sectionIndex].xStart;
+    const initialXEnd = data.sections[sectionIndex].xEnd;
+    const changedScenes = [];
+
     data.sections[sectionIndex].xStart = xStart;
     data.sections[sectionIndex].xEnd = xEnd;
     data.sections[sectionIndex].width = width;
 
-    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    data.narrative.scenes.forEach((scene) => {
+      if (scene.x >= initialXStart && scene.x <= initialXEnd) {
+        const newSection = data.sections.find(
+          (section) => section.xStart <= scene.x && section.xEnd >= scene.x
+        );
+        if (newSection) {
+          scene.color = newSection.color;
+        } else {
+          scene.color = null;
+        }
+        changedScenes.push(scene);
+      }
+    });
 
-    return { success: true, message: "Section resized successfully" };
+    changedScenes.forEach((newScene) => {
+      const scene = scenesData.scenes.find((s) => s.id === newScene.id);
+      if (scene) {
+        scene.color = newScene.color;
+      }
+    });
+
+    data.timelines.forEach((timeline) => {
+      timeline.scenes.forEach((scene) => {
+        const newScene = changedScenes.find((s) => s.id === scene.id);
+
+        if (newScene) {
+          scene.color = newScene.color;
+        }
+      });
+    });
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
+
+    return {
+      success: true,
+      message: "Section resized successfully",
+      data: { changedScenes: changedScenes },
+    };
   } catch (error) {
     return { success: false, message: `Error resizing section: ${error}` };
   }

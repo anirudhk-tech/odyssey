@@ -77,6 +77,22 @@ declare global {
         timelineUUID: string,
         x: number
       ) => Promise<Response>;
+      deleteSceneFromTimeline: (
+        bookUUID: string,
+        sceneUUID: string,
+        timelineUUID: string
+      ) => Promise<Response>;
+      getNarrativeTimeline: (bookUUID: string) => Promise<Response>;
+      addSceneToNarrativeTimeline: (
+        bookUUID: string,
+        sceneUUID: string,
+        x: number
+      ) => Promise<Response>;
+      renameTimelinesSceneName: (
+        bookUUID: string,
+        sceneUUID: string,
+        newSceneName: string
+      ) => Promise<Response>;
     };
   }
 }

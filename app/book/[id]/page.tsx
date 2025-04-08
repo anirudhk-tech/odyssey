@@ -18,6 +18,7 @@ import { useDndBookScenesAndTimelines } from "@/lib/features/books/hooks/useDndB
 import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
 import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
 import { useRef } from "react";
+import { useTimelineSectionResize } from "@/lib/features/timeline/hooks/useTimelineSectionResize";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -35,8 +36,9 @@ export default function EditingPage() {
   const params = useParams();
   useSetCurrent({ bookId: params.id as string });
   const sceneSideBarDndRef = useRef<HTMLDivElement>(null);
+  const timelineSideBarDndRef = useRef<HTMLDivElement>(null);
   const { handleSceneDragEnd, handleSceneDragStart, handleSceneDragMove } =
-    useDndScenes({ sceneSideBarDndRef });
+    useDndScenes({ sceneSideBarDndRef, timelineSideBarDndRef });
   const { handleTimelineDragEnd } = useDndTimelines();
   const { handleDragEnd, handleDragMove, handleDragStart, sensors } =
     useDndBookScenesAndTimelines({
@@ -45,6 +47,7 @@ export default function EditingPage() {
       handleTimelineDragEnd,
       handleSceneDragEnd,
     });
+  const { sectionIsResizing } = useTimelineSectionResize();
 
   if (!mounted) return null;
 
@@ -56,16 +59,29 @@ export default function EditingPage() {
       <DeleteTimelineConfirmDialog />
       <DeleteSceneConfirmDialog />
       <TextEditor />
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragMove={handleDragMove}
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-        collisionDetection={closestCenter}
-      >
-        <ScenesDrawer sceneSideBarDndRef={sceneSideBarDndRef} />
-        <TimelineDrawer />
-      </DndContext>
+      {sectionIsResizing ? (
+        <>
+          <ScenesDrawer
+            sceneSideBarDndRef={sceneSideBarDndRef}
+            timelineSideBarDndRef={timelineSideBarDndRef}
+          />
+          <TimelineDrawer timelineSideBarDndRef={timelineSideBarDndRef} />
+        </>
+      ) : (
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragMove={handleDragMove}
+          onDragEnd={handleDragEnd}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+        >
+          <ScenesDrawer
+            sceneSideBarDndRef={sceneSideBarDndRef}
+            timelineSideBarDndRef={timelineSideBarDndRef}
+          />
+          <TimelineDrawer timelineSideBarDndRef={timelineSideBarDndRef} />
+        </DndContext>
+      )}
     </Container>
   );
 }

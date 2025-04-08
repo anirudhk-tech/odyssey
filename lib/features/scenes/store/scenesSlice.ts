@@ -65,6 +65,7 @@ export const scenesSlice = createSlice({
             id: scene.id,
             textFilePath: scene.textFilePath,
             color: scene.color,
+            x: scene.x,
           };
         }
         return scene;
@@ -73,17 +74,21 @@ export const scenesSlice = createSlice({
     toggleSceneBeingRenamed: (state) => {
       state.sceneBeingRenamed = !state.sceneBeingRenamed;
     },
-    changeSceneColor: (state, action) => {
-      if (!state.scenes) return;
-      console.log("COLOR: ", action.payload.color);
-      state.scenes = state.scenes.map((scene) => {
-        if (scene.id === action.payload.id) {
-          return {
-            ...scene,
-            color: action.payload.color,
-          };
-        }
-        return scene;
+    changeMultipleScenesColor: (state, action) => {
+      if (!state.scenes || state.scenes === null) return;
+      const changes = action.payload;
+      changes.forEach((change: { id: string; color: string }) => {
+        state.scenes = state.scenes
+          ? state.scenes.map((scene) => {
+              if (scene.id === change.id) {
+                return {
+                  ...scene,
+                  color: change.color,
+                };
+              }
+              return scene;
+            })
+          : null;
       });
     },
   },
@@ -101,6 +106,6 @@ export const {
   toggleSceneBeingRenamed,
   setSearchedScenes,
   setSceneQuery,
-  changeSceneColor,
+  changeMultipleScenesColor,
 } = scenesSlice.actions;
 export default scenesSlice.reducer;

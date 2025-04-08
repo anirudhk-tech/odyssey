@@ -1,9 +1,9 @@
-import { PositionScene } from "./scene";
+import { Scene } from "./scene";
 
 export interface Timeline {
   title: string;
   id: string;
-  scenes: PositionScene[];
+  scenes: Scene[];
 }
 
 export interface TimelineSection {
@@ -13,4 +13,8 @@ export interface TimelineSection {
   xStart: number;
   xEnd: number;
   width: number;
+}
+
+export interface NarrativeTimeline {
+  scenes: Scene[];
 }

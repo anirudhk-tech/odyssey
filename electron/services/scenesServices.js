@@ -52,6 +52,8 @@ export const createScene = (bookUUID, sceneName) => {
       title: adjustedSceneName,
       id: sceneUUID,
       textFilePath: textFilePath,
+      color: null,
+      x: null,
     });
 
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");

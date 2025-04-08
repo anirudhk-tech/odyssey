@@ -1,6 +1,5 @@
 import { useTimelineDrawer } from "@/lib/features/timeline/hooks/useTimelineDrawer";
 import styled from "styled-components";
-import { TimelineListing } from "./timelineListing";
 import { IoAdd } from "react-icons/io5";
 import { useFetchTimelines } from "@/lib/features/timeline/hooks/useFetchTimelines";
 import { TimelineBeingAdded } from "./timelineBeingAdded";
@@ -9,11 +8,10 @@ import { useMenu } from "@/lib/common/hooks/useMenu";
 import { Menu } from "@/app/components/menu";
 import { useTimelineAddMenu } from "@/lib/features/timeline/hooks/useTimelineAddMenu";
 import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
-import { DndContext, rectIntersection } from "@dnd-kit/core";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { DndTimelineListing } from "./dndTimelineListing";
-import { NarrativeTimelineListing } from "./narrativeTimelineListing";
+import { DndNarrativeTimelineListing } from "./dndNarrativeTimelineListing";
+import { RefObject } from "react";
 
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.secondary};
@@ -82,7 +80,11 @@ const AddIcon = styled(IoAdd)`
   left: 20px;
 `;
 
-export const TimelineDrawer = () => {
+export const TimelineDrawer = ({
+  timelineSideBarDndRef,
+}: {
+  timelineSideBarDndRef: RefObject<HTMLDivElement>;
+}) => {
   const {
     isDrawerOpen,
     handleToggleTimelineDrawer,
@@ -98,7 +100,11 @@ export const TimelineDrawer = () => {
   const { timelinesOrder } = useDndTimelines();
 
   return (
-    <Container open={isDrawerOpen} timelinedrawerheight={timelineDrawerHeight}>
+    <Container
+      ref={timelineSideBarDndRef}
+      open={isDrawerOpen}
+      timelinedrawerheight={timelineDrawerHeight}
+    >
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
@@ -118,7 +124,7 @@ export const TimelineDrawer = () => {
                   timeline={timeline}
                 />
               ))}
-            <NarrativeTimelineListing scrollLeft={scrollLeft} />
+            <DndNarrativeTimelineListing scrollLeft={scrollLeft} />
           </SortableContext>
           {timelineBeingAdded && <TimelineBeingAdded />}
         </TimelinesContainer>

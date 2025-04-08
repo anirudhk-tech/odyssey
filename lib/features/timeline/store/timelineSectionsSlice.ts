@@ -7,6 +7,7 @@ export interface TimelineSectionsSlice {
   timelineSectionToBeEdited: TimelineSection | null;
   deleteTimelineSectionConfirmDialogOpen: boolean;
   editTimelineSectionDialogOpen: boolean;
+  sectionIsResizing: boolean;
 }
 
 const initialState: TimelineSectionsSlice = {
@@ -15,12 +16,16 @@ const initialState: TimelineSectionsSlice = {
   timelineSectionToBeEdited: null,
   deleteTimelineSectionConfirmDialogOpen: false,
   editTimelineSectionDialogOpen: false,
+  sectionIsResizing: false,
 };
 
 export const timelineSectionsSlice = createSlice({
   name: "timelineSections",
   initialState,
   reducers: {
+    toggleSectionIsResizing: (state) => {
+      state.sectionIsResizing = !state.sectionIsResizing;
+    },
     setTimelineSections: (state, action) => {
       state.sections = action.payload
         .slice()
@@ -127,5 +132,6 @@ export const {
   editTimelineSection,
   deleteTimelineSection,
   swapTimelineSections,
+  toggleSectionIsResizing,
 } = timelineSectionsSlice.actions;
 export default timelineSectionsSlice.reducer;

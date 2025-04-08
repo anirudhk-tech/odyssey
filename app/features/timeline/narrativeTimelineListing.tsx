@@ -1,4 +1,6 @@
+import { useFetchNarrativeTimeline } from "@/lib/features/timeline/hooks/useFetchNarrativeTimeline";
 import styled from "styled-components";
+import { TimelineSceneListing } from "./timelineSceneListing";
 
 const Container = styled.div`
   display: flex;
@@ -41,12 +43,20 @@ export const NarrativeTimelineListing = ({
 }: {
   scrollLeft: number;
 }) => {
+  const { narrativeTimeline } = useFetchNarrativeTimeline();
+
   return (
     <Container>
       <TitleContainer scrollleft={scrollLeft}>
         <Title>Narrative</Title>
       </TitleContainer>
-      <ScenesContainer></ScenesContainer>
+      <ScenesContainer>
+        {narrativeTimeline &&
+          narrativeTimeline.scenes &&
+          narrativeTimeline.scenes.map((scene) => (
+            <TimelineSceneListing key={scene.id} scene={scene} />
+          ))}
+      </ScenesContainer>
     </Container>
   );
 };
