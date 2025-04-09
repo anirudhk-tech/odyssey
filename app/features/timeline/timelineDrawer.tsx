@@ -62,6 +62,7 @@ const TimelinesContainer = styled.div`
   overflow: auto;
   padding-bottom: 50px;
   scrollbar-width: none;
+  scroll-behavior: smooth;
   gap: 10px;
 `;
 

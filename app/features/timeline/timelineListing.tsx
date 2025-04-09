@@ -21,6 +21,8 @@ const Container = styled.div`
   position: relative;
   overflow-x: visible;
   scrollbar-width: none;
+  width: max-content;
+  z-index: 3;
 `;
 
 const ScenesContainer = styled.div`
@@ -117,7 +119,13 @@ export const TimelineListing = ({
       </TitleContainer>
       <ScenesContainer>
         {timelineScenes.map((scene) => {
-          return <TimelineSceneListing key={scene.id} scene={scene} />;
+          return (
+            <TimelineSceneListing
+              key={scene.id}
+              scene={scene}
+              timeline={timeline}
+            />
+          );
         })}
       </ScenesContainer>
     </Container>

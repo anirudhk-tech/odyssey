@@ -8,6 +8,7 @@ export const useMenu = () => {
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     setMenuPos({ x: e.pageX, y: e.pageY });
   };
 

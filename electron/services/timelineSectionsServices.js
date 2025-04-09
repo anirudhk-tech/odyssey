@@ -109,8 +109,11 @@ export const resizeTimelineSection = (
     data.sections[sectionIndex].xEnd = xEnd;
     data.sections[sectionIndex].width = width;
 
+    const affectedXStart = Math.min(initialXStart, xStart);
+    const affectedXEnd = Math.max(initialXEnd, xEnd);
+
     data.narrative.scenes.forEach((scene) => {
-      if (scene.x >= initialXStart && scene.x <= initialXEnd) {
+      if (scene.x >= affectedXStart && scene.x <= affectedXEnd) {
         const newSection = data.sections.find(
           (section) => section.xStart <= scene.x && section.xEnd >= scene.x
         );
@@ -232,8 +235,10 @@ export const swapTimelineSections = (bookUUID, sectionUUID1, sectionUUID2) => {
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
+    const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
 
     const sectionIndex1 = data.sections.findIndex(
       (section) => section.id === sectionUUID1
@@ -249,15 +254,49 @@ export const swapTimelineSections = (bookUUID, sectionUUID1, sectionUUID2) => {
     const tempXStart = data.sections[sectionIndex1].xStart;
     const tempXEnd = data.sections[sectionIndex1].xEnd;
 
+    const sectionOneColor = data.sections[sectionIndex1].color;
+    const sectionTwoColor = data.sections[sectionIndex2].color;
+
     data.sections[sectionIndex1].xStart = data.sections[sectionIndex2].xStart;
     data.sections[sectionIndex1].xEnd = data.sections[sectionIndex2].xEnd;
 
     data.sections[sectionIndex2].xStart = tempXStart;
     data.sections[sectionIndex2].xEnd = tempXEnd;
 
-    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    data.timelines.map((timeline) => {
+      timeline.scenes.map((scene) => {
+        if (scene.color === sectionOneColor) {
+          scene.color = sectionTwoColor;
+        } else if (scene.color === sectionTwoColor) {
+          scene.color = sectionOneColor;
+        }
+      });
+    });
 
-    return { success: true, message: "Sections swapped successfully" };
+    data.narrative.scenes.map((scene) => {
+      if (scene.color === sectionOneColor) {
+        scene.color = sectionTwoColor;
+      } else if (scene.color === sectionTwoColor) {
+        scene.color = sectionOneColor;
+      }
+    });
+
+    scenesData.scenes.map((scene) => {
+      if (scene.color === sectionOneColor) {
+        scene.color = sectionTwoColor;
+      } else if (scene.color === sectionTwoColor) {
+        scene.color = sectionOneColor;
+      }
+    });
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
+
+    return {
+      success: true,
+      message: "Sections swapped successfully",
+      data: { colorOne: sectionOneColor, colorTwo: sectionTwoColor },
+    };
   } catch (error) {
     return { success: false, message: `Error swapping sections: ${error}` };
   }

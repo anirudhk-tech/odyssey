@@ -74,6 +74,8 @@ export const useDndBookScenesAndTimelines = ({
         x
       );
 
+      console.log(response);
+
       if (response.success) {
         if (response.data.exists) {
           dispatch(
@@ -84,12 +86,7 @@ export const useDndBookScenesAndTimelines = ({
             })
           );
         } else {
-          dispatch(
-            addSceneToNarrativeTimeline({
-              scene: response.data.scene,
-              timelineId: over.id,
-            })
-          );
+          dispatch(addSceneToNarrativeTimeline(response.data.scene));
         }
       }
 

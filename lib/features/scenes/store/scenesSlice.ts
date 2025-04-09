@@ -91,6 +91,18 @@ export const scenesSlice = createSlice({
           : null;
       });
     },
+    swapScenesColor: (state, action) => {
+      if (!state.scenes) return;
+      const { colorOne, colorTwo } = action.payload;
+      state.scenes = state.scenes.map((scene) => {
+        if (scene.color === colorOne) {
+          return { ...scene, color: colorTwo };
+        } else if (scene.color === colorTwo) {
+          return { ...scene, color: colorOne };
+        }
+        return scene;
+      });
+    },
   },
 });
 
@@ -107,5 +119,6 @@ export const {
   setSearchedScenes,
   setSceneQuery,
   changeMultipleScenesColor,
+  swapScenesColor,
 } = scenesSlice.actions;
 export default scenesSlice.reducer;

@@ -23,6 +23,9 @@ import {
   deleteSceneFromTimeline,
   addSceneToNarrativeTimeline,
   renameTimelinesSceneName,
+  moveSceneOnNarrativeTimeline,
+  moveSceneOnTimeline,
+  deleteSceneFromAllTimelines,
 } from "./services/timelineServices.js";
 import {
   createTimelineSection,
@@ -153,6 +156,13 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  "deleteSceneFromAllTimelines",
+  async (event, bookUUID, sceneUUID) => {
+    return deleteSceneFromAllTimelines(bookUUID, sceneUUID, null);
+  }
+);
+
 ipcMain.handle("getNarrativeTimeline", async (event, bookUUID) => {
   return getNarrativeTimeline(bookUUID);
 });
@@ -168,5 +178,19 @@ ipcMain.handle(
   "renameTimelinesSceneName",
   async (event, bookUUID, sceneUUID, newSceneName) => {
     return renameTimelinesSceneName(bookUUID, sceneUUID, newSceneName);
+  }
+);
+
+ipcMain.handle(
+  "moveSceneOnNarrativeTimeline",
+  async (event, bookUUID, sceneUUID, x) => {
+    return moveSceneOnNarrativeTimeline(bookUUID, sceneUUID, x);
+  }
+);
+
+ipcMain.handle(
+  "moveSceneOnTimeline",
+  async (event, bookUUID, timelineUUID, sceneUUID, x) => {
+    return moveSceneOnTimeline(bookUUID, timelineUUID, sceneUUID, x);
   }
 );

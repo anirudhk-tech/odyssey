@@ -75,6 +75,35 @@ export const timelineSlice = createSlice({
         return timeline;
       });
     },
+    deleteSceneFromTimeline: (state, action) => {
+      state.timelines = state.timelines.map((timeline) => {
+        if (timeline.id === action.payload.timelineId) {
+          return {
+            ...timeline,
+            scenes: timeline.scenes.filter(
+              (scene) => scene.id !== action.payload.sceneId
+            ),
+          };
+        }
+        return timeline;
+      });
+    },
+    deleteSceneFromAllTimelines: (state, action) => {
+      state.timelines = state.timelines.map((timeline) => {
+        return {
+          ...timeline,
+          scenes: timeline.scenes.filter(
+            (scene) => scene.id !== action.payload.sceneId
+          ),
+        };
+      });
+
+      if (state.narrativeTimeline) {
+        state.narrativeTimeline.scenes = state.narrativeTimeline.scenes.filter(
+          (scene) => scene.id !== action.payload.sceneId
+        );
+      }
+    },
     clearScenesFromTimeline: (state, action) => {
       state.timelines[action.payload].scenes = [];
     },
@@ -94,7 +123,10 @@ export const timelineSlice = createSlice({
     },
     addSceneToNarrativeTimeline: (state, action) => {
       if (!state.narrativeTimeline) return;
-      state.narrativeTimeline.scenes.push(action.payload.scene);
+      state.narrativeTimeline = {
+        ...state.narrativeTimeline,
+        scenes: [...state.narrativeTimeline.scenes, action.payload],
+      };
     },
     clearScenesFromNarrativeTimeline: (state) => {
       if (!state.narrativeTimeline) return;
@@ -149,10 +181,33 @@ export const timelineSlice = createSlice({
         (scene) => scene.id === sceneId
       )!.title = title;
     },
+    swapTimelineScenesColor: (state, action) => {
+      if (!state.timelines || !state.narrativeTimeline) return;
+      const { colorOne, colorTwo } = action.payload;
+
+      state.timelines.forEach((timeline) => {
+        timeline.scenes.forEach((scene) => {
+          if (scene.color === colorOne) {
+            scene.color = colorTwo;
+          } else if (scene.color === colorTwo) {
+            scene.color = colorOne;
+          }
+        });
+      });
+
+      state.narrativeTimeline.scenes.forEach((scene) => {
+        if (scene.color === colorOne) {
+          scene.color = colorTwo;
+        } else if (scene.color === colorTwo) {
+          scene.color = colorOne;
+        }
+      });
+    },
   },
 });
 
 export const {
+  deleteSceneFromAllTimelines,
   changeMultipleSceneColorsOnTimelines,
   toggleTimelineBeingAdded,
   addTimeline,
@@ -171,5 +226,7 @@ export const {
   clearScenesFromNarrativeTimeline,
   changeScenePositionOnNarrativeTimeline,
   changeSceneNameOnTimelines,
+  swapTimelineScenesColor,
+  deleteSceneFromTimeline,
 } = timelineSlice.actions;
 export default timelineSlice.reducer;

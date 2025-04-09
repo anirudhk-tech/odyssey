@@ -1,5 +1,12 @@
+import { Menu } from "@/app/components/menu";
 import { Scene } from "@/app/types/scene";
+import { Timeline } from "@/app/types/timeline";
+import { useMenu } from "@/lib/common/hooks/useMenu";
+import { useDndNarrativeTimeline } from "@/lib/features/timeline/hooks/useDndNarrativeTimeline";
+import { useDndTimeline } from "@/lib/features/timeline/hooks/useDndTimeline";
 import { useTimelineScene } from "@/lib/features/timeline/hooks/useTimelineScene";
+import { useTimelineSceneMenu } from "@/lib/features/timeline/hooks/useTimelineSceneMenu";
+import Draggable from "react-draggable";
 import styled from "styled-components";
 
 const Container = styled.div<{
@@ -56,22 +63,66 @@ const Color = styled.div<{
   top: 0;
   left: 0;
   border-radius: 5px 5px 0 0;
-  z-index: 1010;
+  z-index: 1000;
 `;
 
-export const TimelineSceneListing = ({ scene }: { scene: Scene }) => {
-  const { currentSceneId, handleSetCurrentSceneId } = useTimelineScene({
-    scene,
-  });
+export const TimelineSceneListing = ({
+  scene,
+  timeline,
+}: {
+  scene: Scene;
+  timeline: Timeline | "narrativeTimeline";
+}) => {
+  const { setMenuPos, menuPos, handleMenuOpen } = useMenu();
+  const { options } = useTimelineSceneMenu({ scene, timeline });
+  const { currentSceneId, handleSetCurrentSceneId, timelineSceneRef } =
+    useTimelineScene({
+      scene,
+    });
+  const {
+    handleNarrativeDragEnd,
+    handleNarrativeDrag,
+    handleNarrativeDragStart,
+  } = useDndNarrativeTimeline({ scene });
+
+  const { handleTimelineDragEnd, handleTimelineDrag, handleTimelineDragStart } =
+    useDndTimeline({
+      scene,
+    });
 
   return (
-    <Container
-      scene_active={currentSceneId === scene.id ? "true" : "false"}
-      x={scene.x}
-      onClick={handleSetCurrentSceneId}
-    >
-      <Color color={scene.color} />
-      <Text>{scene.title}</Text>
-    </Container>
+    <>
+      <Menu options={options} menuPos={menuPos} setMenuPos={setMenuPos} />
+      <Draggable
+        nodeRef={timelineSceneRef}
+        axis="x"
+        onStart={
+          timeline === "narrativeTimeline"
+            ? handleNarrativeDragStart
+            : handleTimelineDragStart
+        }
+        onDrag={
+          timeline === "narrativeTimeline"
+            ? handleNarrativeDrag
+            : handleTimelineDrag
+        }
+        onStop={
+          timeline === "narrativeTimeline"
+            ? handleNarrativeDragEnd
+            : handleTimelineDragEnd
+        }
+      >
+        <Container
+          ref={timelineSceneRef}
+          onContextMenu={handleMenuOpen}
+          scene_active={currentSceneId === scene.id ? "true" : "false"}
+          x={scene.x}
+          onClick={handleSetCurrentSceneId}
+        >
+          <Color color={scene.color} />
+          <Text>{scene.title}</Text>
+        </Container>
+      </Draggable>
+    </>
   );
 };

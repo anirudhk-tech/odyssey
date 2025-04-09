@@ -17,7 +17,7 @@ const SnackbarContainer = styled.div`
     opacity: 1;
   }
   cursor: pointer;
-  z-index: 9999;
+  z-index: 10000;
 `;
 
 export const Snackbar = () => {
