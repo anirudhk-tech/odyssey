@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteSceneFromTimeline,
   deleteSceneFromAllTimelines,
+  deleteSceneFromNarrativeTimeline,
+  changeMultipleSceneColorsOnTimelines,
 } from "../store/timelineSlice";
 import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 
@@ -39,24 +41,13 @@ export const useTimelineSceneMenu = ({
         );
       }
     } else {
-    }
-  };
-
-  const handleRemoveAllFromTimeline = async () => {
-    if (!currentBookId) return;
-
-    if (timeline !== "narrativeTimeline") {
-      const response = await window.odysseyAPI.deleteSceneFromAllTimelines(
+      const response = await window.odysseyAPI.deleteSceneFromNarrativeTimeline(
         currentBookId,
         scene.id
       );
 
       if (response.success) {
-        dispatch(
-          deleteSceneFromAllTimelines({
-            sceneId: scene.id,
-          })
-        );
+        dispatch(deleteSceneFromNarrativeTimeline(scene.id));
         dispatch(
           changeMultipleScenesColor([
             {
@@ -65,7 +56,40 @@ export const useTimelineSceneMenu = ({
             },
           ])
         );
+        dispatch(
+          changeMultipleSceneColorsOnTimelines([
+            {
+              sceneId: scene.id,
+              color: null,
+            },
+          ])
+        );
       }
+    }
+  };
+
+  const handleRemoveAllFromTimeline = async () => {
+    if (!currentBookId) return;
+
+    const response = await window.odysseyAPI.deleteSceneFromAllTimelines(
+      currentBookId,
+      scene.id
+    );
+
+    if (response.success) {
+      dispatch(
+        deleteSceneFromAllTimelines({
+          sceneId: scene.id,
+        })
+      );
+      dispatch(
+        changeMultipleScenesColor([
+          {
+            id: scene.id,
+            color: null,
+          },
+        ])
+      );
     }
   };
 

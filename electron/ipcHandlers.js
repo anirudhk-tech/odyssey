@@ -26,6 +26,7 @@ import {
   moveSceneOnNarrativeTimeline,
   moveSceneOnTimeline,
   deleteSceneFromAllTimelines,
+  deleteSceneFromNarrativeTimeline,
 } from "./services/timelineServices.js";
 import {
   createTimelineSection,
@@ -171,6 +172,13 @@ ipcMain.handle(
   "addSceneToNarrativeTimeline",
   async (event, bookUUID, sceneUUID, x) => {
     return addSceneToNarrativeTimeline(bookUUID, sceneUUID, x);
+  }
+);
+
+ipcMain.handle(
+  "deleteSceneFromNarrativeTimeline",
+  async (event, bookUUID, sceneUUID) => {
+    return deleteSceneFromNarrativeTimeline(bookUUID, sceneUUID, null);
   }
 );
 

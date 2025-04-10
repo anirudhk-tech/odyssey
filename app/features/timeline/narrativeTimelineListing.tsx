@@ -8,8 +8,6 @@ const Container = styled.div`
   flex-direction: row;
   height: 80px;
   align-items: center;
-  padding-left: 10px;
-  padding-right: 10px;
   position: relative;
   overflow-x: auto;
 `;
@@ -18,11 +16,9 @@ const TitleContainer = styled.div<{ scrollleft: number }>`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 140px;
+  width: 150px;
   justify-content: center;
   align-items: flex-end;
-  position: absolute;
-  left: 10px;
   transform: translateX(${(props) => props.scrollleft}px);
   transition: transform 0.3s ease;
 `;
@@ -31,6 +27,7 @@ const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
   font-weight: bold;
+  padding-right: 5px;
 `;
 
 const ScenesContainer = styled.div`

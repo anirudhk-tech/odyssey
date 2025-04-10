@@ -6,7 +6,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useDispatch, useSelector } from "react-redux";
 import { MainState } from "@/lib/store";
@@ -25,6 +25,8 @@ export const useDndScenes = ({
 }) => {
   const dispatch = useDispatch();
   const scenes = useSelector((state: MainState) => state.scenes.scenes);
+  const [dragStartedInSiderbar, setDragStartedInSiderbar] = useState(false);
+
   const isSceneDraggingOut = useSelector(
     (state: MainState) => state.dndBooks.isSceneDraggingOut
   );
@@ -40,6 +42,21 @@ export const useDndScenes = ({
   }, [scenes]);
 
   const handleSceneDragStart = (e: DragStartEvent) => {
+    const pointerEvent = e.activatorEvent as PointerEvent;
+    const sidebarRect = sceneSideBarDndRef.current?.getBoundingClientRect();
+
+    if (!sidebarRect) return;
+
+    const { clientX, clientY } = pointerEvent;
+
+    const isInSidebar =
+      clientX >= sidebarRect.left &&
+      clientX <= sidebarRect.right &&
+      clientY >= sidebarRect.top &&
+      clientY <= sidebarRect.bottom;
+
+    setDragStartedInSiderbar(isInSidebar);
+
     const draggedScene =
       scenesOrder.find((scene) => scene.id === e.active.id) || null;
 
@@ -65,7 +82,9 @@ export const useDndScenes = ({
       currentClientX + currentDeltaX < sceneRect.left ||
       currentClientY + currentDeltaY > timelineRect.top;
 
-    dispatch(setIsSceneDraggingOut(isOutsideSidebar));
+    if (dragStartedInSiderbar) {
+      dispatch(setIsSceneDraggingOut(isOutsideSidebar));
+    }
   };
 
   const handleSceneDragEnd = (e: DragEndEvent) => {
@@ -80,6 +99,8 @@ export const useDndScenes = ({
       const newOrder = arrayMove(scenesOrder, oldIndex, newIndex);
       dispatch(setScenesOrder(newOrder));
     }
+
+    dispatch(setIsSceneDraggingOut(false));
   };
 
   return {

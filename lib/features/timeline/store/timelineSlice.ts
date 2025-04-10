@@ -128,6 +128,12 @@ export const timelineSlice = createSlice({
         scenes: [...state.narrativeTimeline.scenes, action.payload],
       };
     },
+    deleteSceneFromNarrativeTimeline: (state, action) => {
+      if (!state.narrativeTimeline) return;
+      state.narrativeTimeline.scenes = state.narrativeTimeline.scenes.filter(
+        (scene) => scene.id !== action.payload
+      );
+    },
     clearScenesFromNarrativeTimeline: (state) => {
       if (!state.narrativeTimeline) return;
       state.narrativeTimeline.scenes = [];
@@ -207,6 +213,7 @@ export const timelineSlice = createSlice({
 });
 
 export const {
+  deleteSceneFromNarrativeTimeline,
   deleteSceneFromAllTimelines,
   changeMultipleSceneColorsOnTimelines,
   toggleTimelineBeingAdded,

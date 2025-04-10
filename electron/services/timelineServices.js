@@ -264,6 +264,11 @@ export const deleteSceneFromAllTimelines = (bookUUID, sceneUUID) => {
       }
     });
 
+    const narrativeSceneIndex = data.narrative.scenes.findIndex(
+      (scene) => scene.id === sceneUUID
+    );
+
+    data.narrative.scenes.splice(narrativeSceneIndex, 1);
     scenesData.scenes.find((scene) => scene.id === sceneUUID).color = null;
 
     fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
@@ -403,7 +408,6 @@ export const deleteSceneFromNarrativeTimeline = (bookUUID, sceneUUID) => {
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
     const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
-    const changedScenes = [];
 
     const sceneIndex = data.narrative.scenes.findIndex(
       (scene) => scene.id === sceneUUID
@@ -429,7 +433,6 @@ export const deleteSceneFromNarrativeTimeline = (bookUUID, sceneUUID) => {
 
       if (sceneIndex !== -1) {
         timeline.scenes[sceneIndex].color = null;
-        changedScenes.push(timeline.scenes[sceneIndex]);
       }
     });
 
@@ -439,7 +442,6 @@ export const deleteSceneFromNarrativeTimeline = (bookUUID, sceneUUID) => {
     return {
       success: true,
       message: "Scene deleted from narrative successfully",
-      data: { changedScenes: changedScenes },
     };
   } catch (error) {
     return {

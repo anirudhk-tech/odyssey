@@ -74,8 +74,6 @@ export const useDndBookScenesAndTimelines = ({
         x
       );
 
-      console.log(response);
-
       if (response.success) {
         if (response.data.exists) {
           dispatch(

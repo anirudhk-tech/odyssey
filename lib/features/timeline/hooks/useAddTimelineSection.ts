@@ -23,7 +23,7 @@ export const useAddTimelineSection = () => {
   const [sectionName, setSectionName] = useState("");
   const [error, setError] = useState("");
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
-  const [color, setColor] = useState("#ffffff");
+  const [color, setColor] = useState("red");
   const colorPickerRef = useRef(null);
 
   const toggleDialog = () => {

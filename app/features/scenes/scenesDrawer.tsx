@@ -102,6 +102,8 @@ export const ScenesDrawer = ({
     timelineSideBarDndRef,
   });
 
+  console.log(isSceneDraggingOut);
+
   return (
     <Container>
       <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>

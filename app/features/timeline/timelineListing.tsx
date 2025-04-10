@@ -15,18 +15,20 @@ const Container = styled.div`
   flex-direction: row;
   height: 80px;
   align-items: center;
-  padding-left: 10px;
-  padding-right: 10px;
-  border-bottom: 1px solid ${(props) => props.theme.colors.secondary};
   position: relative;
-  overflow-x: visible;
+  overflow-x: auto;
   scrollbar-width: none;
-  width: max-content;
+  width: fit-content;
   z-index: 3;
 `;
 
+const Spacer = styled.div`
+  height: 100%;
+  width: 1000000000000000px;
+  flex-shrink: 0;
+`;
+
 const ScenesContainer = styled.div`
-  width: max-content;
   min-width: 100%;
   height: 100%;
   display: flex;
@@ -37,13 +39,12 @@ const ScenesContainer = styled.div`
 
 const TitleContainer = styled.div<{ scrollleft: number }>`
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   height: 100%;
   width: 150px;
   justify-content: center;
   align-items: flex-end;
-  position: absolute;
-  left: 10px;
   transform: translateX(${(props) => props.scrollleft}px);
   transition: transform 0.3s ease;
   background-color: ${(props) => props.theme.colors.background};
@@ -53,7 +54,7 @@ const Title = styled.span`
   width: 100%;
   height: fit-content;
   text-align: right;
-  padding-right: 10px;
+  padding-right: 5px;
   text-overflow: ellipsis;
   word-break: normal;
   overflow-wrap: normal;
@@ -61,13 +62,13 @@ const Title = styled.span`
 
 const Input = styled.textarea`
   width: 100%;
-  height: 100%;
+  height: fit-content;
   border: none;
   background-color: transparent;
   color: ${(props) => props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
   outline: none;
-  padding: 0 10px;
+  padding-right: 5px;
   text-align: right;
   resize: none;
 `;
@@ -118,6 +119,7 @@ export const TimelineListing = ({
         )}
       </TitleContainer>
       <ScenesContainer>
+        <Spacer />
         {timelineScenes.map((scene) => {
           return (
             <TimelineSceneListing

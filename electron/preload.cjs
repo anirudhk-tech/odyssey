@@ -89,6 +89,8 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
     ipcRenderer.invoke("getNarrativeTimeline", bookUUID),
   addSceneToNarrativeTimeline: (bookUUID, sceneUUID, x) =>
     ipcRenderer.invoke("addSceneToNarrativeTimeline", bookUUID, sceneUUID, x),
+  deleteSceneFromNarrativeTimeline: (bookUUID, sceneUUID) =>
+    ipcRenderer.invoke("deleteSceneFromNarrativeTimeline", bookUUID, sceneUUID),
   renameTimelinesSceneName: (bookUUID, sceneUUID, newSceneName) =>
     ipcRenderer.invoke(
       "renameTimelinesSceneName",
