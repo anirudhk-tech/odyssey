@@ -1,5 +1,7 @@
 {
   "name": "odyssey",
+  "description": "Odyssey is a writing app for seamlessly managing books and the scenes within.",
+  "author": "Anirudh Kuppili",
   "version": "1.0.0",
   "main": "electron/main.js",
   "type": "module",
@@ -19,7 +21,6 @@
     "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
     "electron": "^35.0.3",
-    "electron-builder": "^26.0.12",
     "fuse.js": "^7.1.0",
     "next": "latest",
     "react": "^18.2.0",
@@ -36,6 +37,7 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.37",
     "@types/react-dom": "^18.2.18",
+    "electron-builder": "^26.0.12",
     "typescript": "^5.3.3"
   },
   "build": {
