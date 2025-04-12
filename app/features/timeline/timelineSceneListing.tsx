@@ -91,9 +91,9 @@ export const TimelineSceneListing = ({
       <DndDisabled>
         <Menu options={options} menuPos={menuPos} setMenuPos={setMenuPos} />
         <Draggable
-          position={{ x: scene.x || 0, y: 0 }}
           nodeRef={timelineSceneRef}
           axis="x"
+          position={{ x: scene.x ?? 0, y: 0 }}
           onStart={
             timeline === "narrativeTimeline"
               ? handleNarrativeDragStart

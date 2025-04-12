@@ -1,6 +1,7 @@
 import { useFetchNarrativeTimeline } from "@/lib/features/timeline/hooks/useFetchNarrativeTimeline";
 import styled from "styled-components";
 import { TimelineSceneListing } from "./timelineSceneListing";
+import { TIMELINE_TITLE_MARGIN } from "@/app/GlobalStyles";
 
 const Container = styled.div`
   display: flex;
@@ -13,12 +14,12 @@ const Container = styled.div`
   z-index: 3;
 `;
 
-const TitleContainer = styled.div<{ scrollleft: number }>`
+const TitleContainer = styled.div<{ scrollleft: number; width: number }>`
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   height: 100%;
-  width: 150px;
+  width: ${(props) => props.width}px;
   justify-content: center;
   align-items: flex-end;
   transform: translateX(${(props) => props.scrollleft}px);
@@ -59,7 +60,7 @@ export const NarrativeTimelineListing = ({
 
   return (
     <Container>
-      <TitleContainer scrollleft={scrollLeft}>
+      <TitleContainer scrollleft={scrollLeft} width={TIMELINE_TITLE_MARGIN}>
         <Title>Narrative</Title>
       </TitleContainer>
       <ScenesContainer>

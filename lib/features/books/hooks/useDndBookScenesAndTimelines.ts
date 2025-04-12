@@ -16,6 +16,7 @@ import {
   changeScenePositionOnNarrativeTimeline,
   changeScenePositionOnTimeline,
 } from "../../timeline/store/timelineSlice";
+import { TIMELINE_TITLE_MARGIN } from "@/app/GlobalStyles";
 
 export const useDndBookScenesAndTimelines = ({
   handleSceneDragStart,
@@ -66,7 +67,10 @@ export const useDndBookScenesAndTimelines = ({
     if (!over || !currentBookId) return;
 
     if (over.id === "narrative_timeline") {
-      const x = active.rect.current.translated?.left ?? 0;
+      let x = active.rect.current.translated?.left ?? 0;
+      x -= TIMELINE_TITLE_MARGIN;
+
+      console.log(x);
 
       const response = await window.odysseyAPI.addSceneToNarrativeTimeline(
         currentBookId,
@@ -113,6 +117,7 @@ export const useDndBookScenesAndTimelines = ({
       over.data.current?.type === "timeline"
     ) {
       let x = active.rect.current.translated?.left ?? 0;
+      x -= TIMELINE_TITLE_MARGIN;
 
       const response = await window.odysseyAPI.addSceneToTimeline(
         currentBookId,

@@ -38,8 +38,9 @@ export const useAddTimelineSection = () => {
       return;
     }
 
-    const xStart =
-      sections.map((section) => section.width).reduce((a, b) => a + b, 0) + 170;
+    const xStart = sections
+      .map((section) => section.width)
+      .reduce((a, b) => a + b, 0);
     const response = await window.odysseyAPI.createTimelineSection(
       currentBookId,
       sectionName,

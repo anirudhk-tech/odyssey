@@ -16,4 +16,6 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+export const TIMELINE_TITLE_MARGIN = 170;
+
 export default GlobalStyle;

@@ -7,7 +7,7 @@ import {
   changeMultipleSceneColorsOnTimelines,
   changeScenePositionOnNarrativeTimeline,
 } from "../store/timelineSlice";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
   const dispatch = useDispatch();
@@ -15,6 +15,11 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
     (state: MainState) => state.current.currentBookId
   );
   const startX = useRef<number>(0);
+  const positionX = useRef<number>(scene.x ?? 0);
+
+  useEffect(() => {
+    positionX.current = scene.x ?? 0;
+  }, [scene.x]);
 
   const handleMoveScene = async (newX: number) => {
     if (!currentBookId) return;
@@ -59,13 +64,15 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
     if (!currentBookId) return;
 
     const deltaX = data.x - startX.current;
-    const newX = scene.x ? scene.x + deltaX : deltaX;
+    const newX = positionX.current + deltaX;
 
     handleMoveScene(newX);
+    positionX.current = newX;
   };
 
   return {
     handleNarrativeDragEnd,
     handleNarrativeDragStart,
+    positionX: positionX.current,
   };
 };

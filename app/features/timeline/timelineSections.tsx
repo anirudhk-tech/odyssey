@@ -11,13 +11,14 @@ import {
   SortableContext,
 } from "@dnd-kit/sortable";
 import { DndTimelineSectionListing } from "./dndTimelineSectionListing";
+import { TIMELINE_TITLE_MARGIN } from "@/app/GlobalStyles";
 
-const Container = styled.div`
+const Container = styled.div<{ margin: number }>`
   width: 100%;
   height: 50px;
   display: flex;
   flex-direction: row;
-  margin-left: 170px;
+  margin-left: ${(props) => props.margin}px;
 `;
 
 export const TimelineSections = () => {
@@ -29,7 +30,7 @@ export const TimelineSections = () => {
   });
 
   return (
-    <Container>
+    <Container margin={TIMELINE_TITLE_MARGIN}>
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <DndContext
         sensors={sensors}

@@ -1,6 +1,6 @@
 import { Scene } from "@/app/types/scene";
 import { MainState } from "@/lib/store";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { Timeline } from "@/app/types/timeline";
@@ -10,7 +10,7 @@ export const useDndTimeline = ({
   scene,
   timeline,
 }: {
-  scene: Scene | null;
+  scene: Scene;
   timeline: Timeline | "narrativeTimeline";
 }) => {
   const dispatch = useDispatch();
@@ -18,6 +18,11 @@ export const useDndTimeline = ({
     (state: MainState) => state.current.currentBookId
   );
   const startX = useRef<number>(0);
+  const positionX = useRef<number>(scene.x ?? 0);
+
+  useEffect(() => {
+    positionX.current = scene.x ?? 0;
+  }, [scene.x]);
 
   const handleMoveScene = async (newX: number) => {
     if (!currentBookId || !scene || timeline === "narrativeTimeline") return;
@@ -34,7 +39,7 @@ export const useDndTimeline = ({
         changeScenePositionOnTimeline({
           sceneId: scene.id,
           timelineId: timeline.id,
-          newX: response.data.newX,
+          newPosition: newX,
         })
       );
     }
@@ -49,13 +54,15 @@ export const useDndTimeline = ({
     if (!currentBookId || !scene) return;
 
     const deltaX = data.x - startX.current;
-    const newX = scene.x ? scene.x + deltaX : deltaX;
+    const newX = positionX.current + deltaX;
 
+    positionX.current = newX;
     handleMoveScene(newX);
   };
 
   return {
     handleTimelineDragEnd,
     handleTimelineDragStart,
+    positionX: positionX.current,
   };
 };
