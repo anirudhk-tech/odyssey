@@ -102,8 +102,6 @@ export const ScenesDrawer = ({
     timelineSideBarDndRef,
   });
 
-  console.log(isSceneDraggingOut);
-
   return (
     <Container>
       <TabContainer open={isDrawerOpen} drawerwidth={scenesDrawerWidth}>
@@ -120,7 +118,7 @@ export const ScenesDrawer = ({
                 {sceneBeingAdded && <SceneBeingAdded />}
                 {searchedScenes
                   ? searchedScenes.map((scene: Scene) => (
-                      <SceneListing key={scene.id} scene={scene} />
+                      <DndSceneListing key={scene.id} scene={scene} />
                     ))
                   : scenesOrder?.map((scene: Scene) => (
                       <DndSceneListing key={scene.id} scene={scene} />

@@ -8,6 +8,7 @@ import { useTimeline } from "@/lib/features/timeline/hooks/useTimeline";
 import { useTimelineMenu } from "@/lib/features/timeline/hooks/useTimelineMenu";
 import styled from "styled-components";
 import { TimelineSceneListing } from "./timelineSceneListing";
+import { useDndTimeline } from "@/lib/features/timeline/hooks/useDndTimeline";
 
 const Container = styled.div`
   display: flex;
@@ -15,23 +16,16 @@ const Container = styled.div`
   flex-direction: row;
   height: 80px;
   align-items: center;
-  position: relative;
-  overflow-x: auto;
   scrollbar-width: none;
   width: fit-content;
   z-index: 3;
 `;
 
-const Spacer = styled.div`
-  height: 100%;
-  width: 1000000000000000px;
-  flex-shrink: 0;
-`;
-
 const ScenesContainer = styled.div`
-  min-width: 100%;
+  width: fit-content;
   height: 100%;
   display: flex;
+  flex-shrink: 0;
   flex-direction: row;
   position: relative;
   overflow-x: visible;
@@ -71,6 +65,12 @@ const Input = styled.textarea`
   padding-right: 5px;
   text-align: right;
   resize: none;
+`;
+
+const Spacer = styled.div`
+  width: 10000px;
+  height: 1px;
+  flex-shrink: 0;
 `;
 
 export const TimelineListing = ({
@@ -119,7 +119,6 @@ export const TimelineListing = ({
         )}
       </TitleContainer>
       <ScenesContainer>
-        <Spacer />
         {timelineScenes.map((scene) => {
           return (
             <TimelineSceneListing
@@ -129,6 +128,7 @@ export const TimelineListing = ({
             />
           );
         })}
+        <Spacer />
       </ScenesContainer>
     </Container>
   );

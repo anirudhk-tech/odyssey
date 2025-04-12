@@ -112,7 +112,7 @@ export const useDndBookScenesAndTimelines = ({
       active.data.current?.type === "scene" &&
       over.data.current?.type === "timeline"
     ) {
-      const x = active.rect.current.translated?.left ?? 0;
+      let x = active.rect.current.translated?.left ?? 0;
 
       const response = await window.odysseyAPI.addSceneToTimeline(
         currentBookId,

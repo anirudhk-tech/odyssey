@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface TimelineSlice {
   timelines: Timeline[];
-  timelineBeingAdded: boolean;
+  addTimelineDialogOpen: boolean;
   deleteTimelineConfirmDialogOpen: boolean;
   timelineToBeEdited: Timeline | null;
   timelineBeingRenamed: boolean;
@@ -12,7 +12,7 @@ export interface TimelineSlice {
 
 const initialState: TimelineSlice = {
   timelines: [],
-  timelineBeingAdded: false,
+  addTimelineDialogOpen: false,
   deleteTimelineConfirmDialogOpen: false,
   timelineToBeEdited: null,
   timelineBeingRenamed: false,
@@ -23,8 +23,8 @@ export const timelineSlice = createSlice({
   name: "timeline",
   initialState,
   reducers: {
-    toggleTimelineBeingAdded: (state) => {
-      state.timelineBeingAdded = !state.timelineBeingAdded;
+    toggleAddTimelineDialog: (state) => {
+      state.addTimelineDialogOpen = !state.addTimelineDialogOpen;
     },
     addTimeline: (state, action) => {
       state.timelines.push(action.payload);
@@ -216,7 +216,7 @@ export const {
   deleteSceneFromNarrativeTimeline,
   deleteSceneFromAllTimelines,
   changeMultipleSceneColorsOnTimelines,
-  toggleTimelineBeingAdded,
+  toggleAddTimelineDialog,
   addTimeline,
   setTimelines,
   deleteTimeline,

@@ -8,12 +8,14 @@ const Container = styled.div`
   flex-direction: row;
   height: 80px;
   align-items: center;
-  position: relative;
-  overflow-x: auto;
+  scrollbar-width: none;
+  width: fit-content;
+  z-index: 3;
 `;
 
 const TitleContainer = styled.div<{ scrollleft: number }>`
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   height: 100%;
   width: 150px;
@@ -21,6 +23,8 @@ const TitleContainer = styled.div<{ scrollleft: number }>`
   align-items: flex-end;
   transform: translateX(${(props) => props.scrollleft}px);
   transition: transform 0.3s ease;
+  background-color: ${(props) => props.theme.colors.background};
+  font-weight: bold;
 `;
 
 const Title = styled.span`
@@ -31,8 +35,19 @@ const Title = styled.span`
 `;
 
 const ScenesContainer = styled.div`
-  width: calc(100% - 150px);
+  width: fit-content;
   height: 100%;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;
+  overflow-x: visible;
+  position: relative;
+`;
+
+const Spacer = styled.div`
+  width: 10000px;
+  height: 1px;
+  flex-shrink: 0;
 `;
 
 export const NarrativeTimelineListing = ({
@@ -57,6 +72,7 @@ export const NarrativeTimelineListing = ({
               timeline={"narrativeTimeline"}
             />
           ))}
+        <Spacer />
       </ScenesContainer>
     </Container>
   );

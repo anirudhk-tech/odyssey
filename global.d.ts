@@ -108,8 +108,8 @@ declare global {
       ) => Promise<Response>;
       moveSceneOnTimeline: (
         bookUUID: string,
-        timelineUUID: string,
         sceneUUID: string,
+        timelineUUID: string,
         x: number
       ) => Promise<Response>;
     };

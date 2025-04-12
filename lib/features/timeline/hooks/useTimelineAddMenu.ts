@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { toggleTimelineBeingAdded } from "../store/timelineSlice";
+import { toggleAddTimelineDialog } from "../store/timelineSlice";
 import { toggleAddTimelineSectionDialog } from "../store/timelineSectionsSlice";
 
 export const useTimelineAddMenu = () => {
   const dispatch = useDispatch();
   const handleToggleAddTimeline = () => {
-    dispatch(toggleTimelineBeingAdded());
+    dispatch(toggleAddTimelineDialog());
   };
 
   const handleToggleAddSection = () => {

@@ -44,6 +44,7 @@ const EditorContainer = styled.div`
   padding-left: 10px;
   padding-bottom: 350px;
   padding-right: 10px;
+  scrollbar-width: thin;
 `;
 
 export const TextEditor = () => {

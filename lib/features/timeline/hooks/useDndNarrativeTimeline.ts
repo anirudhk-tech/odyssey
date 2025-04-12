@@ -3,7 +3,10 @@ import { MainState } from "@/lib/store";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
-import { changeMultipleSceneColorsOnTimelines } from "../store/timelineSlice";
+import {
+  changeMultipleSceneColorsOnTimelines,
+  changeScenePositionOnNarrativeTimeline,
+} from "../store/timelineSlice";
 import { useRef } from "react";
 
 export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
@@ -11,7 +14,7 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
-  const deltaX = useRef<number>(0);
+  const startX = useRef<number>(0);
 
   const handleMoveScene = async (newX: number) => {
     if (!currentBookId) return;
@@ -24,10 +27,18 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
 
     if (response.success) {
       dispatch(
+        changeScenePositionOnNarrativeTimeline({
+          sceneId: scene.id,
+          newPosition: newX,
+        })
+      );
+
+      dispatch(
         changeMultipleScenesColor([
           { id: scene.id, color: response.data.newColor },
         ])
       );
+
       dispatch(
         changeMultipleSceneColorsOnTimelines(
           response.data.changedScenes.map((scene: Scene) => ({
@@ -41,25 +52,20 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
 
   const handleNarrativeDragStart = (e: DraggableEvent, data: DraggableData) => {
     if (!currentBookId) return;
-    deltaX.current = 0;
-  };
-
-  const handleNarrativeDrag = (e: DraggableEvent, data: DraggableData) => {
-    if (!currentBookId) return;
-    deltaX.current += data.deltaX;
+    startX.current = data.x;
   };
 
   const handleNarrativeDragEnd = (e: DraggableEvent, data: DraggableData) => {
     if (!currentBookId) return;
 
-    const newX = scene.x ? scene.x + deltaX.current : deltaX.current;
+    const deltaX = data.x - startX.current;
+    const newX = scene.x ? scene.x + deltaX : deltaX;
 
     handleMoveScene(newX);
   };
 
   return {
     handleNarrativeDragEnd,
-    handleNarrativeDrag,
     handleNarrativeDragStart,
   };
 };

@@ -10,7 +10,7 @@ const initialWidth =
 const maxWidth = typeof window !== "undefined" ? window.innerWidth / 2 : 1000;
 
 const initialState: ScenesDrawerState = {
-  isDrawerOpen: true,
+  isDrawerOpen: false,
   scenesDrawerWidth: initialWidth,
 };
 

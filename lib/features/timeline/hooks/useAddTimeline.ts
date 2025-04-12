@@ -1,23 +1,31 @@
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 import { MainState } from "@/lib/store";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addTimeline, toggleTimelineBeingAdded } from "../store/timelineSlice";
+import { addTimeline, toggleAddTimelineDialog } from "../store/timelineSlice";
 
 export const useAddTimeline = () => {
   const dispatch = useDispatch();
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [timelineName, setTimelineName] = useState("");
+  const [error, setError] = useState("");
   const { showSnackbar } = useSnackbar();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
+  const addTimelineDialogOpen = useSelector(
+    (state: MainState) => state.timeline.addTimelineDialogOpen
+  );
+
+  const toggleDialog = () => {
+    dispatch(toggleAddTimelineDialog());
+    setError("");
+  };
 
   const handleAddTimeline = async () => {
     if (!currentBookId) return;
 
     if (timelineName.length <= 3) {
-      showSnackbar("Timeline name must be longer than 3 characters.");
+      setError("Timeline name must be longer than 3 characters.");
       return;
     }
 
@@ -27,17 +35,23 @@ export const useAddTimeline = () => {
     );
     if (response.success) {
       dispatch(addTimeline(response.data));
+      showSnackbar("Timeline added!");
+      toggleDialog();
+      setTimelineName("");
     } else {
       if (response.message === "Timeline already exists") {
-        showSnackbar("Timeline already exists.");
+        setError("Timeline already exists.");
       } else {
-        showSnackbar("Something went wrong. Please try again.");
+        setError("Something went wrong. Please try again.");
       }
     }
-
-    setTimelineName("");
-    dispatch(toggleTimelineBeingAdded());
   };
 
-  return { setTimelineName, handleAddTimeline, inputRef };
+  return {
+    setTimelineName,
+    handleAddTimeline,
+    addTimelineDialogOpen,
+    toggleDialog,
+    error,
+  };
 };

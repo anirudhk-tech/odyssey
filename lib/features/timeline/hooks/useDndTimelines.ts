@@ -1,5 +1,5 @@
 import { MainState } from "@/lib/store";
-import { DragEndEvent } from "@dnd-kit/core";
+import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";

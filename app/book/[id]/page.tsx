@@ -13,12 +13,13 @@ import { DeleteTimelineConfirmDialog } from "@/app/features/timeline/deleteTimel
 import { AddTimelineSectionDialog } from "@/app/features/timeline/addTimelineSectionDialog";
 import { EditTimelineSectionDialog } from "@/app/features/timeline/editTimelineSectionDialog";
 import { DeleteTimelineSectionConfirmDialog } from "@/app/features/timeline/deleteTimelineSectionConfirmDialog";
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import { DndContext, pointerWithin } from "@dnd-kit/core";
 import { useDndBookScenesAndTimelines } from "@/lib/features/books/hooks/useDndBookScenesAndTimelines";
 import { useDndScenes } from "@/lib/features/scenes/hooks/useDndScenes";
 import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
 import { useRef } from "react";
 import { useTimelineSectionResize } from "@/lib/features/timeline/hooks/useTimelineSectionResize";
+import { AddTimelineDialog } from "@/app/features/timeline/addTimelineDialog";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -56,6 +57,7 @@ export default function EditingPage() {
       <DeleteTimelineSectionConfirmDialog />
       <EditTimelineSectionDialog />
       <AddTimelineSectionDialog />
+      <AddTimelineDialog />
       <DeleteTimelineConfirmDialog />
       <DeleteSceneConfirmDialog />
       <TextEditor />
@@ -73,7 +75,7 @@ export default function EditingPage() {
           onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={pointerWithin}
         >
           <ScenesDrawer
             sceneSideBarDndRef={sceneSideBarDndRef}

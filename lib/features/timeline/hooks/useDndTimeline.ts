@@ -4,40 +4,58 @@ import { useRef } from "react";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { Timeline } from "@/app/types/timeline";
+import { changeScenePositionOnTimeline } from "../store/timelineSlice";
 
-export const useDndTimeline = ({ scene }: { scene: Scene }) => {
+export const useDndTimeline = ({
+  scene,
+  timeline,
+}: {
+  scene: Scene | null;
+  timeline: Timeline | "narrativeTimeline";
+}) => {
+  const dispatch = useDispatch();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
-  const deltaX = useRef<number>(0);
+  const startX = useRef<number>(0);
 
   const handleMoveScene = async (newX: number) => {
-    if (!currentBookId) return;
+    if (!currentBookId || !scene || timeline === "narrativeTimeline") return;
 
-    await window.odysseyAPI.moveSceneOnNarrativeTimeline(
+    const response = await window.odysseyAPI.moveSceneOnTimeline(
       currentBookId,
       scene.id,
+      timeline.id,
       newX
     );
+
+    if (response.success) {
+      dispatch(
+        changeScenePositionOnTimeline({
+          sceneId: scene.id,
+          timelineId: timeline.id,
+          newX: response.data.newX,
+        })
+      );
+    }
   };
 
   const handleTimelineDragStart = (e: DraggableEvent, data: DraggableData) => {
     if (!currentBookId) return;
-    deltaX.current = 0;
-  };
-
-  const handleTimelineDrag = (e: DraggableEvent, data: DraggableData) => {
-    if (!currentBookId) return;
-    deltaX.current += data.deltaX;
+    startX.current = data.x;
   };
 
   const handleTimelineDragEnd = (e: DraggableEvent, data: DraggableData) => {
-    if (!currentBookId) return;
+    if (!currentBookId || !scene) return;
 
-    const newX = scene.x ? scene.x + deltaX.current : deltaX.current;
+    const deltaX = data.x - startX.current;
+    const newX = scene.x ? scene.x + deltaX : deltaX;
 
     handleMoveScene(newX);
   };
 
-  return { handleTimelineDragEnd, handleTimelineDrag, handleTimelineDragStart };
+  return {
+    handleTimelineDragEnd,
+    handleTimelineDragStart,
+  };
 };

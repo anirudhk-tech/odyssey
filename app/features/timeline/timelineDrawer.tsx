@@ -2,7 +2,6 @@ import { useTimelineDrawer } from "@/lib/features/timeline/hooks/useTimelineDraw
 import styled from "styled-components";
 import { IoAdd } from "react-icons/io5";
 import { useFetchTimelines } from "@/lib/features/timeline/hooks/useFetchTimelines";
-import { TimelineBeingAdded } from "./timelineBeingAdded";
 import { TimelineSections } from "./timelineSections";
 import { useMenu } from "@/lib/common/hooks/useMenu";
 import { Menu } from "@/app/components/menu";
@@ -55,7 +54,7 @@ const Container = styled.div<{
 `;
 
 const TimelinesContainer = styled.div`
-  width: 100%;
+  width: fit-content;
   height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
@@ -66,12 +65,12 @@ const TimelinesContainer = styled.div`
   gap: 10px;
 `;
 
-const TimelineScrollContainer = styled.div`
+const TimelineSectionsContainer = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  scrollbar-width: thin;
   position: relative;
+  overflow: auto;
+  scrollbar-width: thin;
 `;
 
 const AddIcon = styled(IoAdd)`
@@ -91,7 +90,6 @@ export const TimelineDrawer = ({
     handleToggleTimelineDrawer,
     timelineDrawerHeight,
     handleMouseResizeDown,
-    timelineBeingAdded,
     handleScroll,
     scrollLeft,
   } = useTimelineDrawer();
@@ -109,10 +107,10 @@ export const TimelineDrawer = ({
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineScrollContainer onScroll={handleScroll}>
+      <TimelineSectionsContainer>
         <AddIcon onClick={handleMenuOpenFromIcon} />
         <TimelineSections />
-        <TimelinesContainer>
+        <TimelinesContainer onScroll={handleScroll}>
           <SortableContext
             items={(timelinesOrder || []).map((timeline) => timeline.id)}
             strategy={rectSortingStrategy}
@@ -127,9 +125,8 @@ export const TimelineDrawer = ({
               ))}
             <DndNarrativeTimelineListing scrollLeft={scrollLeft} />
           </SortableContext>
-          {timelineBeingAdded && <TimelineBeingAdded />}
         </TimelinesContainer>
-      </TimelineScrollContainer>
+      </TimelineSectionsContainer>
     </Container>
   );
 };

@@ -1,3 +1,4 @@
+import { DndDisabled } from "@/app/components/dndDisabled";
 import { Menu } from "@/app/components/menu";
 import { Scene } from "@/app/types/scene";
 import { Timeline } from "@/app/types/timeline";
@@ -11,7 +12,6 @@ import styled from "styled-components";
 
 const Container = styled.div<{
   scene_active: "true" | "false";
-  x: number | null;
 }>`
   display: flex;
   flex-shrink: 0;
@@ -35,7 +35,6 @@ const Container = styled.div<{
   aspect-ratio: 1.5;
   height: 70px;
   position: absolute;
-  left: ${(props) => (props.x ? props.x : 0)}px;
   align-items: center;
   justify-content: center;
 `;
@@ -79,50 +78,44 @@ export const TimelineSceneListing = ({
     useTimelineScene({
       scene,
     });
-  const {
-    handleNarrativeDragEnd,
-    handleNarrativeDrag,
-    handleNarrativeDragStart,
-  } = useDndNarrativeTimeline({ scene });
+  const { handleNarrativeDragEnd, handleNarrativeDragStart } =
+    useDndNarrativeTimeline({ scene });
 
-  const { handleTimelineDragEnd, handleTimelineDrag, handleTimelineDragStart } =
-    useDndTimeline({
-      scene,
-    });
+  const { handleTimelineDragEnd, handleTimelineDragStart } = useDndTimeline({
+    scene,
+    timeline,
+  });
 
   return (
     <>
-      <Menu options={options} menuPos={menuPos} setMenuPos={setMenuPos} />
-      <Draggable
-        nodeRef={timelineSceneRef}
-        axis="x"
-        onStart={
-          timeline === "narrativeTimeline"
-            ? handleNarrativeDragStart
-            : handleTimelineDragStart
-        }
-        onDrag={
-          timeline === "narrativeTimeline"
-            ? handleNarrativeDrag
-            : handleTimelineDrag
-        }
-        onStop={
-          timeline === "narrativeTimeline"
-            ? handleNarrativeDragEnd
-            : handleTimelineDragEnd
-        }
-      >
-        <Container
-          ref={timelineSceneRef}
-          onContextMenu={handleMenuOpen}
-          scene_active={currentSceneId === scene.id ? "true" : "false"}
-          x={scene.x}
-          onClick={handleSetCurrentSceneId}
+      <DndDisabled>
+        <Menu options={options} menuPos={menuPos} setMenuPos={setMenuPos} />
+        <Draggable
+          position={{ x: scene.x || 0, y: 0 }}
+          nodeRef={timelineSceneRef}
+          axis="x"
+          onStart={
+            timeline === "narrativeTimeline"
+              ? handleNarrativeDragStart
+              : handleTimelineDragStart
+          }
+          onStop={
+            timeline === "narrativeTimeline"
+              ? handleNarrativeDragEnd
+              : handleTimelineDragEnd
+          }
         >
-          <Color color={scene.color} />
-          <Text>{scene.title}</Text>
-        </Container>
-      </Draggable>
+          <Container
+            ref={timelineSceneRef}
+            onContextMenu={handleMenuOpen}
+            scene_active={currentSceneId === scene.id ? "true" : "false"}
+            onClick={handleSetCurrentSceneId}
+          >
+            <Color color={scene.color} />
+            <Text>{scene.title}</Text>
+          </Container>
+        </Draggable>
+      </DndDisabled>
     </>
   );
 };
