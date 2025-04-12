@@ -1,6 +1,6 @@
 import { Scene } from "@/app/types/scene";
 import { MainState } from "@/lib/store";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { Timeline } from "@/app/types/timeline";
@@ -19,9 +19,14 @@ export const useDndTimeline = ({
   );
   const startX = useRef<number>(0);
   const positionX = useRef<number>(scene.x ?? 0);
+  const [positionState, setPositionState] = useState<{ x: number; y: number }>({
+    x: scene.x ?? 0,
+    y: 0,
+  });
 
   useEffect(() => {
     positionX.current = scene.x ?? 0;
+    setPositionState({ x: scene.x ?? 0, y: 0 });
   }, [scene.x]);
 
   const handleMoveScene = async (newX: number) => {
@@ -50,6 +55,12 @@ export const useDndTimeline = ({
     startX.current = data.x;
   };
 
+  const handleTimelineDrag = (e: DraggableEvent, data: DraggableData) => {
+    if (!currentBookId || !scene) return;
+
+    setPositionState({ x: data.x, y: 0 });
+  };
+
   const handleTimelineDragEnd = (e: DraggableEvent, data: DraggableData) => {
     if (!currentBookId || !scene) return;
 
@@ -63,6 +74,8 @@ export const useDndTimeline = ({
   return {
     handleTimelineDragEnd,
     handleTimelineDragStart,
+    handleTimelineDrag,
+    positionState,
     positionX: positionX.current,
   };
 };

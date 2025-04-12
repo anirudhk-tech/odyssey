@@ -78,10 +78,19 @@ export const TimelineSceneListing = ({
     useTimelineScene({
       scene,
     });
-  const { handleNarrativeDragEnd, handleNarrativeDragStart } =
-    useDndNarrativeTimeline({ scene });
+  const {
+    handleNarrativeDragEnd,
+    handleNarrativeDragStart,
+    handleNarrativeDrag,
+    narrativePositionState,
+  } = useDndNarrativeTimeline({ scene });
 
-  const { handleTimelineDragEnd, handleTimelineDragStart } = useDndTimeline({
+  const {
+    handleTimelineDragEnd,
+    handleTimelineDragStart,
+    handleTimelineDrag,
+    positionState,
+  } = useDndTimeline({
     scene,
     timeline,
   });
@@ -93,11 +102,20 @@ export const TimelineSceneListing = ({
         <Draggable
           nodeRef={timelineSceneRef}
           axis="x"
-          position={{ x: scene.x ?? 0, y: 0 }}
+          position={
+            timeline === "narrativeTimeline"
+              ? narrativePositionState
+              : positionState
+          }
           onStart={
             timeline === "narrativeTimeline"
               ? handleNarrativeDragStart
               : handleTimelineDragStart
+          }
+          onDrag={
+            timeline === "narrativeTimeline"
+              ? handleNarrativeDrag
+              : handleTimelineDrag
           }
           onStop={
             timeline === "narrativeTimeline"
