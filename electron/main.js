@@ -1,39 +1,35 @@
 import { app, BrowserWindow } from "electron";
 import "./ipcHandlers.js";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname, join, resolve } from "path";
 import { setMenu } from "./menu.js";
-import path from "path";
-import { spawn } from "child_process";
+import next from "next";
+import express from "express";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
-let nextServerProcess;
+const startNextServer = async () => {
+  const dev = false;
+  const projectRoot = resolve(__dirname, "..");
 
-const startNextServer = () => {
+  const nextApp = next({ dev, dir: projectRoot });
+  await nextApp.prepare();
+  const handle = nextApp.getRequestHandler();
+
+  const server = express();
+  server.all("*", (req, res) => {
+    return handle(req, res);
+  });
+
   return new Promise((resolve, reject) => {
-    const projectRoot = join(__dirname, "..");
-    nextServerProcess = spawn("npm", ["run", "start"], {
-      cwd: projectRoot,
-      shell: true,
-      env: { PORT: "3000" },
-    });
-
-    nextServerProcess.stdout.on("data", (data) => {
-      console.log(`stdout: ${data}`);
-      if (data.toString().includes("ready on")) {
+    server.listen(3000, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log("Next.js server is running on http://localhost:3000");
         resolve();
       }
-    });
-
-    nextServerProcess.stderr.on("data", (data) => {
-      console.error(`stderr: ${data}`);
-    });
-
-    nextServerProcess.on("error", (error) => {
-      console.error(`Error: ${error}`);
-      reject(error);
     });
   });
 };
@@ -49,15 +45,15 @@ const createWindow = () => {
     },
     icon:
       process.platform == "win32"
-        ? path.join(__dirname, "assets", "icon.ico")
-        : path.join(__dirname, "assets", "icon.png"),
+        ? join(__dirname, "assets", "icon.ico")
+        : join(__dirname, "assets", "icon.png"),
   });
 
   win.loadURL("http://localhost:3000");
 };
 
 if (process.platform === "darwin") {
-  app.dock.setIcon(path.join(__dirname, "assets", "icon.icns"));
+  app.dock.setIcon(join(__dirname, "assets", "icon.icns"));
 }
 
 setMenu();
@@ -81,12 +77,6 @@ app.whenReady().then(() => {
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
       app.quit();
-    }
-  });
-
-  app.on("quit", () => {
-    if (nextServerProcess) {
-      nextServerProcess.kill();
     }
   });
 });
