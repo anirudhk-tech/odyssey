@@ -43,25 +43,15 @@
   "build": {
     "appId": "com.odyssey.app",
     "productName": "Odyssey",
+    "compression": "store",
     "directories": {
       "buildResources": "electron/assets",
       "output": "release"
     },
     "files": [
-      {
-        "from": "electron/",
-        "to": "electron/",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": ".next/",
-        "to": ".next/",
-        "filter": [
-          "**/*"
-        ]
-      }
+      "electron/**/*",
+      ".next/**/*",
+      "package.json"
     ],
     "mac": {
       "icon": "electron/assets/icon.icns"
