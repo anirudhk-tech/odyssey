@@ -8,9 +8,9 @@ import express from "express";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
+const dev = true;
 
 const startNextServer = async () => {
-  const dev = false;
   const projectRoot = resolve(__dirname, "..");
 
   const nextApp = next({ dev, dir: projectRoot });
@@ -56,17 +56,21 @@ if (process.platform === "darwin") {
   app.dock.setIcon(join(__dirname, "assets", "icon.icns"));
 }
 
-setMenu();
+// setMenu();
 
 app.whenReady().then(() => {
-  startNextServer()
-    .then(() => {
-      createWindow();
-    })
-    .catch((error) => {
-      console.error("Failed to start Next.js server:", error);
-      app.quit();
-    });
+  if (!dev) {
+    startNextServer()
+      .then(() => {
+        createWindow();
+      })
+      .catch((error) => {
+        console.error("Failed to start Next.js server:", error);
+        app.quit();
+      });
+  } else {
+    createWindow();
+  }
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

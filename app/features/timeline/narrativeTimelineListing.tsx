@@ -2,6 +2,8 @@ import { useFetchNarrativeTimeline } from "@/lib/features/timeline/hooks/useFetc
 import styled from "styled-components";
 import { TimelineSceneListing } from "./timelineSceneListing";
 import { TIMELINE_TITLE_MARGIN } from "@/app/GlobalStyles";
+import { useSelector } from "react-redux";
+import { MainState } from "@/lib/store";
 
 const Container = styled.div`
   display: flex;
@@ -42,11 +44,12 @@ const ScenesContainer = styled.div`
   flex-shrink: 0;
   flex-direction: row;
   overflow-x: visible;
-  position: relative;
+  position: relative;a
+  transition: width 0.3s ease;
 `;
 
-const Spacer = styled.div`
-  width: 10000px;
+const Spacer = styled.div<{ maxposition: number }>`
+  width: ${(props) => props.maxposition + 200}px;
   height: 1px;
   flex-shrink: 0;
 `;
@@ -57,6 +60,9 @@ export const NarrativeTimelineListing = ({
   scrollLeft: number;
 }) => {
   const { narrativeTimeline } = useFetchNarrativeTimeline();
+  const rightMostScenePosition = useSelector(
+    (state: MainState) => state.timeline.rightMostScenePosition
+  );
 
   return (
     <Container>
@@ -73,7 +79,7 @@ export const NarrativeTimelineListing = ({
               timeline={"narrativeTimeline"}
             />
           ))}
-        <Spacer />
+        <Spacer maxposition={rightMostScenePosition} />
       </ScenesContainer>
     </Container>
   );

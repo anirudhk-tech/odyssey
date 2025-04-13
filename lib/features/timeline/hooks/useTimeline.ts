@@ -11,6 +11,9 @@ export const useTimeline = ({ timeline }: { timeline: Timeline }) => {
     (state: MainState) => state.current.currentSceneId
   );
   const timelines = useSelector((state: MainState) => state.timeline.timelines);
+  const rightMostScenePosition = useSelector(
+    (state: MainState) => state.timeline.rightMostScenePosition
+  );
 
   const [timelineScenes, setTimelineScenes] = useState<Scene[]>([]);
 
@@ -29,5 +32,10 @@ export const useTimeline = ({ timeline }: { timeline: Timeline }) => {
     handleSetTimelineScenes();
   }, [timeline, timelines]);
 
-  return { handleSetTimelineToBeEdited, timelineScenes, currentSceneId };
+  return {
+    handleSetTimelineToBeEdited,
+    timelineScenes,
+    currentSceneId,
+    rightMostScenePosition,
+  };
 };

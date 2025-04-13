@@ -8,7 +8,6 @@ import { useTimeline } from "@/lib/features/timeline/hooks/useTimeline";
 import { useTimelineMenu } from "@/lib/features/timeline/hooks/useTimelineMenu";
 import styled from "styled-components";
 import { TimelineSceneListing } from "./timelineSceneListing";
-import { useDndTimeline } from "@/lib/features/timeline/hooks/useDndTimeline";
 import { TIMELINE_TITLE_MARGIN } from "@/app/GlobalStyles";
 
 const Container = styled.div`
@@ -30,6 +29,7 @@ const ScenesContainer = styled.div`
   flex-direction: row;
   position: relative;
   overflow-x: visible;
+  transition: width 0.3s ease;
 `;
 
 const TitleContainer = styled.div<{ scrollleft: number; width: number }>`
@@ -68,8 +68,8 @@ const Input = styled.textarea`
   resize: none;
 `;
 
-const Spacer = styled.div`
-  width: 10000px;
+const Spacer = styled.div<{ maxposition: number }>`
+  width: ${(props) => props.maxposition + 200}px;
   height: 1px;
   flex-shrink: 0;
 `;
@@ -83,7 +83,11 @@ export const TimelineListing = ({
 }) => {
   const { menuPos, setMenuPos, handleMenuOpen } = useMenu();
   const { options } = useTimelineMenu({ setMenuPos });
-  const { handleSetTimelineToBeEdited, timelineScenes } = useTimeline({
+  const {
+    handleSetTimelineToBeEdited,
+    timelineScenes,
+    rightMostScenePosition,
+  } = useTimeline({
     timeline,
   });
   const {
@@ -129,7 +133,7 @@ export const TimelineListing = ({
             />
           );
         })}
-        <Spacer />
+        <Spacer maxposition={rightMostScenePosition} />
       </ScenesContainer>
     </Container>
   );

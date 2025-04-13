@@ -23,11 +23,13 @@ export const useDndBookScenesAndTimelines = ({
   handleSceneDragMove,
   handleTimelineDragEnd,
   handleSceneDragEnd,
+  timelineScrollContainerRef,
 }: {
   handleSceneDragStart: (e: DragStartEvent) => void;
   handleSceneDragMove: (e: DragMoveEvent) => void;
   handleTimelineDragEnd: (e: DragEndEvent) => void;
   handleSceneDragEnd: (e: DragEndEvent) => void;
+  timelineScrollContainerRef: React.RefObject<HTMLDivElement>;
 }) => {
   const dispatch = useDispatch();
   const currentBookId = useSelector(
@@ -66,12 +68,20 @@ export const useDndBookScenesAndTimelines = ({
 
     if (!over || !currentBookId) return;
 
+    let x = active.rect.current.translated?.left ?? 0;
+
+    if (x < TIMELINE_TITLE_MARGIN) return;
+
+    x -= TIMELINE_TITLE_MARGIN;
+
+    const scrollContainer = timelineScrollContainerRef.current;
+    if (scrollContainer) {
+      const { left: containerLeft } = scrollContainer.getBoundingClientRect();
+      const scrollLeft = scrollContainer.scrollLeft;
+      x = x - containerLeft + scrollLeft;
+    }
+
     if (over.id === "narrative_timeline") {
-      let x = active.rect.current.translated?.left ?? 0;
-      x -= TIMELINE_TITLE_MARGIN;
-
-      console.log(x);
-
       const response = await window.odysseyAPI.addSceneToNarrativeTimeline(
         currentBookId,
         active.id.toString(),
@@ -116,9 +126,6 @@ export const useDndBookScenesAndTimelines = ({
       active.data.current?.type === "scene" &&
       over.data.current?.type === "timeline"
     ) {
-      let x = active.rect.current.translated?.left ?? 0;
-      x -= TIMELINE_TITLE_MARGIN;
-
       const response = await window.odysseyAPI.addSceneToTimeline(
         currentBookId,
         over.id.toString(),
@@ -153,5 +160,10 @@ export const useDndBookScenesAndTimelines = ({
 
   const sensors = [...scenesSensors, ...timelinesSensors];
 
-  return { handleDragEnd, handleDragMove, handleDragStart, sensors };
+  return {
+    handleDragEnd,
+    handleDragMove,
+    handleDragStart,
+    sensors,
+  };
 };

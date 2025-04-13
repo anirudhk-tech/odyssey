@@ -6,6 +6,7 @@ import {
 } from "../store/scenesSlice";
 import { MainState } from "@/lib/store";
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
+import { deleteSceneFromAllTimelines } from "../../timeline/store/timelineSlice";
 
 export const useDeleteScene = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ export const useDeleteScene = () => {
 
     if (response.success) {
       dispatch(deleteScene(sceneToBeEdited.id));
+      dispatch(deleteSceneFromAllTimelines({ sceneId: sceneToBeEdited.id }));
       showSnackbar("Scene deleted!");
     } else {
       showSnackbar("Something went wrong. Please try again.");

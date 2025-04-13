@@ -47,7 +47,7 @@ export const useSaveEditor = ({
     dispatch(toggleEditorSaving(true));
     const debouncedSave = setTimeout(() => {
       handleSaveEditor(currentSceneId);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(debouncedSave);
   }, [editorState]); // Saves every 2 seconds of inactivity

@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { Timeline } from "@/app/types/timeline";
-import { changeScenePositionOnTimeline } from "../store/timelineSlice";
+import {
+  changeScenePositionOnTimeline,
+  setRightMostScenePosition,
+} from "../store/timelineSlice";
 
 export const useDndTimeline = ({
   scene,
@@ -17,6 +20,9 @@ export const useDndTimeline = ({
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
+  const rightMostScenePosition = useSelector(
+    (state: MainState) => state.timeline.rightMostScenePosition
+  );
   const startX = useRef<number>(0);
   const positionX = useRef<number>(scene.x ?? 0);
   const [positionState, setPositionState] = useState<{ x: number; y: number }>({
@@ -25,8 +31,9 @@ export const useDndTimeline = ({
   });
 
   useEffect(() => {
-    positionX.current = scene.x ?? 0;
-    setPositionState({ x: scene.x ?? 0, y: 0 });
+    if (!scene || !scene.x) return;
+    positionX.current = scene.x;
+    setPositionState({ x: scene.x, y: 0 });
   }, [scene.x]);
 
   const handleMoveScene = async (newX: number) => {
@@ -59,6 +66,9 @@ export const useDndTimeline = ({
     if (!currentBookId || !scene) return;
 
     setPositionState({ x: data.x, y: 0 });
+    if (data.x > rightMostScenePosition) {
+      dispatch(setRightMostScenePosition(data.x));
+    }
   };
 
   const handleTimelineDragEnd = (e: DraggableEvent, data: DraggableData) => {
@@ -67,7 +77,13 @@ export const useDndTimeline = ({
     const deltaX = data.x - startX.current;
     const newX = positionX.current + deltaX;
 
+    if (newX < 0) {
+      setPositionState({ x: positionX.current, y: 0 });
+      return;
+    }
+
     positionX.current = newX;
+
     handleMoveScene(newX);
   };
 

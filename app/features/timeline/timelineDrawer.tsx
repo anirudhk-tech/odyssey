@@ -82,8 +82,10 @@ const AddIcon = styled(IoAdd)`
 
 export const TimelineDrawer = ({
   timelineSideBarDndRef,
+  timelineScrollContainerRef,
 }: {
   timelineSideBarDndRef: RefObject<HTMLDivElement>;
+  timelineScrollContainerRef: RefObject<HTMLDivElement>;
 }) => {
   const {
     isDrawerOpen,
@@ -107,10 +109,10 @@ export const TimelineDrawer = ({
       <Menu menuPos={menuPos} setMenuPos={setMenuPos} options={options} />
       <ResizeHandle onMouseDown={handleMouseResizeDown} />
       <Button onClick={handleToggleTimelineDrawer}>Timeline</Button>
-      <TimelineSectionsContainer>
+      <TimelineSectionsContainer onScroll={handleScroll}>
         <AddIcon onClick={handleMenuOpenFromIcon} />
         <TimelineSections />
-        <TimelinesContainer onScroll={handleScroll}>
+        <TimelinesContainer ref={timelineScrollContainerRef}>
           <SortableContext
             items={(timelinesOrder || []).map((timeline) => timeline.id)}
             strategy={rectSortingStrategy}

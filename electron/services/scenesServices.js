@@ -90,8 +90,11 @@ export const deleteScene = (bookUUID, sceneUUID) => {
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
+    const timelinePath = path.join(bookPath, "timeline.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const timelineData = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+
     const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
 
     if (sceneIndex === -1) {
@@ -103,7 +106,23 @@ export const deleteScene = (bookUUID, sceneUUID) => {
     fs.rmSync(textFilePath, { force: true });
 
     data.scenes.splice(sceneIndex, 1);
+
+    timelineData.timelines.forEach((timeline) => {
+      timeline.scenes = timeline.scenes.filter(
+        (scene) => scene.id !== sceneUUID
+      );
+    });
+
+    timelineData.narrative.scenes = timelineData.narrative.scenes.filter(
+      (scene) => scene.id !== sceneUUID
+    );
+
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(
+      timelinePath,
+      JSON.stringify(timelineData, null, 2),
+      "utf8"
+    );
 
     return { success: true, message: "Scene deleted successfully" };
   } catch (error) {

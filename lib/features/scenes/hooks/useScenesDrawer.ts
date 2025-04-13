@@ -11,8 +11,14 @@ export const useScenesDrawer = () => {
   const isDrawerOpen = useSelector(
     (state: MainState) => state.scenesDrawer.isDrawerOpen
   );
+  const isTimelineDrawerOpen = useSelector(
+    (state: MainState) => state.timelineDrawer.isDrawerOpen
+  );
   const scenesDrawerWidth = useSelector(
     (state: MainState) => state.scenesDrawer.scenesDrawerWidth
+  );
+  const timelineDrawerHeight = useSelector(
+    (state: MainState) => state.timelineDrawer.timelineDrawerHeight
   );
 
   const handleToggleScenesDrawer = () => dispatch(toggleScenesDrawer());
@@ -45,6 +51,8 @@ export const useScenesDrawer = () => {
     toggleScenesDrawer,
     handleToggleScenesDrawer,
     scenesDrawerWidth,
+    timelineDrawerHeight,
     handleMouseResizeDown,
+    isTimelineDrawerOpen,
   };
 };

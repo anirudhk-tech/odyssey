@@ -1,11 +1,4 @@
-import {
-  DragEndEvent,
-  DragMoveEvent,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
 import { RefObject, useEffect, useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useDispatch, useSelector } from "react-redux";

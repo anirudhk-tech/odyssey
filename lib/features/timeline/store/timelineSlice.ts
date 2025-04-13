@@ -1,4 +1,5 @@
 import { NarrativeTimeline, Timeline } from "@/app/types/timeline";
+import { calculateRightMostScenePositionOnTimelines } from "@/lib/utils/positionUtils";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface TimelineSlice {
@@ -8,6 +9,7 @@ export interface TimelineSlice {
   timelineToBeEdited: Timeline | null;
   timelineBeingRenamed: boolean;
   narrativeTimeline: NarrativeTimeline | null;
+  rightMostScenePosition: number;
 }
 
 const initialState: TimelineSlice = {
@@ -17,12 +19,16 @@ const initialState: TimelineSlice = {
   timelineToBeEdited: null,
   timelineBeingRenamed: false,
   narrativeTimeline: null,
+  rightMostScenePosition: 0,
 };
 
 export const timelineSlice = createSlice({
   name: "timeline",
   initialState,
   reducers: {
+    setRightMostScenePosition: (state, action) => {
+      state.rightMostScenePosition = action.payload;
+    },
     toggleAddTimelineDialog: (state) => {
       state.addTimelineDialogOpen = !state.addTimelineDialogOpen;
     },
@@ -37,6 +43,8 @@ export const timelineSlice = createSlice({
         if (timeline.id === action.payload) return false;
         return true;
       });
+
+      calculateRightMostScenePositionOnTimelines(state);
     },
     toggleDeleteTimelineConfirmDialog: (state) => {
       state.deleteTimelineConfirmDialogOpen =
@@ -74,6 +82,8 @@ export const timelineSlice = createSlice({
         }
         return timeline;
       });
+
+      calculateRightMostScenePositionOnTimelines(state);
     },
     deleteSceneFromTimeline: (state, action) => {
       state.timelines = state.timelines.map((timeline) => {
@@ -87,6 +97,8 @@ export const timelineSlice = createSlice({
         }
         return timeline;
       });
+
+      calculateRightMostScenePositionOnTimelines(state);
     },
     deleteSceneFromAllTimelines: (state, action) => {
       state.timelines = state.timelines.map((timeline) => {
@@ -103,9 +115,12 @@ export const timelineSlice = createSlice({
           (scene) => scene.id !== action.payload.sceneId
         );
       }
+
+      calculateRightMostScenePositionOnTimelines(state);
     },
     clearScenesFromTimeline: (state, action) => {
       state.timelines[action.payload].scenes = [];
+      calculateRightMostScenePositionOnTimelines(state);
     },
     changeScenePositionOnTimeline: (state, action) => {
       const { timelineId, sceneId, newPosition } = action.payload;
@@ -117,9 +132,11 @@ export const timelineSlice = createSlice({
         scenes[sceneIndex].x = newPosition;
       }
       state.timelines = newTimelines;
+      calculateRightMostScenePositionOnTimelines(state);
     },
     setNarrativeTimeline: (state, action) => {
       state.narrativeTimeline = action.payload;
+      calculateRightMostScenePositionOnTimelines(state);
     },
     addSceneToNarrativeTimeline: (state, action) => {
       if (!state.narrativeTimeline) return;
@@ -127,16 +144,19 @@ export const timelineSlice = createSlice({
         ...state.narrativeTimeline,
         scenes: [...state.narrativeTimeline.scenes, action.payload],
       };
+      calculateRightMostScenePositionOnTimelines(state);
     },
     deleteSceneFromNarrativeTimeline: (state, action) => {
       if (!state.narrativeTimeline) return;
       state.narrativeTimeline.scenes = state.narrativeTimeline.scenes.filter(
         (scene) => scene.id !== action.payload
       );
+      calculateRightMostScenePositionOnTimelines(state);
     },
     clearScenesFromNarrativeTimeline: (state) => {
       if (!state.narrativeTimeline) return;
       state.narrativeTimeline.scenes = [];
+      calculateRightMostScenePositionOnTimelines(state);
     },
     changeScenePositionOnNarrativeTimeline: (state, action) => {
       if (!state.narrativeTimeline) return;
@@ -148,6 +168,7 @@ export const timelineSlice = createSlice({
         newScenes[sceneIndex].x = newPosition;
       }
       state.narrativeTimeline.scenes = newScenes;
+      calculateRightMostScenePositionOnTimelines(state);
     },
     changeMultipleSceneColorsOnTimelines: (state, action) => {
       const changes = action.payload;
@@ -235,5 +256,6 @@ export const {
   changeSceneNameOnTimelines,
   swapTimelineScenesColor,
   deleteSceneFromTimeline,
+  setRightMostScenePosition,
 } = timelineSlice.actions;
 export default timelineSlice.reducer;

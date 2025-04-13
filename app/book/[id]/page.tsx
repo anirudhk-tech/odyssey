@@ -37,6 +37,7 @@ export default function EditingPage() {
   useSetCurrent({ bookId: params.id as string });
   const sceneSideBarDndRef = useRef<HTMLDivElement>(null);
   const timelineSideBarDndRef = useRef<HTMLDivElement>(null);
+  const timelineScrollContainerRef = useRef<HTMLDivElement>(null);
   const { handleSceneDragEnd, handleSceneDragStart, handleSceneDragMove } =
     useDndScenes({ sceneSideBarDndRef, timelineSideBarDndRef });
   const { handleTimelineDragEnd } = useDndTimelines();
@@ -46,6 +47,7 @@ export default function EditingPage() {
       handleSceneDragMove,
       handleTimelineDragEnd,
       handleSceneDragEnd,
+      timelineScrollContainerRef,
     });
   const { sectionIsResizing } = useTimelineSectionResize();
 
@@ -66,7 +68,10 @@ export default function EditingPage() {
             sceneSideBarDndRef={sceneSideBarDndRef}
             timelineSideBarDndRef={timelineSideBarDndRef}
           />
-          <TimelineDrawer timelineSideBarDndRef={timelineSideBarDndRef} />
+          <TimelineDrawer
+            timelineSideBarDndRef={timelineSideBarDndRef}
+            timelineScrollContainerRef={timelineScrollContainerRef}
+          />
         </>
       ) : (
         <DndContext
@@ -80,7 +85,10 @@ export default function EditingPage() {
             sceneSideBarDndRef={sceneSideBarDndRef}
             timelineSideBarDndRef={timelineSideBarDndRef}
           />
-          <TimelineDrawer timelineSideBarDndRef={timelineSideBarDndRef} />
+          <TimelineDrawer
+            timelineSideBarDndRef={timelineSideBarDndRef}
+            timelineScrollContainerRef={timelineScrollContainerRef}
+          />
         </DndContext>
       )}
     </Container>

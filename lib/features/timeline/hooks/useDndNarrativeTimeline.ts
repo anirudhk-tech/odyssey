@@ -6,6 +6,7 @@ import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 import {
   changeMultipleSceneColorsOnTimelines,
   changeScenePositionOnNarrativeTimeline,
+  setRightMostScenePosition,
 } from "../store/timelineSlice";
 import { useEffect, useRef, useState } from "react";
 
@@ -13,6 +14,9 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
   const dispatch = useDispatch();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
+  );
+  const rightMostScenePosition = useSelector(
+    (state: MainState) => state.timeline.rightMostScenePosition
   );
   const startX = useRef<number>(0);
   const positionX = useRef<number>(scene.x ?? 0);
@@ -26,6 +30,7 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
 
   useEffect(() => {
     positionX.current = scene.x ?? 0;
+    setNarrativePositionState({ x: scene.x ?? 0, y: 0 });
   }, [scene.x]);
 
   const handleMoveScene = async (newX: number) => {
@@ -71,6 +76,9 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
     if (!currentBookId || !scene) return;
 
     setNarrativePositionState({ x: data.x, y: 0 });
+    if (data.x > rightMostScenePosition) {
+      dispatch(setRightMostScenePosition(data.x));
+    }
   };
 
   const handleNarrativeDragEnd = (e: DraggableEvent, data: DraggableData) => {
@@ -78,6 +86,11 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
 
     const deltaX = data.x - startX.current;
     const newX = positionX.current + deltaX;
+
+    if (newX < 0) {
+      setNarrativePositionState({ x: positionX.current, y: 0 });
+      return;
+    }
 
     handleMoveScene(newX);
     positionX.current = newX;
