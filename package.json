@@ -61,6 +61,10 @@
       "icon": "electron/assets/icon.ico"
     },
     "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "icon": "electron/assets/icon.png"
     }
   }
