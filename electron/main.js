@@ -8,7 +8,7 @@ import express from "express";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
-const dev = true;
+const dev = false;
 
 const startNextServer = async () => {
   const projectRoot = resolve(__dirname, "..");
@@ -56,7 +56,7 @@ if (process.platform === "darwin") {
   app.dock.setIcon(join(__dirname, "assets", "icon.icns"));
 }
 
-// setMenu();
+setMenu();
 
 app.whenReady().then(() => {
   if (!dev) {
