@@ -69,6 +69,7 @@ const Input = styled.textarea`
 `;
 
 const Spacer = styled.div<{ maxposition: number }>`
+  min-width: 100vw;
   width: ${(props) => props.maxposition + 200}px;
   height: 1px;
   flex-shrink: 0;

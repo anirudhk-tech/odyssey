@@ -18,6 +18,12 @@ export const getGlobalMetaDataPath = () => {
 
 export const readGlobalMetaData = () => {
   const metaDataPath = getGlobalMetaDataPath();
+  const dirPath = path.dirname(metaDataPath);
+
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+
   if (!fs.existsSync(metaDataPath)) {
     const initialData = { books: [] };
     fs.writeFileSync(
