@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MainState } from "@/lib/store";
 
 export const useFetchBooks = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const books = useSelector((state: MainState) => state.books.books);

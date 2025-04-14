@@ -32,7 +32,11 @@ export const createBook = (bookName) => {
     }
 
     if (!fs.existsSync(timelineDataPath)) {
-      const initialData = { timelines: [] };
+      const initialData = {
+        timelines: [],
+        sections: [],
+        narrative: { scenes: [] },
+      };
       fs.writeFileSync(
         timelineDataPath,
         JSON.stringify(initialData, null, 2),
