@@ -1,8 +1,10 @@
 {
   "name": "odyssey",
   "description": "Odyssey is a writing app for seamlessly managing books and the scenes within.",
-  "author": "Anirudh Kuppili",
-  "email": "anirudhkuppili@gmail.com",
+  "author": {
+    "name": "Anirudh Kuppili",
+    "email": "anirudhkuppili@gmail.com"
+  },
   "version": "1.0.0",
   "main": "electron/main.js",
   "type": "module",
