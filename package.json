@@ -65,6 +65,7 @@
         "AppImage",
         "deb"
       ],
+      "publish": [],
       "icon": "electron/assets/icon.png"
     }
   }
