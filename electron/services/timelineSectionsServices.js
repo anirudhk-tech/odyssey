@@ -11,7 +11,11 @@ export const getTimelineSections = (bookUUID) => {
     const timelinePath = path.join(bookPath, "timeline.json");
 
     if (!fs.existsSync(timelinePath)) {
-      const initialData = { sections: [] };
+      const initialData = {
+        timelines: [],
+        sections: [],
+        narrative: { scenes: [] },
+      };
       fs.writeFileSync(
         timelinePath,
         JSON.stringify(initialData, null, 2),
