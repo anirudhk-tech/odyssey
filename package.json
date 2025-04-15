@@ -70,6 +70,20 @@
       ],
       "publish": [],
       "icon": "electron/assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "electron/assets/icon.ico",
+      "uninstallerIcon": "electron/assets/icon.ico",
+      "installerHeader": "electron/assets/odyssey_header.bmp",
+      "uninstallerHeader": "electron/assets/odyssey_header.bmp",
+      "installerSidebar": "electron/assets/odyssey_sidebar.bmp",
+      "uninstallerSidebar": "electron/assets/odyssey_sidebar.bmp",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Odyssey",
+      "deleteAppDataOnUninstall": true
     }
   }
 }
