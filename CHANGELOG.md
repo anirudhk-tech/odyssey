@@ -1,0 +1,5 @@
+### 2025-04-28 | 10:17 PM 🧭 Daily Log
+
+- **What I built:** Completed work on smaller updates including: Preferences settings that allow for appearence changing of scenes and word counts. Wired up the appearence changing of scene cards, but word counts not done yet. Double click to rename scenes. Saving indicator.
+- **Why it matters:** With these tiny updates complete, we can now move to bigger updates such as multiple drafts for one scene and explorting to other file formats, but we must first finish word counts first.
+- **Next:** Build word and character counts for each scene card. Show it somewhere uncluttering on the scene drawer, while also showing it on timeline card upon hover.
