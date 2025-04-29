@@ -43,6 +43,7 @@ export const useDeleteScene = () => {
       showSnackbar("Scene deleted!");
     } else {
       showSnackbar("Something went wrong. Please try again.");
+      console.error("Error deleting scene: ", response.message);
     }
     dispatch(toggleDeleteSceneConfirmDialog());
     dispatch(clearSceneToBeEdited());

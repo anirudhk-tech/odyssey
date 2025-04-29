@@ -44,6 +44,7 @@ export const useAddTimeline = () => {
       } else {
         setError("Something went wrong. Please try again.");
       }
+      console.error("Error creating timeline: ", response.message);
     }
   };
 

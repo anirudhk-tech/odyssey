@@ -26,6 +26,7 @@ export const useDeleteBook = () => {
       showSnackbar("Book deleted!");
     } else {
       showSnackbar("Something went wrong. Please try again.");
+      console.error("Error deleting book: ", response.message);
     }
     dispatch(toggleDeleteBookConfirmDialog());
     dispatch(clearBookToBeEdited());

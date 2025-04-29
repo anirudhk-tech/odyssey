@@ -49,6 +49,8 @@ export const useDndTimelineSections = ({
     if (response.success) {
       dispatch(swapTimelineScenesColor(response.data));
       dispatch(swapScenesColor(response.data));
+    } else {
+      console.error("Error swapping timeline sections: ", response.message);
     }
   };
 

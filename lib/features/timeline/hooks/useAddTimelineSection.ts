@@ -58,6 +58,7 @@ export const useAddTimelineSection = () => {
         dispatch(toggleAddTimelineSectionDialog());
         showSnackbar("Something went wrong. Please try again.");
       }
+      console.error("Error creating timeline section: ", response.message);
     }
   };
 

@@ -31,6 +31,7 @@ export const useDeleteTimeline = () => {
       showSnackbar("Timeline deleted!");
     } else {
       showSnackbar("Something went wrong. Please try again.");
+      console.error("Error deleting timeline: ", response.message);
     }
 
     dispatch(clearTimelineToBeEdited());

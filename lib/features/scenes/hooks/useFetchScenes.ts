@@ -41,6 +41,8 @@ export const useFetchScenes = () => {
       const response = await window.odysseyAPI.getScenes(currentBookId);
       if (response.success) {
         dispatch(setScenes(response.data.scenes));
+      } else {
+        console.error("Error fetching scenes: ", response.message);
       }
     }
 

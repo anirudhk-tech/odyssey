@@ -72,6 +72,7 @@ export const useEditTimelineSection = () => {
         dispatch(toggleEditTimelineSectionDialog());
         showSnackbar("Something went wrong. Please try again.");
       }
+      console.error("Error editing timeline section: ", response.message);
     }
   };
 

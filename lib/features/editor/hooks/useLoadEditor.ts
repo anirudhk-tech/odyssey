@@ -37,6 +37,7 @@ export const useLoadEditor = ({
       setEditorState(EditorState.createWithContent(contentState));
     } else {
       showSnackbar("Something went wrong while loading your file.");
+      console.error("Error loading content: ", response.message);
     }
   };
 

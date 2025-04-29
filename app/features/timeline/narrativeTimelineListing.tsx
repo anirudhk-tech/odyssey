@@ -60,7 +60,8 @@ export const NarrativeTimelineListing = ({
 }: {
   scrollLeft: number;
 }) => {
-  const { narrativeTimeline } = useFetchNarrativeTimeline();
+  const { narrativeTimeline, narrativeTimelineScenes } =
+    useFetchNarrativeTimeline();
   const rightMostScenePosition = useSelector(
     (state: MainState) => state.timeline.rightMostScenePosition
   );
@@ -72,8 +73,8 @@ export const NarrativeTimelineListing = ({
       </TitleContainer>
       <ScenesContainer>
         {narrativeTimeline &&
-          narrativeTimeline.scenes &&
-          narrativeTimeline.scenes.map((scene) => (
+          narrativeTimelineScenes &&
+          narrativeTimelineScenes.map((scene) => (
             <TimelineSceneListing
               key={scene.id}
               scene={scene}

@@ -230,6 +230,37 @@ export const timelineSlice = createSlice({
         }
       });
     },
+    updateTimelineSceneTextCounts: (state, action) => {
+      if (!state.timelines || !state.narrativeTimeline) return;
+      const { sceneId, wordCount, charCount } = action.payload;
+      state.timelines = state.timelines.map((timeline) => ({
+        ...timeline,
+        scenes: timeline.scenes.map((scene) => {
+          if (scene.id === sceneId) {
+            return {
+              ...scene,
+              wordCount: wordCount,
+              charCount: charCount,
+            };
+          }
+          return scene;
+        }),
+      }));
+
+      state.narrativeTimeline = {
+        ...state.narrativeTimeline,
+        scenes: state.narrativeTimeline.scenes.map((scene) => {
+          if (scene.id === sceneId) {
+            return {
+              ...scene,
+              wordCount: wordCount,
+              charCount: charCount,
+            };
+          }
+          return scene;
+        }),
+      };
+    },
   },
 });
 
@@ -257,5 +288,6 @@ export const {
   swapTimelineScenesColor,
   deleteSceneFromTimeline,
   setRightMostScenePosition,
+  updateTimelineSceneTextCounts,
 } = timelineSlice.actions;
 export default timelineSlice.reducer;

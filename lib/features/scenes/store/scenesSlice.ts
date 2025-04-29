@@ -61,11 +61,8 @@ export const scenesSlice = createSlice({
       state.scenes = state.scenes.map((scene) => {
         if (scene.id === action.payload.id) {
           return {
+            ...scene,
             title: action.payload.title,
-            id: scene.id,
-            textFilePath: scene.textFilePath,
-            color: scene.color,
-            x: scene.x,
           };
         }
         return scene;
@@ -103,6 +100,16 @@ export const scenesSlice = createSlice({
         return scene;
       });
     },
+    updateSceneTextCounts: (state, action) => {
+      if (!state.scenes) return;
+      const { id, wordCount, charCount } = action.payload;
+      state.scenes = state.scenes.map((scene) => {
+        if (scene.id === id) {
+          return { ...scene, wordCount, charCount };
+        }
+        return scene;
+      });
+    },
   },
 });
 
@@ -120,5 +127,6 @@ export const {
   setSceneQuery,
   changeMultipleScenesColor,
   swapScenesColor,
+  updateSceneTextCounts,
 } = scenesSlice.actions;
 export default scenesSlice.reducer;

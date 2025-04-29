@@ -13,6 +13,8 @@ export const useFetchBooks = () => {
     const response = await window.odysseyAPI.getBooks();
     if (response.success) {
       dispatch(setBooks(response.data.books));
+    } else {
+      console.error("Error fetching books: ", response.message);
     }
 
     setLoading(false);

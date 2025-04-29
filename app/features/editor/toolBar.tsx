@@ -21,11 +21,9 @@ const Container = styled.div`
   box-shadow: 0px 0px 5px 1.5px rgba(0, 0, 0, 0.3);
 `;
 
-const Button = styled.button<{ active: string }>`
+const Button = styled.button<{ $active: boolean }>`
   background-color: ${(props) =>
-    props.active === "true"
-      ? props.theme.colors.primary
-      : props.theme.colors.secondary};
+    props.$active ? props.theme.colors.primary : props.theme.colors.secondary};
   border: none;
   border-radius: 5px;
   color: ${(props) => props.theme.colors.text};
@@ -63,27 +61,19 @@ export const ToolBar = ({
       <ButtonContainer>
         <Button
           onMouseDown={handleBold}
-          active={
-            editorState.getCurrentInlineStyle().has("BOLD") ? "true" : "false"
-          }
+          $active={editorState.getCurrentInlineStyle().has("BOLD")}
         >
           <GrBold />
         </Button>
         <Button
           onMouseDown={handleItalic}
-          active={
-            editorState.getCurrentInlineStyle().has("ITALIC") ? "true" : "false"
-          }
+          $active={editorState.getCurrentInlineStyle().has("ITALIC")}
         >
           <GrItalic />
         </Button>
         <Button
           onMouseDown={handleUnderline}
-          active={
-            editorState.getCurrentInlineStyle().has("UNDERLINE")
-              ? "true"
-              : "false"
-          }
+          $active={editorState.getCurrentInlineStyle().has("UNDERLINE")}
         >
           <GrUnderline />
         </Button>

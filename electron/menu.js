@@ -2,6 +2,7 @@ import { Menu } from "electron";
 import {
   getPreferences,
   toggleFillSceneBoxesColorPreference,
+  toggleShowCharCountPreference,
   toggleShowWordCountPreference,
 } from "./services/preferenceServices.js";
 
@@ -15,6 +16,12 @@ const buildTemplate = (preferences) => {
           type: "checkbox",
           checked: preferences.showWordCount,
           click: toggleShowWordCountPreference,
+        },
+        {
+          label: "Show Character Count",
+          type: "checkbox",
+          checked: preferences.showCharCount,
+          click: toggleShowCharCountPreference,
         },
         {
           label: "Fill Scene Boxes Color",

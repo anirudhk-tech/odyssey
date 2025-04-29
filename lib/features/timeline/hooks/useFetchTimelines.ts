@@ -18,6 +18,7 @@ export const useFetchTimelines = () => {
       dispatch(setTimelines(response.data.timelines));
     } else {
       showSnackbar("Something went wrong while fetching timelines.");
+      console.error("Error fetching timelines: ", response.message);
     }
   };
 

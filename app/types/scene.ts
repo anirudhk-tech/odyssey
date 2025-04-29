@@ -4,4 +4,6 @@ export interface Scene {
   textFilePath: string;
   color: string | null;
   x: number | null;
+  charCount: number;
+  wordCount: number;
 }

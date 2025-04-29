@@ -17,6 +17,8 @@ export const useFetchTimelineSections = () => {
     const response = await window.odysseyAPI.getTimelineSections(currentBookId);
     if (response.success) {
       dispatch(setTimelineSections(response.data.sections));
+    } else {
+      console.error("Error fetching timeline sections: ", response.message);
     }
   };
 

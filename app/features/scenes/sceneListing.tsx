@@ -9,12 +9,12 @@ import { useRenameScene } from "@/lib/features/scenes/hooks/useRenameScene";
 import { useAutoHighlight } from "@/lib/common/hooks/useAutoHighlight";
 import { useInputClickOut } from "@/lib/common/hooks/useInputClickOut";
 
-const Container = styled.div<{ scene_active: "true" | "false" }>`
+const Container = styled.div<{ $scene_active: boolean }>`
   flex: 0 0 150px;
   width: 150px;
   height: 150px;
   background-color: ${(props) =>
-    props.scene_active === "true"
+    props.$scene_active
       ? props.theme.colors.secondary
       : props.theme.colors.primary};
   display: flex;
@@ -27,14 +27,14 @@ const Container = styled.div<{ scene_active: "true" | "false" }>`
   &:hover {
     background-color: ${(props) => props.theme.colors.secondary};
     transform: ${(props) =>
-      props.scene_active === "true" ? "none" : "translateY(-5px)"};
+      props.$scene_active ? "none" : "translateY(-5px)"};
     box-shadow: ${(props) =>
-      props.scene_active === "true"
+      props.$scene_active
         ? "inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.2)"
         : "0px 10px 15px rgba(0, 0, 0, 0.3)"};
   }
   box-shadow: ${(props) =>
-    props.scene_active === "true"
+    props.$scene_active
       ? "inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.2)"
       : "none"};
   cursor: pointer;
@@ -45,6 +45,17 @@ const Container = styled.div<{ scene_active: "true" | "false" }>`
 const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
+  text-align: center;
+  z-index: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+`;
+
+const SubText = styled.span`
+  color: ${(props) => props.theme.colors.text};
+  font-size: ${(props) => props.theme.fontsize.xs};
   text-align: center;
   z-index: 2;
 `;
@@ -73,20 +84,32 @@ const Input = styled.textarea`
   word-wrap: break-word;
   padding-top: 20px;
   z-index: 2;
+  scrollbar-width: none;
 `;
 
 const SceneColor = styled.div<{
   color: string | null;
-  fullheight: "true" | "false";
+  $fullheight: boolean;
 }>`
   width: 100%;
-  height: ${(props) => (props.fullheight === "true" ? "100%" : "10px")};
+  height: ${(props) => (props.$fullheight ? "100%" : "10px")};
   background-color: ${(props) => (props.color ? props.color : "transparent")};
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   position: absolute;
   top: 0;
   z-index: 1;
+`;
+const TextContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+`;
+const CountContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2px;
 `;
 
 export const SceneListing = ({ scene }: { scene: Scene }) => {
@@ -98,6 +121,8 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
     hovering,
     handleSetSceneToBeEdited,
     fillSceneBoxesColor,
+    showWordCount,
+    showCharCount,
   } = useScene({ scene });
   const { menuPos, setMenuPos, handleMenuOpen, handleMenuOpenFromIcon } =
     useMenu();
@@ -125,7 +150,7 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
         handleMenuOpen(e);
         handleSetSceneToBeEdited();
       }}
-      scene_active={currentSceneId === scene.id ? "true" : "false"}
+      $scene_active={currentSceneId === scene.id}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -138,10 +163,7 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
           }}
         />
       )}
-      <SceneColor
-        color={scene.color}
-        fullheight={fillSceneBoxesColor ? "true" : "false"}
-      />
+      <SceneColor color={scene.color} $fullheight={fillSceneBoxesColor} />
       {sceneBeingRenamed &&
       sceneToBeEdited &&
       sceneToBeEdited.id === scene.id ? (
@@ -150,9 +172,18 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
           value={sceneName}
           onChange={(e) => setSceneName(e.target.value)}
           autoFocus
+          onPointerDown={(e) => e.stopPropagation()}
         />
       ) : (
-        <Title>{scene.title}</Title>
+        <TextContainer>
+          <Title>{scene.title}</Title>
+          <CountContainer>
+            {showWordCount && <SubText>{scene.wordCount ?? 0} words</SubText>}
+            {showCharCount && showWordCount && <SubText>:</SubText>}
+
+            {showCharCount && <SubText>{scene.charCount ?? 0} chars</SubText>}
+          </CountContainer>
+        </TextContainer>
       )}
     </Container>
   );

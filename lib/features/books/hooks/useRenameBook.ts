@@ -53,6 +53,7 @@ export const useRenameBook = () => {
 
         toggleDialog();
         showSnackbar("Something went wrong. Please try again.");
+        console.error("Error renaming book: ", response.message);
       }
     }
   };

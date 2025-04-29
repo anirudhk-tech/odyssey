@@ -2,6 +2,20 @@ import { app } from "electron";
 import fs from "fs";
 import path from "path";
 
+export const countText = (raw_json_text) => {
+  const rawContentObject = JSON.parse(raw_json_text);
+
+  const blocks = Array.isArray(rawContentObject?.blocks)
+    ? rawContentObject.blocks
+    : [];
+  const allText = blocks.map((b) => b.text).join(" ") ?? "";
+
+  const charCount = allText.length;
+  const wordCount = allText.trim().split(/\s+/).filter(Boolean).length;
+
+  return { charCount, wordCount };
+};
+
 export const sluggifyText = (text) =>
   text
     .toString()

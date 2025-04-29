@@ -68,6 +68,7 @@ export const useRenameTimeline = () => {
       }
 
       showSnackbar("Something went wrong. Please try again.");
+      console.error("Error renaming timeline: ", response.message);
     }
 
     dispatch(toggleTimelineBeingRenamed());

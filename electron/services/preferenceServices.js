@@ -40,7 +40,7 @@ export const toggleFillSceneBoxesColorPreference = (_, win) => {
   };
 };
 
-export const toggleShowWordCountPreference = () => {
+export const toggleShowWordCountPreference = (_, win) => {
   const metaData = readGlobalMetaData();
 
   metaData["preferences"].showWordCount
@@ -48,6 +48,32 @@ export const toggleShowWordCountPreference = () => {
     : (metaData["preferences"].showWordCount = true);
 
   writeGlobalMetaData(metaData);
+
+  win.webContents.send("preference-changed", {
+    key: "showWordCount",
+    value: metaData["preferences"].showWordCount,
+  });
+
+  return {
+    success: true,
+    message: "Preferences updated successfully",
+    data: metaData.preferences,
+  };
+};
+
+export const toggleShowCharCountPreference = (_, win) => {
+  const metaData = readGlobalMetaData();
+
+  metaData["preferences"].showCharCount
+    ? (metaData["preferences"].showCharCount = false)
+    : (metaData["preferences"].showCharCount = true);
+
+  writeGlobalMetaData(metaData);
+
+  win.webContents.send("preference-changed", {
+    key: "showCharCount",
+    value: metaData["preferences"].showCharCount,
+  });
 
   return {
     success: true,

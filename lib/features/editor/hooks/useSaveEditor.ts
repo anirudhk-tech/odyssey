@@ -4,6 +4,8 @@ import { EditorState, convertToRaw } from "draft-js";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditorSaving } from "../store/editorSlice";
+import { updateSceneTextCounts } from "../../scenes/store/scenesSlice";
+import { updateTimelineSceneTextCounts } from "../../timeline/store/timelineSlice";
 
 export const useSaveEditor = ({
   editorState,
@@ -37,9 +39,24 @@ export const useSaveEditor = ({
 
     if (response.success) {
       dispatch(toggleEditorSaving(false));
+      dispatch(
+        updateSceneTextCounts({
+          charCount: response.data.charCount,
+          wordCount: response.data.wordCount,
+          id: sceneId,
+        })
+      );
+      dispatch(
+        updateTimelineSceneTextCounts({
+          charCount: response.data.charCount,
+          wordCount: response.data.wordCount,
+          sceneId: sceneId,
+        })
+      );
     } else {
       showSnackbar("Something went wrong while saving your file.");
       dispatch(toggleEditorSaving(false));
+      console.error("Error saving editor:", response.message);
     }
   };
 
@@ -47,10 +64,10 @@ export const useSaveEditor = ({
     dispatch(toggleEditorSaving(true));
     const debouncedSave = setTimeout(() => {
       handleSaveEditor(currentSceneId);
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(debouncedSave);
-  }, [editorState]); // Saves every 2 seconds of inactivity
+  }, [editorState]); // Saves every 2 second of inactivity
 
   useEffect(() => {
     if (previousSceneId.current && previousSceneId.current !== currentSceneId) {

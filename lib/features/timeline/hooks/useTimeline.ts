@@ -10,27 +10,18 @@ export const useTimeline = ({ timeline }: { timeline: Timeline }) => {
   const currentSceneId = useSelector(
     (state: MainState) => state.current.currentSceneId
   );
-  const timelines = useSelector((state: MainState) => state.timeline.timelines);
+  const timelineScenes = useSelector(
+    (state: MainState) =>
+      state.timeline.timelines.find((t) => t.id === timeline.id)?.scenes || []
+  );
   const rightMostScenePosition = useSelector(
     (state: MainState) => state.timeline.rightMostScenePosition
   );
-
-  const [timelineScenes, setTimelineScenes] = useState<Scene[]>([]);
 
   const handleSetTimelineToBeEdited = () => {
     if (!timeline) return;
     dispatch(setTimelineToBeEdited(timeline));
   };
-
-  const handleSetTimelineScenes = async () => {
-    if (!timeline || !timelines) return;
-    const scenes = timelines.find((t) => t.id === timeline.id)?.scenes || [];
-    setTimelineScenes(scenes);
-  };
-
-  useEffect(() => {
-    handleSetTimelineScenes();
-  }, [timeline, timelines]);
 
   return {
     handleSetTimelineToBeEdited,

@@ -64,6 +64,11 @@ export const useTimelineSceneMenu = ({
             },
           ])
         );
+      } else {
+        console.error(
+          "Error deleting scene from narrative timeline: ",
+          response.message
+        );
       }
     }
   };
@@ -89,6 +94,11 @@ export const useTimelineSceneMenu = ({
             color: null,
           },
         ])
+      );
+    } else {
+      console.error(
+        "Error deleting scene from all timelines: ",
+        response.message
       );
     }
   };

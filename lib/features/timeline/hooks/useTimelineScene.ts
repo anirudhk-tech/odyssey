@@ -10,10 +10,18 @@ export const useTimelineScene = ({ scene }: { scene: Scene }) => {
     (state: MainState) => state.current.currentSceneId
   );
   const timelineSceneRef = useRef<HTMLDivElement>(null);
+  const fillSceneBoxesColor = useSelector(
+    (state: MainState) => state.preferences.preferences.fillSceneBoxesColor
+  );
 
   const handleSetCurrentSceneId = () => {
     dispatch(setCurrentSceneId(scene.id));
   };
 
-  return { handleSetCurrentSceneId, currentSceneId, timelineSceneRef };
+  return {
+    handleSetCurrentSceneId,
+    currentSceneId,
+    timelineSceneRef,
+    fillSceneBoxesColor,
+  };
 };

@@ -51,6 +51,7 @@ export const useAddScene = () => {
       }
       showSnackbar("Something went wrong. Please try again.");
       dispatch(toggleSceneBeingAdded());
+      console.error("Error creating scene: ", response.message);
     }
   };
 

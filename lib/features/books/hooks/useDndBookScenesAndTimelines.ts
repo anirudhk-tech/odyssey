@@ -99,6 +99,10 @@ export const useDndBookScenesAndTimelines = ({
           );
         } else {
           dispatch(addSceneToNarrativeTimeline(response.data.scene));
+          console.error(
+            "Error changing/adding to narrative timeline: ",
+            response.message
+          );
         }
       }
 
@@ -150,6 +154,11 @@ export const useDndBookScenesAndTimelines = ({
             })
           );
         }
+      } else {
+        console.error(
+          "Error adding/chaning scene to timeline: ",
+          response.message
+        );
       }
     } else if (active.data.current?.type === "scene") {
       handleSceneDragEnd(e);

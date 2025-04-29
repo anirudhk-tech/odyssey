@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { sluggifyText } from "./utilServices.js";
+import { countText, sluggifyText } from "./utilServices.js";
 import { readGlobalMetaData } from "./utilServices.js";
 
 export const createScene = (bookUUID, sceneName) => {
@@ -54,6 +54,8 @@ export const createScene = (bookUUID, sceneName) => {
       textFilePath: textFilePath,
       color: null,
       x: null,
+      wordCount: 0,
+      charCount: 0,
     });
 
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
@@ -213,12 +215,24 @@ export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
     }
 
     const textFilePath = data.scenes[sceneIndex].textFilePath;
+    const { charCount, wordCount } = countText(raw_json_text);
+
+    data.scenes[sceneIndex]["wordCount"] = wordCount;
+    data.scenes[sceneIndex]["charCount"] = charCount;
 
     fs.writeFileSync(textFilePath, raw_json_text, "utf8");
+    fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
 
-    return { success: true, message: "Scene updated successfully" };
+    return {
+      success: true,
+      message: "Scene updated successfully",
+      data: { charCount, wordCount },
+    };
   } catch (error) {
-    return { success: false, message: `Error updating scene: ${error}` };
+    return {
+      success: false,
+      message: `Error updating scene: ${error}`,
+    };
   }
 };
 

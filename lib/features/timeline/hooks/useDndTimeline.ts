@@ -54,6 +54,8 @@ export const useDndTimeline = ({
           newPosition: newX,
         })
       );
+    } else {
+      console.error("Error moving scene on timeline: ", response.message);
     }
   };
 

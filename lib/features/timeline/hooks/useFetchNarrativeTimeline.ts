@@ -12,6 +12,9 @@ export const useFetchNarrativeTimeline = () => {
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
+  const narrativeTimelineScenes = useSelector(
+    (state: MainState) => state.timeline.narrativeTimeline?.scenes || []
+  );
   const { showSnackbar } = useSnackbar();
 
   const handleFetchNarrativeTimeline = async (bookId: string) => {
@@ -20,6 +23,7 @@ export const useFetchNarrativeTimeline = () => {
       dispatch(setNarrativeTimeline(response.data.narrativeTimeline));
     } else {
       showSnackbar("Something went wrong while fetching timelines.");
+      console.error("Error fetching narrative timeline: ", response.message);
     }
   };
 
@@ -29,5 +33,5 @@ export const useFetchNarrativeTimeline = () => {
     }
   }, [currentBookId]);
 
-  return { narrativeTimeline };
+  return { narrativeTimeline, narrativeTimelineScenes };
 };

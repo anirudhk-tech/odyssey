@@ -46,6 +46,7 @@ export const useAddBook = () => {
       } else {
         toggleDialog();
         showSnackbar("Something went wrong. Please try again.");
+        console.error("Error creating book: ", response.message);
       }
     }
   };

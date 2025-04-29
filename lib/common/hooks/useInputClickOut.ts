@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-export const useInputClickOut = ({
+export const useInputClickOut = <T extends HTMLElement>({
   inputRef,
   onClickOut,
 }: {
-  inputRef: React.RefObject<HTMLTextAreaElement>;
+  inputRef: React.RefObject<T>;
   onClickOut: () => void;
 }) => {
   useEffect(() => {

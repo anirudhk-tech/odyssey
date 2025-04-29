@@ -64,6 +64,11 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
           }))
         )
       );
+    } else {
+      console.error(
+        "Error moving scene on narrative timeline: ",
+        response.message
+      );
     }
   };
 

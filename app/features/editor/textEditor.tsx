@@ -23,7 +23,7 @@ const Container = styled.div<{ width: number }>`
   width: ${(props) => props.width}px;
 `;
 
-const Title = styled.textarea`
+const Title = styled.input`
   background-color: ${(props) => props.theme.colors.primary};
   border: none;
   color: ${(props) => props.theme.colors.text};
@@ -33,6 +33,8 @@ const Title = styled.textarea`
   outline: none;
   resize: none;
   height: fit-content;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 const EditorContainer = styled.div`
@@ -60,7 +62,7 @@ export const TextEditor = () => {
   const { currentScene } = useLoadEditor({ editorState, setEditorState });
   const { handleRenameSceneFromText, sceneName, setSceneName } =
     useRenameSceneFromText({ currentScene });
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   useInputClickOut({ inputRef, onClickOut: handleRenameSceneFromText });
   useSaveEditor({
     editorState,
@@ -73,7 +75,6 @@ export const TextEditor = () => {
         ref={inputRef}
         value={currentScene ? sceneName : "Add or select a scene..."}
         onChange={(e) => setSceneName(e.target.value)}
-        rows={1}
         disabled={currentScene ? false : true}
       />
       {currentScene && (

@@ -107,6 +107,8 @@ export const useTimelineSectionResize = () => {
             )
           );
         }
+      } else {
+        console.error("Error resizing timeline section: ", response.message);
       }
 
       if (sectionIndex < sections.length - 1) {
@@ -144,6 +146,8 @@ export const useTimelineSectionResize = () => {
               )
             );
           }
+        } else {
+          console.error("Error resizing timeline section: ", response.message);
         }
       }
 

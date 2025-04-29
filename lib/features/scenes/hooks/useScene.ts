@@ -15,6 +15,12 @@ export const useScene = ({ scene }: { scene: Scene }) => {
   const fillSceneBoxesColor = useSelector(
     (state: MainState) => state.preferences.preferences.fillSceneBoxesColor
   );
+  const showWordCount = useSelector(
+    (state: MainState) => state.preferences.preferences.showWordCount
+  );
+  const showCharCount = useSelector(
+    (state: MainState) => state.preferences.preferences.showCharCount
+  );
 
   const handleSetCurrentSceneId = () => {
     dispatch(setCurrentSceneId(scene.id));
@@ -27,8 +33,6 @@ export const useScene = ({ scene }: { scene: Scene }) => {
   const handleMouseEnter = () => isHovering(true);
   const handleMouseLeave = () => isHovering(false);
 
-  console.log(fillSceneBoxesColor);
-
   return {
     currentSceneId,
     handleSetCurrentSceneId,
@@ -37,5 +41,7 @@ export const useScene = ({ scene }: { scene: Scene }) => {
     handleMouseLeave,
     handleSetSceneToBeEdited,
     fillSceneBoxesColor,
+    showWordCount,
+    showCharCount,
   };
 };
