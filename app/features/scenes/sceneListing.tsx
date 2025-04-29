@@ -46,6 +46,7 @@ const Title = styled.span`
   color: ${(props) => props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
   text-align: center;
+  z-index: 2;
 `;
 
 const MenuIcon = styled(HiDotsHorizontal)`
@@ -54,6 +55,7 @@ const MenuIcon = styled(HiDotsHorizontal)`
   top: 10px;
   right: 10px;
   cursor: pointer;
+  z-index: 2;
 `;
 
 const Input = styled.textarea`
@@ -70,16 +72,21 @@ const Input = styled.textarea`
   overflow: auto;
   word-wrap: break-word;
   padding-top: 20px;
+  z-index: 2;
 `;
 
-const SceneColor = styled.div<{ color: string | null }>`
+const SceneColor = styled.div<{
+  color: string | null;
+  fullheight: "true" | "false";
+}>`
   width: 100%;
-  height: 10px;
+  height: ${(props) => (props.fullheight === "true" ? "100%" : "10px")};
   background-color: ${(props) => (props.color ? props.color : "transparent")};
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   position: absolute;
   top: 0;
+  z-index: 1;
 `;
 
 export const SceneListing = ({ scene }: { scene: Scene }) => {
@@ -90,10 +97,11 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
     handleMouseLeave,
     hovering,
     handleSetSceneToBeEdited,
+    fillSceneBoxesColor,
   } = useScene({ scene });
   const { menuPos, setMenuPos, handleMenuOpen, handleMenuOpenFromIcon } =
     useMenu();
-  const { options } = useSceneMenu({ setMenuPos });
+  const { options, toggleSceneRename } = useSceneMenu({ setMenuPos });
   const {
     sceneBeingRenamed,
     sceneToBeEdited,
@@ -106,6 +114,12 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
 
   return (
     <Container
+      onDoubleClick={() => {
+        if (sceneToBeEdited === null || sceneToBeEdited.id !== scene.id) {
+          handleSetSceneToBeEdited();
+          toggleSceneRename();
+        }
+      }}
       onClick={handleSetCurrentSceneId}
       onContextMenu={(e) => {
         handleMenuOpen(e);
@@ -124,7 +138,10 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
           }}
         />
       )}
-      <SceneColor color={scene.color} />
+      <SceneColor
+        color={scene.color}
+        fullheight={fillSceneBoxesColor ? "true" : "false"}
+      />
       {sceneBeingRenamed &&
       sceneToBeEdited &&
       sceneToBeEdited.id === scene.id ? (

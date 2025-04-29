@@ -3,12 +3,18 @@ import "./ipcHandlers.js";
 import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
 import { setMenu } from "./menu.js";
+import { setTray } from "./tray.js";
 import next from "next";
 import express from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
-const dev = false;
+const dev = process.env.DEV_MODE;
+
+let mainWindow;
 
 const startNextServer = async () => {
   const projectRoot = resolve(__dirname, "..");
@@ -35,7 +41,7 @@ const startNextServer = async () => {
 };
 
 const createWindow = () => {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
     webPreferences: {
@@ -47,18 +53,19 @@ const createWindow = () => {
       process.platform == "win32"
         ? join(__dirname, "assets", "icon.ico")
         : join(__dirname, "assets", "icon.png"),
+    title: "Odyssey",
   });
 
-  win.loadURL("http://localhost:3000");
+  mainWindow.loadURL("http://localhost:3000");
 };
 
 if (process.platform === "darwin") {
   app.dock.setIcon(join(__dirname, "assets", "icon.icns"));
 }
 
-setMenu();
-
 app.whenReady().then(() => {
+  setMenu();
+
   if (!dev) {
     startNextServer()
       .then(() => {
@@ -71,6 +78,8 @@ app.whenReady().then(() => {
   } else {
     createWindow();
   }
+
+  setTray(mainWindow);
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

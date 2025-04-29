@@ -36,6 +36,7 @@ import {
   resizeTimelineSection,
   swapTimelineSections,
 } from "./services/timelineSectionsServices.js";
+import { getPreferences } from "./services/preferenceServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
   return createBook(bookName);
@@ -202,3 +203,7 @@ ipcMain.handle(
     return moveSceneOnTimeline(bookUUID, timelineUUID, sceneUUID, x);
   }
 );
+
+ipcMain.handle("getPreferences", async (event) => {
+  return getPreferences();
+});

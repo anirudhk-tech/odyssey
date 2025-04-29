@@ -33,5 +33,5 @@ export const useSceneMenu = ({
     },
   ];
 
-  return { options };
+  return { options, toggleSceneRename };
 };

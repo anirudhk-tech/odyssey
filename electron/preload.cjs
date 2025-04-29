@@ -108,4 +108,9 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
       sceneUUID,
       x
     ),
+  getPreferences: () => ipcRenderer.invoke("getPreferences"),
+  onPreferenceChanged: (callback) =>
+    ipcRenderer.on("preference-changed", (_, preferenceData) => {
+      callback(preferenceData);
+    }),
 });

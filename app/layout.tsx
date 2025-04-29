@@ -1,32 +1,38 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { type ReactNode } from "react";
 import { StoreProvider } from "./StoreProvider";
 
 import "./styles/globals.css";
 import { CustomThemeProvider } from "./ThemeProvider";
-import { Metadata } from "next";
 import GlobalStyle from "./GlobalStyles";
 import { GlobalSnackbar } from "./GlobalSnackbar";
+import { usePreferences } from "@/lib/features/preferences/hooks/usePreferences";
 
 interface Props {
   readonly children: ReactNode;
 }
 
-export const metadata: Metadata = {
-  title: "Odyssey",
-};
-
 export default function RootLayout({ children }: Props) {
   return (
     <CustomThemeProvider>
       <StoreProvider>
-        <html lang="en">
-          <body>
-            <GlobalStyle />
-            <GlobalSnackbar />
-            {children}
-          </body>
-        </html>
+        <ClientSideInit>{children}</ClientSideInit>
       </StoreProvider>
     </CustomThemeProvider>
+  );
+}
+
+function ClientSideInit({ children }: Props) {
+  usePreferences();
+
+  return (
+    <html lang="en">
+      <body>
+        <GlobalStyle />
+        <GlobalSnackbar />
+        {children}
+      </body>
+    </html>
   );
 }

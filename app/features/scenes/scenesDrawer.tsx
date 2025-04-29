@@ -50,24 +50,21 @@ const ResizeHandle = styled.div`
 `;
 
 const TabContainer = styled.div<{
-  open: "true" | "false";
-  timelineopen: "true" | "false";
+  $open: boolean;
+  $timelineopen: boolean;
   drawerwidth: number | string;
   timelineheight: number | string;
 }>`
-  width: ${(props) =>
-    props.open === "true" ? `${props.drawerwidth}px` : "0px"};
+  width: ${(props) => (props.$open ? `${props.drawerwidth}px` : "0px")};
   height: 100%;
   background-color: ${(props) => props.theme.colors.background};
   transition: width 0.3s ease, padding 0.3s ease;
   position: relative;
   border-left: 1px solid ${(props) => props.theme.colors.secondary};
-  padding-left: ${(props) => (props.open === "true" ? "10px" : "0px")};
-  padding-right: ${(props) => (props.open === "true" ? "10px" : "0px")};
+  padding-left: ${(props) => (props.$open ? "10px" : "0px")};
+  padding-right: ${(props) => (props.$open ? "10px" : "0px")};
   padding-bottom: ${(props) =>
-    props.open === "true" && props.timelineopen === "true"
-      ? `${props.timelineheight}px`
-      : "0px"};
+    props.$open && props.$timelineopen ? `${props.timelineheight}px` : "0px"};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -113,8 +110,8 @@ export const ScenesDrawer = ({
   return (
     <Container>
       <TabContainer
-        open={isDrawerOpen ? "true" : "false"}
-        timelineopen={isTimelineDrawerOpen ? "true" : "false"}
+        $open={isDrawerOpen}
+        $timelineopen={isTimelineDrawerOpen}
         drawerwidth={scenesDrawerWidth}
         timelineheight={timelineDrawerHeight}
       >

@@ -5,6 +5,7 @@ import { useToolbar } from "@/lib/features/editor/hooks/useToolbar";
 import { GrItalic } from "react-icons/gr";
 import { GrUnderline } from "react-icons/gr";
 import { MutableRefObject } from "react";
+import { EditorSavingIndicator } from "./editorSavingIndicator";
 
 const Container = styled.div`
   width: 100%;
@@ -13,7 +14,7 @@ const Container = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding-left: 5px;
   padding-right: 5px;
   align-items: center;
@@ -87,6 +88,7 @@ export const ToolBar = ({
           <GrUnderline />
         </Button>
       </ButtonContainer>
+      <EditorSavingIndicator />
     </Container>
   );
 };

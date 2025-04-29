@@ -11,7 +11,6 @@ export const useFetchBooks = () => {
 
   const fetchBooks = async () => {
     const response = await window.odysseyAPI.getBooks();
-    console.log(response);
     if (response.success) {
       dispatch(setBooks(response.data.books));
     }

@@ -1,6 +1,6 @@
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 import { MainState } from "@/lib/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearSceneToBeEdited,
@@ -25,6 +25,10 @@ export const useRenameScene = () => {
   );
 
   const { showSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    setSceneName(sceneToBeEdited?.title || "");
+  }, [sceneToBeEdited]);
 
   const handleRenameScene = async () => {
     if (!sceneToBeEdited || !currentBookId) return;

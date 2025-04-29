@@ -1,4 +1,5 @@
 import { Response } from "./app/types/electron";
+import { Preferences } from "./app/types/preferences";
 
 export {};
 
@@ -112,6 +113,13 @@ declare global {
         timelineUUID: string,
         x: number
       ) => Promise<Response>;
+      getPreferences: () => Promise<Response>;
+      onPreferenceChanged: (
+        callback: (change: {
+          key: keyof Preferences;
+          value: Preferences[keyof Preferences];
+        }) => void
+      ) => void;
     };
   }
 }
