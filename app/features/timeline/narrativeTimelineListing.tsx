@@ -76,8 +76,8 @@ export const NarrativeTimelineListing = ({
           narrativeTimelineScenes &&
           narrativeTimelineScenes.map((scene) => (
             <TimelineSceneListing
-              key={scene.id}
-              scene={scene}
+              key={scene!.id}
+              scene={scene!}
               timeline={"narrativeTimeline"}
             />
           ))}

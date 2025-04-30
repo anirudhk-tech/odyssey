@@ -128,8 +128,8 @@ export const TimelineListing = ({
         {timelineScenes.map((scene) => {
           return (
             <TimelineSceneListing
-              key={scene.id}
-              scene={scene}
+              key={scene!.id}
+              scene={scene!}
               timeline={timeline}
             />
           );
