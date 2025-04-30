@@ -60,9 +60,6 @@
       ".next/**/*",
       "package.json"
     ],
-    "ignore": [
-      "**/.env*"
-    ],
     "mac": {
       "icon": "electron/assets/icon.icns"
     },
