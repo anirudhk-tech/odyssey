@@ -7,7 +7,6 @@ import { setTray } from "./tray.js";
 import next from "next";
 import express from "express";
 import dotenv from "dotenv";
-import isDev from "electron-is-dev";
 
 dotenv.config();
 
@@ -15,6 +14,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
 let mainWindow;
+const isDev = false;
 
 const startNextServer = async () => {
   const projectRoot = resolve(__dirname, "..");
