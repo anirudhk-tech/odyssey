@@ -19,6 +19,7 @@ import { useDndTimelines } from "@/lib/features/timeline/hooks/useDndTimelines";
 import { useRef } from "react";
 import { useTimelineSectionResize } from "@/lib/features/timeline/hooks/useTimelineSectionResize";
 import { AddTimelineDialog } from "@/app/features/timeline/addTimelineDialog";
+import { SceneImageDialog } from "@/app/features/scenes/sceneImageDialog";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -61,6 +62,7 @@ export default function EditingPage() {
       <AddTimelineDialog />
       <DeleteTimelineConfirmDialog />
       <DeleteSceneConfirmDialog />
+      <SceneImageDialog />
       <TextEditor />
       {sectionIsResizing ? (
         <>

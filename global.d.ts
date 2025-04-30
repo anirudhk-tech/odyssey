@@ -97,11 +97,6 @@ declare global {
         bookUUID: string,
         sceneUUID: string
       ) => Promise<Response>;
-      renameTimelinesSceneName: (
-        bookUUID: string,
-        sceneUUID: string,
-        newSceneName: string
-      ) => Promise<Response>;
       moveSceneOnNarrativeTimeline: (
         bookUUID: string,
         sceneUUID: string,
@@ -120,6 +115,16 @@ declare global {
           value: Preferences[keyof Preferences];
         }) => void
       ) => void;
+      pickImage: () => string;
+      addSceneImage: (
+        bookUUID: string,
+        sceneUUID: string,
+        imagePath: string
+      ) => Promise<Response>;
+      removeSceneImage: (
+        bookUUID: string,
+        sceneUUID: string
+      ) => Promise<Response>;
     };
   }
 }

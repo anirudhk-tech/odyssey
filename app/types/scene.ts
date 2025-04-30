@@ -5,6 +5,7 @@ export interface Scene {
   color: string | null;
   charCount: number;
   wordCount: number;
+  imagePath: string | null;
 }
 
 export interface TimelineScene {

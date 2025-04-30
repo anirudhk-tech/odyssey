@@ -1,9 +1,11 @@
 import { ipcMain } from "electron";
 import {
+  addSceneImage,
   createScene,
   deleteScene,
   getScenes,
   getTextFromScene,
+  removeSceneImage,
   renameScene,
   writeTextIntoScene,
 } from "./services/scenesServices.js";
@@ -22,7 +24,6 @@ import {
   getNarrativeTimeline,
   deleteSceneFromTimeline,
   addSceneToNarrativeTimeline,
-  renameTimelinesSceneName,
   moveSceneOnNarrativeTimeline,
   moveSceneOnTimeline,
   deleteSceneFromAllTimelines,
@@ -37,6 +38,7 @@ import {
   swapTimelineSections,
 } from "./services/timelineSectionsServices.js";
 import { getPreferences } from "./services/preferenceServices.js";
+import { pickImage } from "./services/utilServices.js";
 
 ipcMain.handle("createBook", async (event, bookName) => {
   return createBook(bookName);
@@ -184,13 +186,6 @@ ipcMain.handle(
 );
 
 ipcMain.handle(
-  "renameTimelinesSceneName",
-  async (event, bookUUID, sceneUUID, newSceneName) => {
-    return renameTimelinesSceneName(bookUUID, sceneUUID, newSceneName);
-  }
-);
-
-ipcMain.handle(
   "moveSceneOnNarrativeTimeline",
   async (event, bookUUID, sceneUUID, x) => {
     return moveSceneOnNarrativeTimeline(bookUUID, sceneUUID, x);
@@ -206,4 +201,19 @@ ipcMain.handle(
 
 ipcMain.handle("getPreferences", async (event) => {
   return getPreferences();
+});
+
+ipcMain.handle(
+  "addSceneImage",
+  async (event, bookUUID, sceneUUID, imagePath) => {
+    return addSceneImage(bookUUID, sceneUUID, imagePath);
+  }
+);
+
+ipcMain.handle("pickImage", async (event) => {
+  return pickImage();
+});
+
+ipcMain.handle("removeSceneImage", async (event, bookUUID, sceneUUID) => {
+  return removeSceneImage(bookUUID, sceneUUID);
 });

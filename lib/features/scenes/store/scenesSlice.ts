@@ -9,6 +9,7 @@ export interface ScenesSlice {
   deleteSceneConfirmDialogOpen: boolean;
   sceneBeingRenamed: boolean;
   sceneToBeEdited: Scene | null;
+  sceneImageDialogOpen: boolean;
 }
 
 const initialState: ScenesSlice = {
@@ -19,6 +20,7 @@ const initialState: ScenesSlice = {
   deleteSceneConfirmDialogOpen: false,
   sceneToBeEdited: null,
   sceneBeingRenamed: false,
+  sceneImageDialogOpen: false,
 };
 
 export const scenesSlice = createSlice({
@@ -110,6 +112,19 @@ export const scenesSlice = createSlice({
         return scene;
       });
     },
+    toggleSceneImageDialog: (state) => {
+      state.sceneImageDialogOpen = !state.sceneImageDialogOpen;
+    },
+    setSceneImagePath: (state, action) => {
+      if (!state.scenes) return;
+      const { id, imagePath } = action.payload;
+      state.scenes = state.scenes.map((scene) => {
+        if (scene.id === id) {
+          return { ...scene, imagePath };
+        }
+        return scene;
+      });
+    },
   },
 });
 
@@ -128,5 +143,7 @@ export const {
   changeMultipleScenesColor,
   swapScenesColor,
   updateSceneTextCounts,
+  toggleSceneImageDialog,
+  setSceneImagePath,
 } = scenesSlice.actions;
 export default scenesSlice.reducer;

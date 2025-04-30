@@ -285,3 +285,79 @@ export const getTextFromScene = (bookUUID, sceneUUID) => {
     return { success: false, message: `Error getting scene: ${error}` };
   }
 };
+
+export const addSceneImage = (bookUUID, sceneUUID, imagePath) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const imagesPath = path.join(path.dirname(bookPath), "images");
+    const scenesPath = path.join(bookPath, "scenes.json");
+
+    if (!fs.existsSync(imagesPath)) {
+      fs.mkdirSync(imagesPath, { recursive: true });
+    }
+
+    const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
+
+    if (sceneIndex === -1) {
+      return { success: false, message: "Scene not found" };
+    }
+
+    const imageFileName = path.basename(imagePath);
+    const newImagePath = path.join(imagesPath, imageFileName);
+
+    if (!fs.existsSync(newImagePath)) {
+      fs.copyFileSync(imagePath, newImagePath);
+    }
+
+    data.scenes[sceneIndex].imagePath = newImagePath;
+
+    fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
+
+    return {
+      success: true,
+      message: "Scene image set successfully",
+      data: { imagePath: newImagePath },
+    };
+  } catch (error) {
+    return { success: false, message: `Error setting scene image: ${error}` };
+  }
+};
+
+export const removeSceneImage = (bookUUID, sceneUUID) => {
+  try {
+    const metaData = readGlobalMetaData();
+    const bookPath = metaData.books.find(
+      (book) => book.id === bookUUID
+    ).bookFolderPath;
+    const scenesPath = path.join(bookPath, "scenes.json");
+
+    const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
+
+    if (sceneIndex === -1) {
+      return { success: false, message: "Scene not found" };
+    }
+
+    const imagePath = data.scenes[sceneIndex].imagePath;
+    data.scenes[sceneIndex].imagePath = null;
+
+    let imageUnused = !data.scenes.some((s) => s.imagePath === imagePath);
+
+    if (imageUnused) {
+      fs.rmSync(imagePath, { force: true });
+    }
+
+    fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
+
+    return {
+      success: true,
+      message: "Scene image removed successfully",
+    };
+  } catch (error) {
+    return { success: false, message: `Error removing scene image: ${error}` };
+  }
+};

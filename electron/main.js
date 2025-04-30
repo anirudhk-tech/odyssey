@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, net, protocol } from "electron";
 import "./ipcHandlers.js";
 import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
@@ -65,6 +65,11 @@ if (process.platform === "darwin") {
 
 app.whenReady().then(() => {
   setMenu();
+
+  protocol.handle("images", async (request) => {
+    const filePath = request.url.replace("images:///", "");
+    return net.fetch(`file://${filePath}`);
+  });
 
   if (!dev) {
     startNextServer()

@@ -42,8 +42,9 @@ const Container = styled.div<{ $scene_active: boolean }>`
   padding: 1rem;
 `;
 
-const Title = styled.span`
-  color: ${(props) => props.theme.colors.text};
+const Title = styled.span<{ $image_active: boolean }>`
+  color: ${(props) =>
+    props.$image_active ? "white" : props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
   text-align: center;
   z-index: 2;
@@ -51,13 +52,22 @@ const Title = styled.span`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
   overflow: hidden;
+  text-shadow: ${(props) =>
+    props.$image_active
+      ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
+      : "none"};
 `;
 
-const SubText = styled.span`
-  color: ${(props) => props.theme.colors.text};
+const SubText = styled.span<{ $image_active: boolean }>`
+  color: ${(props) =>
+    props.$image_active ? "white" : props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.xs};
   text-align: center;
   z-index: 2;
+  text-shadow: ${(props) =>
+    props.$image_active
+      ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
+      : "none"};
 `;
 
 const MenuIcon = styled(HiDotsHorizontal)`
@@ -100,16 +110,39 @@ const SceneColor = styled.div<{
   top: 0;
   z-index: 1;
 `;
+
+const SceneImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+`;
+
 const TextContainer = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
 `;
+
 const CountContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 2px;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  border-radius: 0 0 5px 5px;
+  z-index: 1;
 `;
 
 export const SceneListing = ({ scene }: { scene: Scene }) => {
@@ -163,7 +196,16 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
           }}
         />
       )}
-      <SceneColor color={scene.color} $fullheight={fillSceneBoxesColor} />
+      {scene.imagePath ? (
+        <>
+          <SceneImage
+            src={`images:///${scene.imagePath.replace(/\\/g, "/")}`}
+          />
+          <Overlay />
+        </>
+      ) : (
+        <SceneColor color={scene.color} $fullheight={fillSceneBoxesColor} />
+      )}
       {sceneBeingRenamed &&
       sceneToBeEdited &&
       sceneToBeEdited.id === scene.id ? (
@@ -176,12 +218,22 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
         />
       ) : (
         <TextContainer>
-          <Title>{scene.title}</Title>
+          <Title $image_active={scene.imagePath !== null}>{scene.title}</Title>
           <CountContainer>
-            {showWordCount && <SubText>{scene.wordCount ?? 0} words</SubText>}
-            {showCharCount && showWordCount && <SubText>:</SubText>}
+            {showWordCount && (
+              <SubText $image_active={scene.imagePath !== null}>
+                {scene.wordCount ?? 0} words
+              </SubText>
+            )}
+            {showCharCount && showWordCount && (
+              <SubText $image_active={scene.imagePath !== null}>:</SubText>
+            )}
 
-            {showCharCount && <SubText>{scene.charCount ?? 0} chars</SubText>}
+            {showCharCount && (
+              <SubText $image_active={scene.imagePath !== null}>
+                {scene.charCount ?? 0} chars
+              </SubText>
+            )}
           </CountContainer>
         </TextContainer>
       )}

@@ -91,13 +91,6 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
     ipcRenderer.invoke("addSceneToNarrativeTimeline", bookUUID, sceneUUID, x),
   deleteSceneFromNarrativeTimeline: (bookUUID, sceneUUID) =>
     ipcRenderer.invoke("deleteSceneFromNarrativeTimeline", bookUUID, sceneUUID),
-  renameTimelinesSceneName: (bookUUID, sceneUUID, newSceneName) =>
-    ipcRenderer.invoke(
-      "renameTimelinesSceneName",
-      bookUUID,
-      sceneUUID,
-      newSceneName
-    ),
   moveSceneOnNarrativeTimeline: (bookUUID, sceneUUID, x) =>
     ipcRenderer.invoke("moveSceneOnNarrativeTimeline", bookUUID, sceneUUID, x),
   moveSceneOnTimeline: (bookUUID, timelineUUID, sceneUUID, x) =>
@@ -113,4 +106,9 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
     ipcRenderer.on("preference-changed", (_, preferenceData) => {
       callback(preferenceData);
     }),
+  addSceneImage: (bookUUID, sceneUUID, imagePath) =>
+    ipcRenderer.invoke("addSceneImage", bookUUID, sceneUUID, imagePath),
+  pickImage: () => ipcRenderer.invoke("pickImage"),
+  removeSceneImage: (bookUUID, sceneUUID) =>
+    ipcRenderer.invoke("removeSceneImage", bookUUID, sceneUUID),
 });

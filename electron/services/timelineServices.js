@@ -149,9 +149,6 @@ export const addSceneToTimeline = (bookUUID, timelineUUID, sceneUUID, x) => {
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
-    const scenesPath = path.join(bookPath, "scenes.json");
-
-    const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
 
     const timelineIndex = data.timelines.findIndex(
@@ -170,9 +167,7 @@ export const addSceneToTimeline = (bookUUID, timelineUUID, sceneUUID, x) => {
     );
 
     if (sceneIndex === -1) {
-      const scene = scenesData.scenes.find((scene) => scene.id === sceneUUID);
-      scene["x"] = x;
-
+      const scene = { id: sceneUUID, x: x };
       data.timelines[timelineIndex].scenes.push(scene);
 
       fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
@@ -186,9 +181,10 @@ export const addSceneToTimeline = (bookUUID, timelineUUID, sceneUUID, x) => {
       scene.x = x;
 
       fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+
       return {
         success: true,
-        message: "Scene added to timeline successfully",
+        message: "Scene position edited in timeline successfully",
         data: { exists: true, scene: scene },
       };
     }
@@ -330,23 +326,13 @@ export const addSceneToNarrativeTimeline = (bookUUID, sceneUUID, x) => {
 
     if (sceneIndex === -1) {
       const scene = scenesData.scenes.find((scene) => scene.id === sceneUUID);
-      scene.x = x;
-
       const color =
         sections.find((section) => x >= section.xStart && x <= section.xEnd)
           ?.color ?? null;
+
       scene.color = color;
 
-      data.narrative.scenes.push(scene);
-
-      data.timelines.forEach((timeline) => {
-        const sceneIndex = timeline.scenes.findIndex(
-          (scene) => scene.id === sceneUUID
-        );
-        if (sceneIndex !== -1) {
-          timeline.scenes[sceneIndex].color = color;
-        }
-      });
+      data.narrative.scenes.push({ id: sceneUUID, x });
 
       fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
       fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
@@ -362,30 +348,17 @@ export const addSceneToNarrativeTimeline = (bookUUID, sceneUUID, x) => {
       );
 
       scene.x = x;
-      scenesDataScene.x = x;
-
       const color =
         sections.find((section) => x >= section.xStart && x <= section.xEnd)
           ?.color ?? null;
-
-      scene.color = color;
       scenesDataScene.color = color;
-
-      data.timelines.forEach((timeline) => {
-        const sceneIndex = timeline.scenes.findIndex(
-          (scene) => scene.id === sceneUUID
-        );
-        if (sceneIndex !== -1) {
-          timeline.scenes[sceneIndex].color = color;
-        }
-      });
 
       fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
       fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
       return {
         success: true,
         message: "Scene added to narrative successfully",
-        data: { exists: true, scene: scene },
+        data: { exists: true, scene: scenesDataScene },
       };
     }
   } catch (error) {
@@ -501,7 +474,6 @@ export const moveSceneOnNarrativeTimeline = (bookUUID, sceneUUID, newX) => {
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
     const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
     const sections = data.sections || [];
-    const changedScenes = [];
 
     const sceneIndex = data.narrative.scenes.findIndex(
       (scene) => scene.id === sceneUUID
@@ -512,7 +484,6 @@ export const moveSceneOnNarrativeTimeline = (bookUUID, sceneUUID, newX) => {
     }
 
     data.narrative.scenes[sceneIndex].x = newX;
-    scenesData.scenes.find((scene) => scene.id === sceneUUID).x = newX;
 
     const color =
       sections.find((section) => newX >= section.xStart && newX <= section.xEnd)
@@ -521,68 +492,18 @@ export const moveSceneOnNarrativeTimeline = (bookUUID, sceneUUID, newX) => {
     data.narrative.scenes[sceneIndex].color = color;
     scenesData.scenes.find((scene) => scene.id === sceneUUID).color = color;
 
-    data.timelines.forEach((timeline) => {
-      const sceneIndex = timeline.scenes.findIndex(
-        (scene) => scene.id === sceneUUID
-      );
-      if (sceneIndex !== -1) {
-        timeline.scenes[sceneIndex].color = color;
-        changedScenes.push(timeline.scenes[sceneIndex]);
-      }
-    });
-
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
     fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
 
     return {
       success: true,
       message: "Scene moved successfully",
-      data: { changedScenes: changedScenes, newColor: color },
+      data: { newColor: color },
     };
   } catch (error) {
     return {
       success: false,
       message: `Error moving scene on narrative timeline: ${error}`,
-    };
-  }
-};
-
-export const renameTimelinesSceneName = (bookUUID, sceneUUID, newTitle) => {
-  try {
-    const metaData = readGlobalMetaData();
-    const bookPath = metaData.books.find(
-      (book) => book.id === bookUUID
-    ).bookFolderPath;
-    const timelinePath = path.join(bookPath, "timeline.json");
-
-    const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
-
-    data.timelines.forEach((timeline) => {
-      const sceneIndex = timeline.scenes.findIndex(
-        (scene) => scene.id === sceneUUID
-      );
-
-      if (sceneIndex !== -1) {
-        timeline.scenes[sceneIndex].title = newTitle;
-      }
-    });
-
-    const narrativeSceneIndex = data.narrative.scenes.findIndex(
-      (scene) => scene.id === sceneUUID
-    );
-    if (narrativeSceneIndex !== -1) {
-      data.narrative.scenes[narrativeSceneIndex].title = newTitle;
-    }
-
-    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
-    return {
-      success: true,
-      message: "Scene renamed successfully in timelines",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: `Error renaming scene in timelines: ${error}`,
     };
   }
 };

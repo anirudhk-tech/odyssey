@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, dialog } from "electron";
 import fs from "fs";
 import path from "path";
 
@@ -52,4 +52,16 @@ export const readGlobalMetaData = () => {
 export const writeGlobalMetaData = (data) => {
   const metaDataPath = getGlobalMetaDataPath();
   fs.writeFileSync(metaDataPath, JSON.stringify(data, null, 2), "utf8");
+};
+
+export const pickImage = async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [{ name: "Images", extensions: ["jpg", "jpeg", "png", "gif"] }],
+  });
+  if (canceled) {
+    return null;
+  } else {
+    return filePaths[0];
+  }
 };

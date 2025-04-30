@@ -3,6 +3,7 @@ import { MainState } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { renameScene } from "../store/scenesSlice";
+import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 
 export const useRenameSceneFromText = ({
   currentScene,
@@ -10,6 +11,7 @@ export const useRenameSceneFromText = ({
   currentScene: Scene | null;
 }) => {
   const dispatch = useDispatch();
+  const { showSnackbar } = useSnackbar();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
@@ -28,22 +30,23 @@ export const useRenameSceneFromText = ({
       return;
     }
 
-    const sceneResponse = await window.odysseyAPI.renameScene(
+    const response = await window.odysseyAPI.renameScene(
       currentBookId,
       currentScene.id,
       sceneName
     );
 
-    const timelineResponse = await window.odysseyAPI.renameTimelinesSceneName(
-      currentBookId,
-      currentScene.id,
-      sceneName
-    );
-
-    if (sceneResponse.success && timelineResponse.success) {
+    if (response.success) {
       dispatch(renameScene({ title: sceneName, id: currentScene.id }));
     } else {
       setSceneName(currentScene.title);
+
+      if (response.message === "Scene name already exists") {
+        showSnackbar("Scene name already exists");
+        return;
+      }
+
+      showSnackbar("Something went wrong. Please try again.");
     }
   };
 

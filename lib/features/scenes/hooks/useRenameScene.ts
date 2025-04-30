@@ -46,26 +46,20 @@ export const useRenameScene = () => {
       return;
     }
 
-    const sceneResponse = await window.odysseyAPI.renameScene(
+    const response = await window.odysseyAPI.renameScene(
       currentBookId,
       sceneToBeEdited.id,
       sceneName
     );
 
-    const timelineResponse = await window.odysseyAPI.renameTimelinesSceneName(
-      currentBookId,
-      sceneToBeEdited.id,
-      sceneName
-    );
-
-    if (sceneResponse.success && timelineResponse.success) {
+    if (response.success) {
       dispatch(renameScene({ title: sceneName, id: sceneToBeEdited.id }));
 
       showSnackbar(`Scene renamed to ${sceneName}.`);
     } else {
       setSceneName(sceneToBeEdited.title);
 
-      if (sceneResponse.message === "Scene name already exists") {
+      if (response.message === "Scene name already exists") {
         showSnackbar("Scene name already exists");
         dispatch(toggleSceneBeingRenamed());
         dispatch(clearSceneToBeEdited());

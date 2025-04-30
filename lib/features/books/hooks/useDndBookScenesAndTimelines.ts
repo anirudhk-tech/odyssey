@@ -100,11 +100,12 @@ export const useDndBookScenesAndTimelines = ({
           dispatch(
             addSceneToNarrativeTimeline({ id: response.data.scene.id, x })
           );
-          console.error(
-            "Error changing/adding to narrative timeline: ",
-            response.message
-          );
         }
+      } else {
+        console.error(
+          "Error changing/adding to narrative timeline: ",
+          response.message
+        );
       }
 
       dispatch(
