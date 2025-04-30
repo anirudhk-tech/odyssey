@@ -1,16 +1,19 @@
-import { Scene } from "@/app/types/scene";
+import { Scene, TimelineScene } from "@/app/types/scene";
 import { MainState } from "@/lib/store";
 import { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch, useSelector } from "react-redux";
 import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 import {
-  changeMultipleSceneColorsOnTimelines,
   changeScenePositionOnNarrativeTimeline,
   setRightMostScenePosition,
 } from "../store/timelineSlice";
 import { useEffect, useRef, useState } from "react";
 
-export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
+export const useDndNarrativeTimeline = ({
+  scene,
+}: {
+  scene: TimelineScene;
+}) => {
   const dispatch = useDispatch();
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
@@ -54,15 +57,6 @@ export const useDndNarrativeTimeline = ({ scene }: { scene: Scene }) => {
         changeMultipleScenesColor([
           { id: scene.id, color: response.data.newColor },
         ])
-      );
-
-      dispatch(
-        changeMultipleSceneColorsOnTimelines(
-          response.data.changedScenes.map((scene: Scene) => ({
-            color: scene.color,
-            sceneId: scene.id,
-          }))
-        )
       );
     } else {
       console.error(

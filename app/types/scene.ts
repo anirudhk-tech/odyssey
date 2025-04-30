@@ -3,7 +3,13 @@ export interface Scene {
   id: string;
   textFilePath: string;
   color: string | null;
-  x: number | null;
   charCount: number;
   wordCount: number;
 }
+
+export interface TimelineScene {
+  id: string;
+  x: number;
+}
+
+export type AllScene = Scene & TimelineScene;

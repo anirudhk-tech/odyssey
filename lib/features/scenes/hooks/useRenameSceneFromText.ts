@@ -3,7 +3,6 @@ import { MainState } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { renameScene } from "../store/scenesSlice";
-import { changeSceneNameOnTimelines } from "../../timeline/store/timelineSlice";
 
 export const useRenameSceneFromText = ({
   currentScene,
@@ -43,12 +42,6 @@ export const useRenameSceneFromText = ({
 
     if (sceneResponse.success && timelineResponse.success) {
       dispatch(renameScene({ title: sceneName, id: currentScene.id }));
-      dispatch(
-        changeSceneNameOnTimelines({
-          title: sceneName,
-          sceneId: currentScene.id,
-        })
-      );
     } else {
       setSceneName(currentScene.title);
     }

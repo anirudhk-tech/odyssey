@@ -6,6 +6,8 @@ import {
 import { MainState } from "@/lib/store";
 import { useEffect, useRef, useState } from "react";
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
+import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
+import { Scene } from "@/app/types/scene";
 
 export const useEditTimelineSection = () => {
   const dispatch = useDispatch();
@@ -63,6 +65,14 @@ export const useEditTimelineSection = () => {
           title: sectionName,
           color: color,
         })
+      );
+      dispatch(
+        changeMultipleScenesColor(
+          response.data.changedScenes.map((scene: Scene) => ({
+            color: scene.color,
+            id: scene.id,
+          }))
+        )
       );
       dispatch(toggleEditTimelineSectionDialog());
     } else {

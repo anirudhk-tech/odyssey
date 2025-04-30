@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { swapTimelineSections } from "../store/timelineSectionsSlice";
 import { MainState } from "@/lib/store";
-import { swapTimelineScenesColor } from "../store/timelineSlice";
 import { swapScenesColor } from "../../scenes/store/scenesSlice";
 
 export const useDndTimelineSections = ({
@@ -47,7 +46,6 @@ export const useDndTimelineSections = ({
     );
 
     if (response.success) {
-      dispatch(swapTimelineScenesColor(response.data));
       dispatch(swapScenesColor(response.data));
     } else {
       console.error("Error swapping timeline sections: ", response.message);

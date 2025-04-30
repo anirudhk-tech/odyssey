@@ -7,7 +7,6 @@ import {
   renameScene,
   toggleSceneBeingRenamed,
 } from "../store/scenesSlice";
-import { changeSceneNameOnTimelines } from "../../timeline/store/timelineSlice";
 
 export const useRenameScene = () => {
   const dispatch = useDispatch();
@@ -61,12 +60,6 @@ export const useRenameScene = () => {
 
     if (sceneResponse.success && timelineResponse.success) {
       dispatch(renameScene({ title: sceneName, id: sceneToBeEdited.id }));
-      dispatch(
-        changeSceneNameOnTimelines({
-          title: sceneName,
-          sceneId: sceneToBeEdited.id,
-        })
-      );
 
       showSnackbar(`Scene renamed to ${sceneName}.`);
     } else {

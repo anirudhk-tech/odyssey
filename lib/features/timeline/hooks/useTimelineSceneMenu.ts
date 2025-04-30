@@ -1,4 +1,3 @@
-import { Scene } from "@/app/types/scene";
 import { Timeline } from "@/app/types/timeline";
 import { MainState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,15 +5,15 @@ import {
   deleteSceneFromTimeline,
   deleteSceneFromAllTimelines,
   deleteSceneFromNarrativeTimeline,
-  changeMultipleSceneColorsOnTimelines,
 } from "../store/timelineSlice";
 import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
+import { TimelineScene } from "@/app/types/scene";
 
 export const useTimelineSceneMenu = ({
   scene,
   timeline,
 }: {
-  scene: Scene;
+  scene: TimelineScene;
   timeline: Timeline | "narrativeTimeline";
 }) => {
   const currentBookId = useSelector(
@@ -52,14 +51,6 @@ export const useTimelineSceneMenu = ({
           changeMultipleScenesColor([
             {
               id: scene.id,
-              color: null,
-            },
-          ])
-        );
-        dispatch(
-          changeMultipleSceneColorsOnTimelines([
-            {
-              sceneId: scene.id,
               color: null,
             },
           ])

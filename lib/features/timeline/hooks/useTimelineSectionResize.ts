@@ -5,7 +5,6 @@ import {
   toggleSectionIsResizing,
 } from "../store/timelineSectionsSlice";
 import { MainState } from "@/lib/store";
-import { changeMultipleSceneColorsOnTimelines } from "../store/timelineSlice";
 import { Scene } from "@/app/types/scene";
 import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 
@@ -90,15 +89,6 @@ export const useTimelineSectionResize = () => {
         const { changedScenes } = response.data;
         if (changedScenes) {
           dispatch(
-            changeMultipleSceneColorsOnTimelines(
-              changedScenes.map((scene: Scene) => ({
-                color: scene.color,
-                sceneId: scene.id,
-              }))
-            )
-          );
-
-          dispatch(
             changeMultipleScenesColor(
               changedScenes.map((scene: Scene) => ({
                 color: scene.color,
@@ -128,15 +118,6 @@ export const useTimelineSectionResize = () => {
         if (response.success) {
           const { changedScenes } = response.data;
           if (changedScenes) {
-            dispatch(
-              changeMultipleSceneColorsOnTimelines(
-                changedScenes.map((scene: Scene) => ({
-                  color: scene.color,
-                  sceneId: scene.id,
-                }))
-              )
-            );
-
             dispatch(
               changeMultipleScenesColor(
                 changedScenes.map((scene: Scene) => ({

@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditorSaving } from "../store/editorSlice";
 import { updateSceneTextCounts } from "../../scenes/store/scenesSlice";
-import { updateTimelineSceneTextCounts } from "../../timeline/store/timelineSlice";
 
 export const useSaveEditor = ({
   editorState,
@@ -44,13 +43,6 @@ export const useSaveEditor = ({
           charCount: response.data.charCount,
           wordCount: response.data.wordCount,
           id: sceneId,
-        })
-      );
-      dispatch(
-        updateTimelineSceneTextCounts({
-          charCount: response.data.charCount,
-          wordCount: response.data.wordCount,
-          sceneId: sceneId,
         })
       );
     } else {

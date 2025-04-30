@@ -1,4 +1,4 @@
-import { Scene } from "@/app/types/scene";
+import { TimelineScene } from "@/app/types/scene";
 import { MainState } from "@/lib/store";
 import { useEffect, useRef, useState } from "react";
 import { DraggableData, DraggableEvent } from "react-draggable";
@@ -13,7 +13,7 @@ export const useDndTimeline = ({
   scene,
   timeline,
 }: {
-  scene: Scene;
+  scene: TimelineScene;
   timeline: Timeline | "narrativeTimeline";
 }) => {
   const dispatch = useDispatch();

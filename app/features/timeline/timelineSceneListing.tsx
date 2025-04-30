@@ -1,6 +1,6 @@
 import { DndDisabled } from "@/app/components/dndDisabled";
 import { Menu } from "@/app/components/menu";
-import { Scene } from "@/app/types/scene";
+import { AllScene, Scene, TimelineScene } from "@/app/types/scene";
 import { Timeline } from "@/app/types/timeline";
 import { useMenu } from "@/lib/common/hooks/useMenu";
 import { useDndNarrativeTimeline } from "@/lib/features/timeline/hooks/useDndNarrativeTimeline";
@@ -113,7 +113,7 @@ export const TimelineSceneListing = ({
   scene,
   timeline,
 }: {
-  scene: Scene;
+  scene: AllScene;
   timeline: Timeline | "narrativeTimeline";
 }) => {
   const { setMenuPos, menuPos, handleMenuOpen } = useMenu();

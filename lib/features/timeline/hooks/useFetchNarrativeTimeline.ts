@@ -1,7 +1,7 @@
 import { MainState } from "@/lib/store";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setNarrativeTimeline, setTimelines } from "../store/timelineSlice";
+import { setNarrativeTimeline } from "../store/timelineSlice";
 import { useSnackbar } from "@/lib/common/hooks/useSnackbar";
 
 export const useFetchNarrativeTimeline = () => {
@@ -12,9 +12,20 @@ export const useFetchNarrativeTimeline = () => {
   const currentBookId = useSelector(
     (state: MainState) => state.current.currentBookId
   );
-  const narrativeTimelineScenes = useSelector(
-    (state: MainState) => state.timeline.narrativeTimeline?.scenes || []
-  );
+  const narrativeTimelineScenes = useSelector((state: MainState) => {
+    const entry = state.timeline.narrativeTimeline;
+    if (!entry) return [];
+
+    return entry.scenes.map(({ id, x }) => {
+      const scene = state.scenes.scenes?.find((s) => s.id === id);
+      if (!scene) return null;
+      return {
+        ...scene,
+        x,
+      };
+    });
+  });
+
   const { showSnackbar } = useSnackbar();
 
   const handleFetchNarrativeTimeline = async (bookId: string) => {

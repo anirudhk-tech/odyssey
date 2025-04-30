@@ -172,9 +172,10 @@ export const editTimelineSection = (
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
+    const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
-
+    const sceneData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
     const sectionIndex = data.sections.findIndex(
       (section) => section.id === sectionUUID
     );
@@ -183,12 +184,36 @@ export const editTimelineSection = (
       return { success: false, message: "Section not found" };
     }
 
+    const changedScenes = [];
+
+    data.narrative.scenes.map((scene) => {
+      if (
+        scene.x >= data.sections[sectionIndex].xStart &&
+        scene.x <= data.sections[sectionIndex].xEnd
+      ) {
+        scene.color = sectionColor;
+        changedScenes.push(scene);
+      }
+    });
+
+    changedScenes.forEach((newScene) => {
+      const scene = sceneData.scenes.find((s) => s.id === newScene.id);
+      if (scene) {
+        scene.color = newScene.color;
+      }
+    });
+
     data.sections[sectionIndex].title = sectionName;
     data.sections[sectionIndex].color = sectionColor;
 
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(scenesPath, JSON.stringify(sceneData, null, 2), "utf8");
 
-    return { success: true, message: "Section edited successfully" };
+    return {
+      success: true,
+      message: "Section edited successfully",
+      data: { changedScenes: changedScenes },
+    };
   } catch (error) {
     return { success: false, message: `Error editing section: ${error}` };
   }

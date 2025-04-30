@@ -1,9 +1,9 @@
-import { Scene } from "./scene";
+import { Scene, TimelineScene } from "./scene";
 
 export interface Timeline {
   title: string;
   id: string;
-  scenes: Scene[];
+  scenes: TimelineScene[];
 }
 
 export interface TimelineSection {
@@ -16,5 +16,5 @@ export interface TimelineSection {
 }
 
 export interface NarrativeTimeline {
-  scenes: Scene[];
+  scenes: TimelineScene[];
 }

@@ -12,7 +12,6 @@ import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
 import {
   addSceneToNarrativeTimeline,
   addSceneToTimeline,
-  changeMultipleSceneColorsOnTimelines,
   changeScenePositionOnNarrativeTimeline,
   changeScenePositionOnTimeline,
 } from "../../timeline/store/timelineSlice";
@@ -98,7 +97,9 @@ export const useDndBookScenesAndTimelines = ({
             })
           );
         } else {
-          dispatch(addSceneToNarrativeTimeline(response.data.scene));
+          dispatch(
+            addSceneToNarrativeTimeline({ id: response.data.scene.id, x })
+          );
           console.error(
             "Error changing/adding to narrative timeline: ",
             response.message
@@ -111,15 +112,6 @@ export const useDndBookScenesAndTimelines = ({
           {
             color: response.data.scene.color,
             id: active.id.toString(),
-          },
-        ])
-      );
-
-      dispatch(
-        changeMultipleSceneColorsOnTimelines([
-          {
-            color: response.data.scene.color,
-            sceneId: active.id.toString(),
           },
         ])
       );
@@ -149,7 +141,7 @@ export const useDndBookScenesAndTimelines = ({
         } else {
           dispatch(
             addSceneToTimeline({
-              scene: response.data.scene,
+              scene: { id: active.id, x: x },
               timelineId: over.id,
             })
           );
