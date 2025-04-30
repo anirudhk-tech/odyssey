@@ -8,7 +8,8 @@ export interface PreferencesSlice {
 const initialState: PreferencesSlice = {
   preferences: {
     showWordCount: true,
-    fillSceneBoxesColor: false,
+    fillSceneBoxesColor: true,
+    showCharCount: true,
   },
 };
 
