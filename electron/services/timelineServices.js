@@ -399,16 +399,6 @@ export const deleteSceneFromNarrativeTimeline = (bookUUID, sceneUUID) => {
       scenesData.scenes[scenesDataIndex].color = null;
     }
 
-    data.timelines.forEach((timeline) => {
-      const sceneIndex = timeline.scenes.findIndex(
-        (scene) => scene.id === sceneUUID
-      );
-
-      if (sceneIndex !== -1) {
-        timeline.scenes[sceneIndex].color = null;
-      }
-    });
-
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
     fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
 
@@ -489,7 +479,6 @@ export const moveSceneOnNarrativeTimeline = (bookUUID, sceneUUID, newX) => {
       sections.find((section) => newX >= section.xStart && newX <= section.xEnd)
         ?.color ?? null;
 
-    data.narrative.scenes[sceneIndex].color = color;
     scenesData.scenes.find((scene) => scene.id === sceneUUID).color = color;
 
     fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");

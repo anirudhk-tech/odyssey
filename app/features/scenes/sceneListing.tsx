@@ -42,7 +42,7 @@ const Container = styled.div<{ $scene_active: boolean }>`
   padding: 1rem;
 `;
 
-const Title = styled.span<{ $image_active: boolean }>`
+const Title = styled.span<{ $image_active: boolean; $fill_active: boolean }>`
   color: ${(props) =>
     props.$image_active ? "white" : props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
@@ -56,9 +56,10 @@ const Title = styled.span<{ $image_active: boolean }>`
     props.$image_active
       ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
       : "none"};
+  font-weight: ${(props) => (props.$fill_active ? 600 : 300)};
 `;
 
-const SubText = styled.span<{ $image_active: boolean }>`
+const SubText = styled.span<{ $image_active: boolean; $fill_active: boolean }>`
   color: ${(props) =>
     props.$image_active ? "white" : props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.xs};
@@ -68,6 +69,7 @@ const SubText = styled.span<{ $image_active: boolean }>`
     props.$image_active
       ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
       : "none"};
+  font-weight: ${(props) => (props.$fill_active ? 400 : 200)};
 `;
 
 const MenuIcon = styled(HiDotsHorizontal)`
@@ -79,12 +81,16 @@ const MenuIcon = styled(HiDotsHorizontal)`
   z-index: 2;
 `;
 
-const Input = styled.textarea`
+const Input = styled.textarea<{
+  $image_active: boolean;
+  $fill_active: boolean;
+}>`
   width: 100%;
   height: 100%;
   border: none;
   background-color: transparent;
-  color: ${(props) => props.theme.colors.text};
+  color: ${(props) =>
+    props.$image_active ? "white" : props.theme.colors.text};
   font-size: ${(props) => props.theme.fontsize.sm};
   outline: none;
   padding: 0 10px;
@@ -95,6 +101,11 @@ const Input = styled.textarea`
   padding-top: 20px;
   z-index: 2;
   scrollbar-width: none;
+  text-shadow: ${(props) =>
+    props.$image_active
+      ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
+      : "none"};
+  font-weight: ${(props) => (props.$fill_active ? 400 : 200)};
 `;
 
 const SceneColor = styled.div<{
@@ -102,13 +113,13 @@ const SceneColor = styled.div<{
   $fullheight: boolean;
 }>`
   width: 100%;
-  height: ${(props) => (props.$fullheight ? "100%" : "10px")};
+  height: ${(props) => (props.$fullheight ? "100%" : "3px")};
   background-color: ${(props) => (props.color ? props.color : "transparent")};
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   position: absolute;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 `;
 
 const SceneImage = styled.img`
@@ -202,6 +213,7 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
             src={`images:///${scene.imagePath.replace(/\\/g, "/")}`}
           />
           <Overlay />
+          <SceneColor color={scene.color} $fullheight={false} />
         </>
       ) : (
         <SceneColor color={scene.color} $fullheight={fillSceneBoxesColor} />
@@ -210,6 +222,8 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
       sceneToBeEdited &&
       sceneToBeEdited.id === scene.id ? (
         <Input
+          $fill_active={fillSceneBoxesColor}
+          $image_active={scene.imagePath !== null}
           ref={inputRef}
           value={sceneName}
           onChange={(e) => setSceneName(e.target.value)}
@@ -218,19 +232,35 @@ export const SceneListing = ({ scene }: { scene: Scene }) => {
         />
       ) : (
         <TextContainer>
-          <Title $image_active={scene.imagePath !== null}>{scene.title}</Title>
+          <Title
+            $fill_active={fillSceneBoxesColor}
+            $image_active={scene.imagePath !== null}
+          >
+            {scene.title}
+          </Title>
           <CountContainer>
             {showWordCount && (
-              <SubText $image_active={scene.imagePath !== null}>
+              <SubText
+                $fill_active={fillSceneBoxesColor}
+                $image_active={scene.imagePath !== null}
+              >
                 {scene.wordCount ?? 0} words
               </SubText>
             )}
             {showCharCount && showWordCount && (
-              <SubText $image_active={scene.imagePath !== null}>:</SubText>
+              <SubText
+                $fill_active={fillSceneBoxesColor}
+                $image_active={scene.imagePath !== null}
+              >
+                :
+              </SubText>
             )}
 
             {showCharCount && (
-              <SubText $image_active={scene.imagePath !== null}>
+              <SubText
+                $fill_active={fillSceneBoxesColor}
+                $image_active={scene.imagePath !== null}
+              >
                 {scene.charCount ?? 0} chars
               </SubText>
             )}

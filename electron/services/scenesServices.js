@@ -48,7 +48,7 @@ export const createScene = (bookUUID, sceneName) => {
       };
     }
 
-    data.scenes.push({
+    const scene = {
       title: adjustedSceneName,
       id: sceneUUID,
       textFilePath: textFilePath,
@@ -56,7 +56,10 @@ export const createScene = (bookUUID, sceneName) => {
       x: null,
       wordCount: 0,
       charCount: 0,
-    });
+      imagePath: null,
+    };
+
+    data.scenes.push(scene);
 
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
     fs.writeFileSync(
@@ -72,9 +75,7 @@ export const createScene = (bookUUID, sceneName) => {
       success: true,
       message: "Scene created successfully",
       data: {
-        id: sceneUUID,
-        textFilePath: textFilePath,
-        title: adjustedSceneName,
+        scene: scene,
       },
     };
   } catch (error) {
@@ -104,10 +105,18 @@ export const deleteScene = (bookUUID, sceneUUID) => {
     }
 
     const textFilePath = data.scenes[sceneIndex].textFilePath;
-
     fs.rmSync(textFilePath, { force: true });
 
+    const imagePath = data.scenes[sceneIndex].imagePath;
+
     data.scenes.splice(sceneIndex, 1);
+
+    if (imagePath) {
+      const imageUnused = !data.scenes.some((s) => s.imagePath === imagePath);
+      if (imageUnused) {
+        fs.rmSync(imagePath, { force: true });
+      }
+    }
 
     timelineData.timelines.forEach((timeline) => {
       timeline.scenes = timeline.scenes.filter(
@@ -345,7 +354,7 @@ export const removeSceneImage = (bookUUID, sceneUUID) => {
     const imagePath = data.scenes[sceneIndex].imagePath;
     data.scenes[sceneIndex].imagePath = null;
 
-    let imageUnused = !data.scenes.some((s) => s.imagePath === imagePath);
+    const imageUnused = !data.scenes.some((s) => s.imagePath === imagePath);
 
     if (imageUnused) {
       fs.rmSync(imagePath, { force: true });

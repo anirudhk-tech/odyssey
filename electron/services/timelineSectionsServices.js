@@ -186,20 +186,13 @@ export const editTimelineSection = (
 
     const changedScenes = [];
 
-    data.narrative.scenes.map((scene) => {
+    sceneData.forEach((s) => {
       if (
-        scene.x >= data.sections[sectionIndex].xStart &&
-        scene.x <= data.sections[sectionIndex].xEnd
+        s.x >= data.sections[sectionIndex].xStart &&
+        s.x <= data.sections[sectionIndex].xEnd
       ) {
         scene.color = sectionColor;
-        changedScenes.push(scene);
-      }
-    });
-
-    changedScenes.forEach((newScene) => {
-      const scene = sceneData.scenes.find((s) => s.id === newScene.id);
-      if (scene) {
-        scene.color = newScene.color;
+        changedScenes.push(s);
       }
     });
 
@@ -226,8 +219,11 @@ export const deleteTimelineSection = (bookUUID, sectionUUID) => {
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const timelinePath = path.join(bookPath, "timeline.json");
+    const scenesPath = path.join(bookPath, "scenes.json");
 
     const data = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
+    const scenesData = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+
     const sectionIndex = data.sections.findIndex(
       (section) => section.id === sectionUUID
     );
@@ -237,6 +233,7 @@ export const deleteTimelineSection = (bookUUID, sectionUUID) => {
     }
 
     const widthReduce = data.sections[sectionIndex].width;
+    const changedScenes = [];
 
     data.sections.forEach((section, idx) => {
       if (idx > sectionIndex) {
@@ -249,9 +246,26 @@ export const deleteTimelineSection = (bookUUID, sectionUUID) => {
       (section) => section.id !== sectionUUID
     );
 
-    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    scenesData.scenes.forEach((s) => {
+      s.color = null;
+      const newSection = data.sections.find(
+        (section) => section.xStart <= s.x && section.xEnd >= s.x
+      );
 
-    return { success: true, message: "Section deleted successfully" };
+      if (newSection) {
+        s.color = newSection.color;
+      }
+      changedScenes.push(s);
+    });
+
+    fs.writeFileSync(timelinePath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(scenesPath, JSON.stringify(scenesData, null, 2), "utf8");
+
+    return {
+      success: true,
+      message: "Section deleted successfully",
+      data: { changedScenes: changedScenes },
+    };
   } catch (error) {
     return { success: false, message: `Error deleting section: ${error}` };
   }
@@ -291,24 +305,6 @@ export const swapTimelineSections = (bookUUID, sectionUUID1, sectionUUID2) => {
 
     data.sections[sectionIndex2].xStart = tempXStart;
     data.sections[sectionIndex2].xEnd = tempXEnd;
-
-    data.timelines.map((timeline) => {
-      timeline.scenes.map((scene) => {
-        if (scene.color === sectionOneColor) {
-          scene.color = sectionTwoColor;
-        } else if (scene.color === sectionTwoColor) {
-          scene.color = sectionOneColor;
-        }
-      });
-    });
-
-    data.narrative.scenes.map((scene) => {
-      if (scene.color === sectionOneColor) {
-        scene.color = sectionTwoColor;
-      } else if (scene.color === sectionTwoColor) {
-        scene.color = sectionOneColor;
-      }
-    });
 
     scenesData.scenes.map((scene) => {
       if (scene.color === sectionOneColor) {

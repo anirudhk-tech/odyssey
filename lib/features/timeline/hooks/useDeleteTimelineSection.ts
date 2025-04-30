@@ -6,6 +6,8 @@ import {
   deleteTimelineSection,
   toggleDeleteTimelineSectionConfirmDialog,
 } from "../store/timelineSectionsSlice";
+import { changeMultipleScenesColor } from "../../scenes/store/scenesSlice";
+import { Scene } from "@/app/types/scene";
 
 export const useDeleteTimelineSection = () => {
   const dispatch = useDispatch();
@@ -27,8 +29,17 @@ export const useDeleteTimelineSection = () => {
       currentBookId,
       timelineSectionToBeEdited.id
     );
+
     if (response.success) {
       dispatch(deleteTimelineSection(timelineSectionToBeEdited.id));
+      dispatch(
+        changeMultipleScenesColor(
+          response.data.changedScenes.map((scene: Scene) => ({
+            id: scene.id,
+            color: scene.color,
+          }))
+        )
+      );
       showSnackbar("Timeline section deleted!");
     } else {
       showSnackbar("Something went wrong. Please try again.");

@@ -61,7 +61,7 @@ const Container = styled.div<{
   z-index: 2;
 `;
 
-const Text = styled.span`
+const Text = styled.span<{ $image_active: boolean; $fill_active: boolean }>`
   width: 100%;
   height: fit-content;
   text-align: center;
@@ -70,7 +70,13 @@ const Text = styled.span`
   text-overflow: ellipsis;
   word-break: normal;
   overflow-wrap: normal;
-  color: ${(props) => props.theme.colors.text};
+  color: ${(props) =>
+    props.$image_active ? "white" : props.theme.colors.text};
+  text-shadow: ${(props) =>
+    props.$image_active
+      ? "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px  0.5px 0 #000, 0.5px  0.5px 0 #000;"
+      : "none"};
+  font-weight: ${(props) => (props.$fill_active ? 500 : 300)};
   font-size: ${(props) => props.theme.fontsize.xs};
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -94,6 +100,16 @@ const Color = styled.div<{
   z-index: 1;
 `;
 
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
 const CountContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -107,6 +123,17 @@ const TooltipText = styled.span`
   text-align: center;
   z-index: 2;
   white-space: nowrap;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  border-radius: 0 0 5px 5px;
+  z-index: 1;
 `;
 
 export const TimelineSceneListing = ({
@@ -177,8 +204,23 @@ export const TimelineSceneListing = ({
             $scene_active={currentSceneId === scene.id}
             onClick={handleSetCurrentSceneId}
           >
-            <Color color={scene.color} $fullheight={fillSceneBoxesColor} />
-            <Text>{scene.title}</Text>
+            {scene.imagePath ? (
+              <>
+                <Image
+                  src={`images:///${scene.imagePath.replace(/\\/g, "/")}`}
+                />
+                <Overlay />
+                <Color color={scene.color} $fullheight={false} />
+              </>
+            ) : (
+              <Color color={scene.color} $fullheight={fillSceneBoxesColor} />
+            )}
+            <Text
+              $fill_active={fillSceneBoxesColor}
+              $image_active={scene.imagePath !== null}
+            >
+              {scene.title}
+            </Text>
             <Tooltip>
               <CountContainer>
                 <TooltipText>{scene.wordCount ?? 0} words</TooltipText>

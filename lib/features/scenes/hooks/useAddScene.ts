@@ -35,13 +35,7 @@ export const useAddScene = () => {
     );
 
     if (response.success) {
-      dispatch(
-        addScene({
-          id: response.data.id,
-          title: response.data.title,
-          textFilePath: response.data.textFilePath,
-        })
-      );
+      dispatch(addScene(response.data.scene));
       dispatch(toggleSceneBeingAdded());
     } else {
       if (response.message === "Scene name already exists") {

@@ -10,13 +10,19 @@
 
 - Feature Updates:
 
-  - New Appearence option up top
-  - Character and word counts toggle option
+  - New Appearence options up top
+  - Character and word counts
   - Colors on scene cards and timelines cards
+  - Add images to scenes
 
 - Structure Updates:
 
   - Updated underlying timeline and scene interactions to optimize application
 
 - Bug Fixes:
-  - Scene colors now change when section color is edited
+
+  - Scene colors now change when section color is edited/deleted
+
+- **Why it matters:** With these additional features, optimizations, and bug fixes, Odyssey becomes even more accessible. We can move on to more features like file exports and several drafts per scene.
+
+- **Next:** Get more testers and iterate on feedback. Work on file exports and several drafts. Make sure new data structure does not collapse.
