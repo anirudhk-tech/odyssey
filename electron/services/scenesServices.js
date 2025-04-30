@@ -206,8 +206,10 @@ export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
       (book) => book.id === bookUUID
     ).bookFolderPath;
     const scenesPath = path.join(bookPath, "scenes.json");
+    const timelinePath = path.join(bookPath, "timeline.json");
 
     const data = JSON.parse(fs.readFileSync(scenesPath, "utf8"));
+    const timelineData = JSON.parse(fs.readFileSync(timelinePath, "utf8"));
     const sceneIndex = data.scenes.findIndex((scene) => scene.id === sceneUUID);
 
     if (sceneIndex === -1) {
@@ -219,9 +221,28 @@ export const writeTextIntoScene = (bookUUID, sceneUUID, raw_json_text) => {
 
     data.scenes[sceneIndex]["wordCount"] = wordCount;
     data.scenes[sceneIndex]["charCount"] = charCount;
+    timelineData.timelines.forEach((timeline) => {
+      timeline.scenes.forEach((scene) => {
+        if (scene.id === sceneUUID) {
+          scene.wordCount = wordCount;
+          scene.charCount = charCount;
+        }
+      });
+    });
+    timelineData.narrative.scenes.forEach((scene) => {
+      if (scene.id === sceneUUID) {
+        scene.wordCount = wordCount;
+        scene.charCount = charCount;
+      }
+    });
 
     fs.writeFileSync(textFilePath, raw_json_text, "utf8");
     fs.writeFileSync(scenesPath, JSON.stringify(data, null, 2), "utf8");
+    fs.writeFileSync(
+      timelinePath,
+      JSON.stringify(timelineData, null, 2),
+      "utf8"
+    );
 
     return {
       success: true,
