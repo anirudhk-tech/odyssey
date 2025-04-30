@@ -24,6 +24,7 @@
     "dotenv": "^16.5.0",
     "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
+    "electron-is-dev": "^3.0.1",
     "express": "^4.21.2",
     "fuse.js": "^7.1.0",
     "next": "latest",
@@ -60,7 +61,7 @@
       "package.json"
     ],
     "ignore": [
-      "\\.env.*"
+      "**/.env*"
     ],
     "mac": {
       "icon": "electron/assets/icon.icns"

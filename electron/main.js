@@ -7,19 +7,19 @@ import { setTray } from "./tray.js";
 import next from "next";
 import express from "express";
 import dotenv from "dotenv";
+import isDev from "electron-is-dev";
 
 dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
-const dev = process.env.DEV_MODE;
 
 let mainWindow;
 
 const startNextServer = async () => {
   const projectRoot = resolve(__dirname, "..");
 
-  const nextApp = next({ dev, dir: projectRoot });
+  const nextApp = next({ dev: isDev, dir: projectRoot });
   await nextApp.prepare();
   const handle = nextApp.getRequestHandler();
 
@@ -71,7 +71,7 @@ app.whenReady().then(() => {
     return net.fetch(`file://${filePath}`);
   });
 
-  if (!dev) {
+  if (!isDev) {
     startNextServer()
       .then(() => {
         createWindow();
