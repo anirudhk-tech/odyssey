@@ -50,7 +50,6 @@
     "appId": "com.odyssey.app",
     "productName": "Odyssey",
     "compression": "store",
-    "asar": true,
     "directories": {
       "buildResources": "electron/assets",
       "output": "release"
