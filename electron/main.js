@@ -4,9 +4,6 @@ import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
 import { setMenu } from "./menu.js";
 import { setTray } from "./tray.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
