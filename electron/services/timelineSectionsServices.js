@@ -186,12 +186,12 @@ export const editTimelineSection = (
 
     const changedScenes = [];
 
-    sceneData.forEach((s) => {
+    sceneData.scenes.forEach((s) => {
       if (
         s.x >= data.sections[sectionIndex].xStart &&
         s.x <= data.sections[sectionIndex].xEnd
       ) {
-        scene.color = sectionColor;
+        s.color = sectionColor;
         changedScenes.push(s);
       }
     });

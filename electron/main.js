@@ -4,8 +4,6 @@ import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
 import { setMenu } from "./menu.js";
 import { setTray } from "./tray.js";
-import next from "next";
-import express from "express";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,31 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
 let mainWindow;
-const isDev = false;
-
-const startNextServer = async () => {
-  const projectRoot = resolve(__dirname, "..");
-
-  const nextApp = next({ dev: isDev, dir: projectRoot });
-  await nextApp.prepare();
-  const handle = nextApp.getRequestHandler();
-
-  const server = express();
-  server.all("*", (req, res) => {
-    return handle(req, res);
-  });
-
-  return new Promise((resolve, reject) => {
-    server.listen(3000, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        console.log("Next.js server is running on http://localhost:3000");
-        resolve();
-      }
-    });
-  });
-};
+const isDev = process.env.NODE_ENV !== "production";
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -72,14 +46,19 @@ app.whenReady().then(() => {
   });
 
   if (!isDev) {
-    startNextServer()
-      .then(() => {
-        createWindow();
-      })
-      .catch((error) => {
-        console.error("Failed to start Next.js server:", error);
-        app.quit();
-      });
+    const serverScript = resolve(
+      __dirname,
+      "..",
+      ".next",
+      "standalone",
+      "server.js"
+    );
+    fork(serverScript, [], {
+      cwd: resolve(__dirname, "..", ".next", "standalone"),
+      stdio: "ignore",
+    });
+
+    createWindow();
   } else {
     createWindow();
   }
