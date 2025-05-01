@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
 let mainWindow;
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = !app.isPackaged;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
