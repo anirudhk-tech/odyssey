@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "postbuild": "node scripts/prepareStandalone.js",
     "start": "next start -p 3000",
     "electron": "electron .",
     "dist": "cross-env NODE_ENV=production npm run build && electron-builder"
@@ -49,35 +50,23 @@
   "build": {
     "appId": "com.odyssey.app",
     "productName": "Odyssey",
+    "asar": false,
     "compression": "store",
-    "asar": true,
     "directories": {
       "buildResources": "electron/assets",
       "output": "release"
     },
+    "extraResources": [
+      {
+        "from": "electron/assets/",
+        "to": "assets"
+      }
+    ],
     "files": [
       "electron/**/*",
       "package.json",
       ".next/standalone/**/*",
-      ".next/static/**/*",
-      "public/**/*",
-      "!node_modules/**",
-      "!**/*.map",
-      "!**/.next/cache/**/*",
-      "!**/*.ts",
-      "!**/*.d.ts",
-      "!**/README.md",
-      "!**/CHANGELOG.md",
-      "!**/LICENSE*",
-      "!**/test{,s}/**",
-      "!**/__tests__/**",
-      "!**/__mocks__/**",
-      "!**/node_modules/.bin",
-      "!**/node_modules/*/README*",
-      "!**/node_modules/*/CHANGELOG*",
-      "!**/node_modules/*/LICENSE*",
-      "!**/node_modules/*/test{,s}/**",
-      "!**/node_modules/*/example/**"
+      "public/**/*"
     ],
     "mac": {
       "icon": "electron/assets/icon.icns"

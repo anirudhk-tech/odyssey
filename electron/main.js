@@ -4,12 +4,16 @@ import { fileURLToPath } from "url";
 import { dirname, join, resolve } from "path";
 import { setMenu } from "./menu.js";
 import { setTray } from "./tray.js";
+import { fork } from "child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
 let mainWindow;
-const isDev = !app.isPackaged;
+const isDev = false;
+const assetsPath = isDev
+  ? join(__dirname, "assets")
+  : join(process.resourcesPath, "assets");
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -20,18 +24,46 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: true,
     },
-    icon:
-      process.platform == "win32"
-        ? join(__dirname, "assets", "icon.ico")
-        : join(__dirname, "assets", "icon.png"),
+    icon: join(
+      assetsPath,
+      process.platform === "win32" ? "icon.ico" : "icon.png"
+    ),
     title: "Odyssey",
   });
-
-  mainWindow.loadURL("http://localhost:3000");
 };
 
+async function waitForServer(url, timeout = 10000) {
+  const start = Date.now();
+
+  while (Date.now() - start < timeout) {
+    try {
+      const response = await net.fetch(url, { cache: "no-store" });
+      if (response.ok) {
+        return;
+      }
+    } catch {}
+
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`Server did not start within ${timeout}ms`);
+}
+
+async function waitForServerAndLoad() {
+  const url = "http://127.0.0.1:3000";
+  const timeout = 50000;
+
+  try {
+    await waitForServer(url, timeout);
+    await mainWindow.loadURL(url);
+    console.log("Electron window asked to load URL:", url);
+  } catch (error) {
+    console.error("Error loading URL:", error);
+    app.quit();
+  }
+}
+
 if (process.platform === "darwin") {
-  app.dock.setIcon(join(__dirname, "assets", "icon.icns"));
+  app.dock.setIcon(join(assetsPath, "icon.icns"));
 }
 
 app.whenReady().then(() => {
@@ -50,14 +82,25 @@ app.whenReady().then(() => {
       "standalone",
       "server.js"
     );
-    fork(serverScript, [], {
-      cwd: resolve(__dirname, "..", ".next", "standalone"),
-      stdio: "ignore",
+    const appRoot = resolve(__dirname, "..", ".next", "standalone");
+
+    const child = fork(serverScript, [], {
+      cwd: appRoot,
+      execArgv: ["--experimental-default-type=commonjs"],
+      stdio: ["pipe", "pipe", "pipe", "ipc"],
     });
 
+    child.stdout.on("data", (d) => console.log("[next]", d.toString()));
+    child.stderr.on("data", (d) => console.error("[next:err]", d.toString()));
+    child.on("exit", (code) =>
+      console.error(`[next] exited with code ${code}`)
+    );
+
     createWindow();
+    waitForServerAndLoad();
   } else {
     createWindow();
+    mainWindow.loadURL("http://localhost:3000");
   }
 
   setTray(mainWindow);
