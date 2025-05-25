@@ -6,6 +6,7 @@ export interface Scene {
   charCount: number;
   wordCount: number;
   imagePath: string | null;
+  bookId: string;
 }
 
 export interface TimelineScene {

@@ -125,6 +125,8 @@ declare global {
         bookUUID: string,
         sceneUUID: string
       ) => Promise<Response>;
+      onExportClicked: (callback: () => void) => void;
+      onHomeClicked: (callback: () => void) => void;
     };
   }
 }

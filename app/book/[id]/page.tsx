@@ -20,6 +20,7 @@ import { useRef } from "react";
 import { useTimelineSectionResize } from "@/lib/features/timeline/hooks/useTimelineSectionResize";
 import { AddTimelineDialog } from "@/app/features/timeline/addTimelineDialog";
 import { SceneImageDialog } from "@/app/features/scenes/sceneImageDialog";
+import { useRouting } from "@/lib/common/hooks/useRouting";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
@@ -32,9 +33,11 @@ const Container = styled.div`
   scrollbar-width: none;
 `;
 
-export default function EditingPage() {
+export default function BookPage() {
   const { mounted } = useMounted();
   const params = useParams();
+  useRouting();
+
   useSetCurrent({ bookId: params.id as string });
   const sceneSideBarDndRef = useRef<HTMLDivElement>(null);
   const timelineSideBarDndRef = useRef<HTMLDivElement>(null);

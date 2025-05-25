@@ -10,7 +10,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const preloadPath = join(__dirname, "preload.cjs");
 
 let mainWindow;
-const isDev = false;
+const isDev = !app.isPackaged;
+
 const assetsPath = isDev
   ? join(__dirname, "assets")
   : join(process.resourcesPath, "assets");

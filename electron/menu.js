@@ -1,13 +1,18 @@
-import { Menu } from "electron";
+import { app, Menu } from "electron";
 import {
   getPreferences,
   toggleFillSceneBoxesColorPreference,
   toggleShowCharCountPreference,
   toggleShowWordCountPreference,
 } from "./services/preferenceServices.js";
+import { navigateToExport } from "./services/exportServices.js";
 
 const buildTemplate = (preferences) => {
   const template = [
+    {
+      label: "Home",
+      click: (_, win) => win.webContents.send("home-clicked"),
+    },
     {
       label: "Appearance",
       submenu: [
@@ -31,13 +36,22 @@ const buildTemplate = (preferences) => {
         },
       ],
     },
+    {
+      label: "Export",
+      submenu: [
+        {
+          label: "Export to PDF",
+          click: navigateToExport,
+        },
+      ],
+    },
   ];
 
   return template;
 };
 
 export const setMenu = () => {
-  const dev = process.env.DEV_MODE;
+  const dev = !app.isPackaged;
   const preferences = getPreferences().data;
 
   let template = buildTemplate(preferences);

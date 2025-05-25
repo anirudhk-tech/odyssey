@@ -9,6 +9,7 @@ import { useAddBook } from "@/lib/features/books/hooks/useAddBook";
 import { useMounted } from "@/lib/common/hooks/useMounted";
 import { DeleteBookConfirmDialog } from "./features/books/deleteBookConfirmDialog";
 import { RenameBookDialog } from "./features/books/renameBookDialog";
+import { useRouting } from "@/lib/common/hooks/useRouting";
 
 const Container = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -63,6 +64,7 @@ export default function HomePage() {
   const { mounted } = useMounted();
   const { books, loading } = useFetchBooks();
   const { toggleDialog } = useAddBook();
+  useRouting();
 
   if (!mounted) return null;
 

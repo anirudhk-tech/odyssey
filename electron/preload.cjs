@@ -111,4 +111,12 @@ contextBridge.exposeInMainWorld("odysseyAPI", {
   pickImage: () => ipcRenderer.invoke("pickImage"),
   removeSceneImage: (bookUUID, sceneUUID) =>
     ipcRenderer.invoke("removeSceneImage", bookUUID, sceneUUID),
+  onExportClicked: (callback) =>
+    ipcRenderer.on("export-clicked", () => {
+      callback();
+    }),
+  onHomeClicked: (callback) =>
+    ipcRenderer.on("home-clicked", () => {
+      callback();
+    }),
 });

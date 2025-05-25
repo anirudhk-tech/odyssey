@@ -90,7 +90,7 @@ const Color = styled.div<{
   $fullheight: boolean;
 }>`
   width: 100%;
-  height: ${(props) => (props.$fullheight ? "100%" : "5px")};
+  height: ${(props) => (props.$fullheight ? "100%" : "2px")};
   background-color: ${(props) => props.color || props.theme.colors.primary};
   position: absolute;
   top: 0;
